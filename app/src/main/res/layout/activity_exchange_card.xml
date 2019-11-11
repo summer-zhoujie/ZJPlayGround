@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="10dp"
+    android:background="#111111"
+    tools:context=".MainActivity" >
+
+    <TextView
+        android:id="@+id/tvcai"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="72dp"
+        android:text="猜"
+        android:textColor="#eeeeee"
+        android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/puke1"
+        android:layout_width="71dp"
+        android:layout_height="96dp"
+        android:layout_alignTop="@+id/puke3"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@+id/puke3"/>
+
+    <ImageView
+        android:id="@+id/puke2"
+        android:layout_width="71dp"
+        android:layout_height="96dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tvcai"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="36dp" />
+
+    <ImageView
+        android:id="@+id/puke3"
+        android:layout_width="71dp"
+        android:layout_height="96dp"
+        android:layout_alignTop="@+id/puke2"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@+id/puke2" />
+
+    <Button
+        android:id="@+id/btnplayagian"
+        android:layout_width="120dp"
+        android:layout_height="30dp"
+        android:layout_below="@+id/puke2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:background="#cdcdcd"
+        android:text="重新玩一次" />
+
+</RelativeLayout>
