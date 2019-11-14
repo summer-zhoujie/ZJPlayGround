@@ -3,6 +3,7 @@
     
     <declare-styleable name="StrokenAnimationView">
         <attr name="stroke_width" format="dimension"/>
+        <attr name="stroke_radius" format="dimension"/>
         <attr name="rotate_start" format="integer"/>
         <attr name="frame_time_interval" format="integer"/>
         <attr name="frame_rotate_interval" format="integer"/>

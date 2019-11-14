@@ -29,13 +29,16 @@ public class StrokenAnimationView extends View {
     private RectF rectStroke;
     private SweepGradient linearGradient;
     // 默认值定义
-    private final int strokeWidth_default = dp2px(5);
+    private final float strokeWidth_default = dp2px(5);
+    private final float strokeRadius_default = dp2px(10);
     private final int rotate_default = 225;
     private final int frameTimeInterval_default = 40;
     private final int frameRotateInterval_default = 3;
     private final boolean isAutoStart_default = true;
     // 线宽
-    private int strokeWidth = strokeWidth_default;
+    private float strokeWidth = strokeWidth_default;
+    // 线框圆角
+    private float strokeRadius = strokeRadius_default;
     // 光环的起始角度值(最大360度)
     private int rotate = rotate_default;
     // 控制动画刷新间隔(单位: 毫秒)
@@ -115,7 +118,7 @@ public class StrokenAnimationView extends View {
         Matrix matrix = new Matrix();
         matrix.setRotate(rotate, getMeasuredWidth() / 2, getMeasuredHeight() / 2);
         linearGradient.setLocalMatrix(matrix);
-        canvas.drawRoundRect(rectStroke, 10, 10, mPaint);
+        canvas.drawRoundRect(rectStroke, strokeRadius, strokeRadius, mPaint);
     }
 
 
@@ -129,7 +132,8 @@ public class StrokenAnimationView extends View {
             frameRotateInterval = ta.getInteger(R.styleable.StrokenAnimationView_frame_rotate_interval, frameRotateInterval_default);
             frameTimeInterval = ta.getInteger(R.styleable.StrokenAnimationView_frame_time_interval, frameTimeInterval_default);
             rotate = ta.getInteger(R.styleable.StrokenAnimationView_rotate_start, rotate_default);
-            strokeWidth = ta.getInteger(R.styleable.StrokenAnimationView_stroke_width, strokeWidth_default);
+            strokeWidth = ta.getDimension(R.styleable.StrokenAnimationView_stroke_width, strokeWidth_default);
+            strokeRadius = ta.getDimension(R.styleable.StrokenAnimationView_stroke_radius, strokeRadius_default);
         } catch (RuntimeException e) {
             Log.d("=summerzhou=", "(StrokenAnimationView.parseParamsFromXml): error, just use default config: " + e.getLocalizedMessage());
         }
