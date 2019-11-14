@@ -12,6 +12,7 @@ import android.view.View;
 
 import com.example.playground.exchangeCard.ExchangeCardActivity;
 import com.example.playground.guessidiom.GenerateIdiom;
+import com.example.playground.strokenanimation.StrokeTestActivity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 创建爱计步成语所需数据库
+     *
      * @param view
      */
     public void btGenerateDb(View view) {
@@ -67,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Rxjava测试
+     *
      * @param view
      */
     public void testRxJava(View view) {
@@ -79,31 +82,40 @@ public class MainActivity extends AppCompatActivity {
         final Disposable subscribe = flowableFromArray
                 .subscribeOn(Schedulers.computation())
                 .subscribe(new Consumer() {
-            @Override
-            public void accept(Object o) throws Throwable {
-                Log.d("=summerzhou=", "(MainActivity.accept): o=" + o);
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Throwable {
-                Log.d("=summerzhou=", "(MainActivity.Error): msg=" + throwable.getLocalizedMessage());
-            }
-        }, new Action() {
-            @Override
-            public void run() throws Throwable {
-                Log.d("=summerzhou=","(MainActivity.complete): ");
-            }
-        });
+                    @Override
+                    public void accept(Object o) throws Throwable {
+                        Log.d("=summerzhou=", "(MainActivity.accept): o=" + o);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Throwable {
+                        Log.d("=summerzhou=", "(MainActivity.Error): msg=" + throwable.getLocalizedMessage());
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() throws Throwable {
+                        Log.d("=summerzhou=", "(MainActivity.complete): ");
+                    }
+                });
 
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Log.d("=summerzhou=","(MainActivity.dispose): ");
+                Log.d("=summerzhou=", "(MainActivity.dispose): ");
                 subscribe.dispose();
             }
         }, 300);
 
+    }
+
+    /**
+     * 测试矩形框动画
+     *
+     * @param view
+     */
+    public void testStrokeAnimation(View view) {
+        startActivity(new Intent(this, StrokeTestActivity.class));
     }
 }
