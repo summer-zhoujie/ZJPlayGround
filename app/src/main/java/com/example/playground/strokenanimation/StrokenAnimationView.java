@@ -31,8 +31,8 @@ public class StrokenAnimationView extends View {
     // 默认值定义
     private final int strokeWidth_default = dp2px(5);
     private final int rotate_default = 225;
-    private final int frameTimeInterval_default = 80;
-    private final int frameRotateInterval_default = 5;
+    private final int frameTimeInterval_default = 40;
+    private final int frameRotateInterval_default = 3;
     private final boolean isAutoStart_default = true;
     // 线宽
     private int strokeWidth = strokeWidth_default;
@@ -50,24 +50,34 @@ public class StrokenAnimationView extends View {
     // 光环的颜色配置
     private int[] colors = new int[]{
             StringToColor("#FFFFFFFF"),
-            StringToColor("#FF78F84E"),
-            StringToColor("#FFDB3EF3"),
-            StringToColor("#FF60CBF8"),
-            StringToColor("#FF9E68F2"),
+            StringToColor("#FF84FB61"),
+            StringToColor("#FFDA63F7"),
+            StringToColor("#FF6Ed3FA"),
+            StringToColor("#FF6Ed3FA"),
+            StringToColor("#FFA689F7"),
             StringToColor("#FFFFFFF"),
-            StringToColor("#E44D4D"),
-            StringToColor("#7AFBEE")
+            StringToColor("#FFFFFFF"),
+            StringToColor("#FFEC655F"),
+            StringToColor("#FFF3EE5E"),
+            StringToColor("#FF87FBF1"),
+            StringToColor("#FF87FBF1"),
+            StringToColor("#FFC7FB8A"),
     };
     // 光环颜色分布配置
     private float[] position = new float[]{
-            0.11f,
-            0.17f,
-            0.23f,
-            0.42f,
-            0.44f,
-            0.55f,
-            1.0f,
-            1.0f,
+            0.13f,
+            0.18f,
+            0.27f,
+            0.285f,
+            0.48f,
+            0.495f,
+            0.50f,
+            0.63f,
+            0.655f,
+            0.705f,
+            0.79f,
+            0.98f,
+            1.0f
     };
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
