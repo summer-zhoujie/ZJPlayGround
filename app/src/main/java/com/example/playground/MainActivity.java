@@ -14,6 +14,8 @@ import com.example.playground.exchangeCard.ExchangeCardActivity;
 import com.example.playground.guessidiom.GenerateIdiom;
 import com.example.playground.strokenanimation.StrokeTestActivity;
 
+import org.reactivestreams.Subscriber;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +30,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.FlowableOperator;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.Disposable;

@@ -4,17 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/parent"
     android:orientation="vertical"
     tools:context=".strokenanimation.StrokeTestActivity">
 
-    <com.example.playground.strokenanimation.StrokenAnimationView
-        android:id="@+id/stroke_view"
-        android:layout_width="match_parent"
-        android:layout_height="217dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="10dp"
-        app:is_auto_start="true" />
+<!--    <com.example.playground.strokenanimation.StrokenAnimationView-->
+<!--        android:id="@+id/stroke_view"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="217dp"-->
+<!--        android:layout_marginLeft="10dp"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:layout_marginRight="10dp"-->
+<!--        app:is_auto_start="true" />-->
 
     <Button
         android:layout_width="wrap_content"
