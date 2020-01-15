@@ -2,13 +2,14 @@ package com.example.playground.strokenanimation;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import com.example.playground.R;
 
-public class StrokeTestActivity extends AppCompatActivity {
+public class StrokeTestActivity extends Activity {
 
     StrokenAnimationView strokenAnimationView;
 

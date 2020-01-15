@@ -2,14 +2,17 @@ package com.example.playground;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 
+import com.example.playground.dexload.DexLoadTest;
 import com.example.playground.exchangeCard.ExchangeCardActivity;
 import com.example.playground.guessidiom.GenerateIdiom;
 import com.example.playground.strokenanimation.StrokeTestActivity;
@@ -40,7 +43,7 @@ import io.reactivex.rxjava3.internal.operators.flowable.FlowableFromArray;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.schedulers.TestScheduler;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     public static void main(String[] args) {
     }
@@ -49,6 +52,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // dex load test
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            DexLoadTest.run();
+        }
     }
 
 
