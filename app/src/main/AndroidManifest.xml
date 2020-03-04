@@ -3,14 +3,16 @@
     package="com.example.playground">
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:name=".App"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".strokenanimation.StrokeTestActivity"></activity>
+        <activity android:name=".tigermachine.TigerMachineActivity"></activity>
+        <activity android:name=".tigermachine.effect1.Effect1Activity" />
+        <activity android:name=".strokenanimation.StrokeTestActivity" />
         <activity android:name=".exchangeCard.ExchangeCardActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

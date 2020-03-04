@@ -9,6 +9,13 @@
         android:orientation="vertical">
 
         <Button
+            android:text="老虎机动画"
+            android:onClick="tigermachine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
+
+        <Button
             android:id="@+id/bt_generate_db"
             android:onClick="btGenerateDb"
             android:text="创建爱计步猜成语数据库"
@@ -36,5 +43,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp" />
+
     </LinearLayout>
 </ScrollView>
