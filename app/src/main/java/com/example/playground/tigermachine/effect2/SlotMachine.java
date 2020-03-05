@@ -7,10 +7,16 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.Toast;
 
+
+import androidx.annotation.NonNull;
 
 import com.example.playground.R;
+import com.zj.tools.mylibrary.ZjLog;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -47,6 +53,7 @@ public class SlotMachine extends FrameLayout implements ScrollPickerView.OnSelec
     private Random mRandom = new Random();
 
     private BitmapScrollPicker mSlot01, mSlot02, mSlot03;
+    private ImageView wind01, wind02, wind03;
     private Context mContext;
     private boolean mIsPlaying;
     private int mFinishedCounter = 0;
@@ -67,6 +74,9 @@ public class SlotMachine extends FrameLayout implements ScrollPickerView.OnSelec
 
     private void init() {
         View view = inflate(mContext, R.layout.slot_machine_view, this);
+        wind01 = (ImageView) view.findViewById(R.id.wind_01);
+        wind02 = (ImageView) view.findViewById(R.id.wind_02);
+        wind03 = (ImageView) view.findViewById(R.id.wind_03);
         mSlot01 = (BitmapScrollPicker) view.findViewById(R.id.slot_view_01);
         mSlot02 = (BitmapScrollPicker) view.findViewById(R.id.slot_view_02);
         mSlot03 = (BitmapScrollPicker) view.findViewById(R.id.slot_view_03);
@@ -93,18 +103,39 @@ public class SlotMachine extends FrameLayout implements ScrollPickerView.OnSelec
 
     }
 
-    public void setData(CopyOnWriteArrayList<Bitmap> data) {
+    /**
+     * 设置选项 并初始化位置
+     *
+     * @param data      选项数据
+     * @param selectPos 初始化位置数据
+     */
+    public boolean setData(CopyOnWriteArrayList<Bitmap> data, int... selectPos) {
+
+        if (selectPos == null || selectPos.length != 3 || data == null) {
+            ZjLog.d("参数错误");
+            return false;
+        }
+
+        for (int pos : selectPos) {
+            if (pos >= data.size()) {
+                ZjLog.d("参数错误");
+                return false;
+            }
+        }
+
         mPrizeList = data;
         mSlot01.setData(mPrizeList);
         mSlot02.setData(mPrizeList);
         mSlot03.setData(mPrizeList);
-        mSlot01.setSelectedPosition(0);
-        mSlot02.setSelectedPosition(0);
-        mSlot03.setSelectedPosition(0);
+        mSlot01.setSelectedPosition(selectPos[0]);
+        mSlot02.setSelectedPosition(selectPos[1]);
+        mSlot03.setSelectedPosition(selectPos[2]);
 
-        mSlot01.setSelectedPosition(0);
-        mSlot02.setSelectedPosition(0);
-        mSlot03.setSelectedPosition(0);
+        return true;
+    }
+
+    public boolean setData(CopyOnWriteArrayList<Bitmap> data) {
+        return setData(data, 0, 0, 0);
     }
 
     public CopyOnWriteArrayList<Bitmap> getData() {
@@ -164,13 +195,71 @@ public class SlotMachine extends FrameLayout implements ScrollPickerView.OnSelec
         }
     }
 
+    @Override
+    public void onEnterFastSpeed(final ScrollPickerView scrollPickerView) {
+        if (scrollPickerView.getId() == mSlot01.getId()) {
+            wind01.setVisibility(VISIBLE);
+        } else if (scrollPickerView.getId() == mSlot02.getId()) {
+            wind02.setVisibility(VISIBLE);
+        } else if (scrollPickerView.getId() == mSlot03.getId()) {
+            wind03.setVisibility(VISIBLE);
+        }
+    }
+
+    @Override
+    public void onOutFastSpeed(ScrollPickerView scrollPickerView) {
+        if (scrollPickerView.getId() == mSlot01.getId()) {
+            wind01.setVisibility(INVISIBLE);
+        } else if (scrollPickerView.getId() == mSlot02.getId()) {
+            wind02.setVisibility(INVISIBLE);
+        } else if (scrollPickerView.getId() == mSlot03.getId()) {
+            wind03.setVisibility(INVISIBLE);
+        }
+    }
+
+    /**
+     * 开始滚动
+     *
+     * @param arrays 各个选项的最终的位置, 限定输入三个参数
+     * @return
+     */
+    public boolean playMulti(int... arrays) {
+        if (arrays == null || arrays.length != 3) {
+            ZjLog.d("参数错误");
+            return false;
+        }
+
+        for (int array : arrays) {
+            if (array >= mPrizeList.size()) {
+                ZjLog.d("参数错误");
+                return false;
+            }
+        }
+
+        if (!isClickable() || mIsPlaying) {
+            return false;
+        }
+
+        mFinishedCounter = 0;
+        mIsPlaying = true;
+
+        int duration01, duration02, duration03;
+        duration01 = mDurationList.get(0);
+        duration02 = mDurationList.get(1);
+        duration03 = mDurationList.get(2);
+
+        mSlot01.autoScrollFast(arrays[0], duration01);
+        mSlot02.autoScrollFast(arrays[1], duration02);
+        mSlot03.autoScrollFast(arrays[2], duration03);
+        return true;
+    }
 
     /**
      * 开始滚动，
      *
      * @param prizePosition 奖品的索引，如果prizePosition＜０或者　prizePosition＞＝总的奖品数，则表示不中奖
      */
-    public boolean play(int prizePosition) {
+    public boolean playSingle(int prizePosition) {
         if (!isClickable() || mIsPlaying) {
             return false;
         }
@@ -249,6 +338,7 @@ public class SlotMachine extends FrameLayout implements ScrollPickerView.OnSelec
 
         /**
          * 滚动结束时回调
+         *
          * @param pos01
          * @param pos02
          * @param pos03
@@ -257,6 +347,7 @@ public class SlotMachine extends FrameLayout implements ScrollPickerView.OnSelec
 
         /**
          * 是否接受该次中奖结果
+         *
          * @param position
          * @return 返回true则表示确认该次赢得奖品，false则表示取消该次奖品
          */

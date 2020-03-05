@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="250dp"
-             android:layout_gravity="center_horizontal"
-             android:padding="24dp"
-    >
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
+    android:layout_gravity="center_horizontal"
+    android:padding="24dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,40 +19,74 @@
             android:id="@+id/slot_view_01"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            />
+            android:layout_weight="1" />
 
         <FrameLayout
             android:layout_width="2dp"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
-            android:background="#bfbfbf"/>
+            android:background="#bfbfbf" />
 
 
         <com.example.playground.tigermachine.effect2.BitmapScrollPicker
             android:id="@+id/slot_view_02"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            />
+            android:layout_weight="1" />
 
         <FrameLayout
             android:layout_width="2dp"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
-            android:background="#bfbfbf"/>
+            android:background="#bfbfbf" />
 
         <com.example.playground.tigermachine.effect2.BitmapScrollPicker
             android:id="@+id/slot_view_03"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="288dp"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="6dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/wind_01"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            />
+            android:src="@drawable/wind"
+            android:visibility="invisible"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/wind_02"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="2dp"
+            android:visibility="invisible"
+            tools:visibility="visible"
+            android:layout_weight="1"
+            android:src="@drawable/wind" />
+
+        <ImageView
+            android:id="@+id/wind_03"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+            tools:visibility="visible"
+            android:layout_marginStart="2dp"
+            android:layout_weight="1"
+            android:src="@drawable/wind" />
     </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/shape_slot_machine_border"
-        />
+        android:background="@drawable/shape_slot_machine_border" />
 </FrameLayout>

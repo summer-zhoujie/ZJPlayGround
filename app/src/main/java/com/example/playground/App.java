@@ -6,6 +6,8 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import com.zj.tools.mylibrary.ZjLog;
+
 import java.lang.reflect.Constructor;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -16,7 +18,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        ZjLog.enable = true;
 
     }
 }

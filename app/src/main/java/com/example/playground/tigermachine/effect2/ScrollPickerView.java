@@ -20,6 +20,7 @@ import android.view.animation.Interpolator;
 import android.widget.Scroller;
 
 import com.example.playground.R;
+import com.zj.tools.mylibrary.ZjLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -527,6 +528,17 @@ public abstract class ScrollPickerView<T> extends View {
             mAutoScrollAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
+                    final float animatedFraction = animation.getAnimatedFraction();
+                    ZjLog.d("animatedFraction=" + animatedFraction);
+                    if (animatedFraction >= 0.25f && animatedFraction <= 0.255f) {
+                        if (mListener != null) {
+                            mListener.onEnterFastSpeed(ScrollPickerView.this);
+                        }
+                    } else if (animatedFraction >= 0.75f && animatedFraction <= 0.755f) {
+                        if (mListener != null) {
+                            mListener.onOutFastSpeed(ScrollPickerView.this);
+                        }
+                    }
                     float rate = 0;
                     rate = animation.getCurrentPlayTime() * 1f / animation.getDuration();
                     computeScroll((int) animation.getAnimatedValue(), end, rate);
@@ -951,6 +963,16 @@ public abstract class ScrollPickerView<T> extends View {
      */
     public interface OnSelectedListener {
         void onSelected(ScrollPickerView scrollPickerView, int position);
+
+        /**
+         * 进入很快的滑动速度
+         */
+        void onEnterFastSpeed(ScrollPickerView scrollPickerView);
+
+        /**
+         * 退出很快的滑动速度
+         */
+        void onOutFastSpeed(ScrollPickerView scrollPickerView);
     }
 
     public int dip2px(float dipVlue) {

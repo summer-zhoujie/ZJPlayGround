@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.playground.R;
+import com.zj.tools.mylibrary.ZjLog;
 
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -32,7 +33,7 @@ public class Effect2Activity extends AppCompatActivity {
         bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.slot_02));
         bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.slot_03));
 
-        mSlotMachine.setData(bitmaps);
+        mSlotMachine.setData(bitmaps,1, 0, 1);
         mSlotMachine.setSlotMachineListener(new SlotMachine.SlotMachineListener() {
             @Override
             public void onFinish(int pos01, int pos02, int pos03) {
@@ -42,6 +43,7 @@ public class Effect2Activity extends AppCompatActivity {
 
             @Override
             public boolean acceptWinResult(int position) {
+                ZjLog.d("win!!! pos = " + position);
                 return true;
             }
         });
@@ -52,12 +54,6 @@ public class Effect2Activity extends AppCompatActivity {
             return;
         }
         mIsPlaying = true;
-        // 开始滚动，模拟50％的中奖概率
-        if (mRandom.nextInt(2) == 0) { // 中奖
-            mSlotMachine.play(mRandom.nextInt(bitmaps.size()));
-        } else { //
-            mSlotMachine.play(-1);
-        }
-
+        mSlotMachine.playMulti(1,2,2);
     }
 }
