@@ -16,5 +16,11 @@
             android:layout_marginTop="10dp"
             android:onClick="effect1"
             android:text="效果1" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:onClick="effect2"
+            android:text="效果2" />
     </LinearLayout>
 </ScrollView>

@@ -10,7 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".tigermachine.TigerMachineActivity"></activity>
+        <activity android:name=".tigermachine.effect2.Effect2Activity"></activity>
+        <activity android:name=".tigermachine.TigerMachineActivity" />
         <activity android:name=".tigermachine.effect1.Effect1Activity" />
         <activity android:name=".strokenanimation.StrokeTestActivity" />
         <activity android:name=".exchangeCard.ExchangeCardActivity" />

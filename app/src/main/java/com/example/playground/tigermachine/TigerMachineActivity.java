@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.example.playground.R;
 import com.example.playground.tigermachine.effect1.Effect1Activity;
+import com.example.playground.tigermachine.effect2.Effect2Activity;
 
 public class TigerMachineActivity extends AppCompatActivity {
 
@@ -22,5 +23,12 @@ public class TigerMachineActivity extends AppCompatActivity {
      */
     public void effect1(View view) {
         startActivity(new Intent(this, Effect1Activity.class));
+    }
+
+    /**
+     * 效果2
+     */
+    public void effect2(View view) {
+        startActivity(new Intent(this, Effect2Activity.class));
     }
 }
