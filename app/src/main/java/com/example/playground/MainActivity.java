@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 
+import com.example.playground.dexload.DexLoadTest;
 import com.example.playground.exchangeCard.ExchangeCardActivity;
 import com.example.playground.guessidiom.GenerateIdiom;
 import com.example.playground.strokenanimation.StrokeTestActivity;
@@ -103,5 +104,13 @@ public class MainActivity extends Activity {
      */
     public void tigermachine(View view) {
         startActivity(new Intent(this, TigerMachineActivity.class));
+    }
+
+    /**
+     * Dex加载测试
+     * @param view
+     */
+    public void dexLoadTest(View view) {
+        DexLoadTest.run();
     }
 }

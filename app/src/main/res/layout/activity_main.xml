@@ -44,5 +44,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp" />
 
+        <Button
+            android:text="Dex加载测试"
+            android:onClick="dexLoadTest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
+
     </LinearLayout>
 </ScrollView>
