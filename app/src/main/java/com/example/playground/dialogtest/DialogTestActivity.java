@@ -8,8 +8,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.example.playground.R;
@@ -35,11 +37,12 @@ public class DialogTestActivity extends AppCompatActivity {
      * 判断当前Activity是否在视图的最前面
      *
      * @param activity
-     * @return true 在最前面(报错时也会返回 false)
+     * @return false 在最前面 (报错时也会返回 false, 吐司和PopWindow弹出时,函数会返回false)
      */
     public static boolean isHasDialogUp(Activity activity) {
         Context curContext = activity;
 
+        Log.d("=summerzhou=", "curcontext = " + curContext);
         HiddenApiUtil.exemptAll();
         WindowManager mWindowManager = (WindowManager) curContext.getSystemService(Context.WINDOW_SERVICE);
         try {
@@ -62,7 +65,7 @@ public class DialogTestActivity extends AppCompatActivity {
             if (viewRoots != null && !viewRoots.isEmpty()) {
                 final Object viewRoot = viewRoots.get(viewRoots.size() - 1);
                 final Object o = mContext.get(viewRoot);
-                return curContext == o;
+                return curContext != o;
             } else {
                 Log.d("=summerzhou=", "错误: viewRoots 为空");
             }
@@ -74,9 +77,36 @@ public class DialogTestActivity extends AppCompatActivity {
         return false;
     }
 
+    /**
+     * 点击判断当前Activity是否在栈顶
+     *
+     * @param view
+     */
     public void clickPrint(View view) {
         final boolean hasDialogUp = isHasDialogUp(this);
         Log.d("=summerzhou=", "hasDialogUp = " + hasDialogUp);
         Toast.makeText(this, hasDialogUp + "", Toast.LENGTH_SHORT).show();
+    }
+
+    public void clickShowPopwindow(View view) {
+        // 生成 View 对象
+        PopupWindow popupWindow;
+        View popRootView = View.inflate(this, R.layout.dialogtest_popwindow_layout, null);
+        popRootView.findViewById(R.id.bt).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final boolean hasDialogUp = isHasDialogUp(DialogTestActivity.this);
+                Log.d("=summerzhou=", "hasDialogUp = " + hasDialogUp);
+                Toast.makeText(DialogTestActivity.this, hasDialogUp + "", Toast.LENGTH_SHORT).show();
+            }
+        });
+        popupWindow = new PopupWindow(popRootView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        popupWindow.showAsDropDown(findViewById(R.id.bt_popWindow));
+    }
+
+    public void clickShowToast(View view) {
+        Toast.makeText(DialogTestActivity.this, "这是一个测试吐司,结果请看log", Toast.LENGTH_LONG).show();
+        final boolean hasDialogUp = isHasDialogUp(DialogTestActivity.this);
+        Log.d("=summerzhou=", "hasDialogUp = " + hasDialogUp);
     }
 }
