@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.example.playground.dexload.DexLoadTest;
+import com.example.playground.dialogtest.DialogTestActivity;
 import com.example.playground.exchangeCard.ExchangeCardActivity;
 import com.example.playground.guessidiom.GenerateIdiom;
 import com.example.playground.strokenanimation.StrokeTestActivity;
@@ -108,9 +109,14 @@ public class MainActivity extends Activity {
 
     /**
      * Dex加载测试
+     *
      * @param view
      */
     public void dexLoadTest(View view) {
         DexLoadTest.run();
+    }
+
+    public void dialogtest(View view) {
+        startActivity(new Intent(this, DialogTestActivity.class));
     }
 }
