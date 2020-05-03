@@ -10,7 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".dialogtest.DialogTestActivity"></activity>
+        <activity android:name=".permissionrequesttest.PermissionRequestTestActivity"></activity>
+        <activity android:name=".dialogtest.DialogTestActivity" />
         <activity android:name=".tigermachine.effect2.Effect2Activity" />
         <activity android:name=".tigermachine.TigerMachineActivity" />
         <activity android:name=".tigermachine.effect1.Effect1Activity" />
