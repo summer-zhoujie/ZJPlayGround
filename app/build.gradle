@@ -1,6 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
+
+    sourceSets {
+        main {
+            java {
+                exclude '**/GrantPermissionsActivity.java'
+            }
+        }
+    }
+
     compileSdkVersion 28
     buildToolsVersion "29.0.2"
     defaultConfig {
