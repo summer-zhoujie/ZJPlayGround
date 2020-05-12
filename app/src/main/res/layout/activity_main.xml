@@ -9,6 +9,13 @@
         android:orientation="vertical">
 
         <Button
+            android:text="activity findviewbyid"
+            android:onClick="findviewbyidTest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
+
+        <Button
             android:text="权限请求测试"
             android:onClick="permissionRequestTest"
             android:layout_width="wrap_content"

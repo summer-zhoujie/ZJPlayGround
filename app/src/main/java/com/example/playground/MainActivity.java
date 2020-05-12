@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 
+import com.example.playground.activityfindviewbyid.FindViewByIdActivity;
 import com.example.playground.dexload.DexLoadTest;
 import com.example.playground.dialogtest.DialogTestActivity;
 import com.example.playground.exchangeCard.ExchangeCardActivity;
@@ -96,7 +97,6 @@ public class MainActivity extends Activity {
      * 测试矩形框动画
      *
      * @param view
-     *
      */
     public void testStrokeAnimation(View view) {
         startActivity(new Intent(this, StrokeTestActivity.class));
@@ -127,5 +127,12 @@ public class MainActivity extends Activity {
      */
     public void permissionRequestTest(View view) {
         startActivity(new Intent(this, PermissionRequestTestActivity.class));
+    }
+
+    /**
+     * activity findviewbyid 测试
+     */
+    public void findviewbyidTest(View view) {
+        startActivity(new Intent(this, FindViewByIdActivity.class));
     }
 }

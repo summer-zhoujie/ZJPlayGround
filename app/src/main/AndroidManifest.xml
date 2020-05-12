@@ -3,6 +3,7 @@
     package="com.example.playground">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -11,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".permissionrequesttest.PermissionRequestTestActivity"></activity>
+        <activity android:name=".activityfindviewbyid.FindViewByIdActivity"></activity>
+        <activity android:name=".permissionrequesttest.PermissionRequestTestActivity" />
         <activity android:name=".dialogtest.DialogTestActivity" />
         <activity android:name=".tigermachine.effect2.Effect2Activity" />
         <activity android:name=".tigermachine.TigerMachineActivity" />
