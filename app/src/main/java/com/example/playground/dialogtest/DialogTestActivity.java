@@ -109,4 +109,8 @@ public class DialogTestActivity extends AppCompatActivity {
         final boolean hasDialogUp = isHasDialogUp(DialogTestActivity.this);
         Log.d("=summerzhou=", "hasDialogUp = " + hasDialogUp);
     }
+
+    public void jump2CoverActivity(View view) {
+        DialogCoverActivity.launch(this);
+    }
 }
