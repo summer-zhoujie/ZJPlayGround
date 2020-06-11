@@ -16,6 +16,7 @@ import com.example.playground.permissionrequesttest.PermissionRequestTestActivit
 import com.example.playground.strokenanimation.StrokeTestActivity;
 import com.example.playground.tigermachine.TigerMachineActivity;
 import com.example.playground.tigermachine.effect1.Effect1Activity;
+import com.example.playground.viewinvisiable.InVisiableViewClickActivity;
 
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Action;
@@ -134,5 +135,12 @@ public class MainActivity extends Activity {
      */
     public void findviewbyidTest(View view) {
         startActivity(new Intent(this, FindViewByIdActivity.class));
+    }
+
+    /**
+     * 视图消失的点击事件
+     */
+    public void viewnvisibleIClick(View view) {
+        InVisiableViewClickActivity.launch(this);
     }
 }

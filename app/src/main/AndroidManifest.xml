@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".dialogtest.DialogCoverActivity"></activity>
+        <activity android:name=".viewinvisiable.InVisiableViewClickActivity"></activity>
+        <activity android:name=".dialogtest.DialogCoverActivity" />
         <activity android:name=".activityfindviewbyid.FindViewByIdActivity" />
         <activity android:name=".permissionrequesttest.PermissionRequestTestActivity" />
         <activity android:name=".dialogtest.DialogTestActivity" />

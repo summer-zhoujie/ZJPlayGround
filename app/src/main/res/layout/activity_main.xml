@@ -9,6 +9,12 @@
         android:orientation="vertical">
 
         <Button
+            android:text="view invisible 点击事件测试"
+            android:onClick="viewnvisibleIClick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
+        <Button
             android:text="activity findviewbyid"
             android:onClick="findviewbyidTest"
             android:layout_width="wrap_content"
