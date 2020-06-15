@@ -9,6 +9,13 @@
         android:orientation="vertical">
 
         <Button
+            android:text="系统悬浮视图测试"
+            android:onClick="clickShowSysFloatView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
+
+        <Button
             android:text="view invisible 点击事件测试"
             android:onClick="viewnvisibleIClick"
             android:layout_width="wrap_content"

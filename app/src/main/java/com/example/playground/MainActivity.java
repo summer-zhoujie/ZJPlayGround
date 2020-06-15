@@ -11,6 +11,7 @@ import com.example.playground.activityfindviewbyid.FindViewByIdActivity;
 import com.example.playground.dexload.DexLoadTest;
 import com.example.playground.dialogtest.DialogTestActivity;
 import com.example.playground.exchangeCard.ExchangeCardActivity;
+import com.example.playground.floatappView.FloatViewActivity;
 import com.example.playground.guessidiom.GenerateIdiom;
 import com.example.playground.permissionrequesttest.PermissionRequestTestActivity;
 import com.example.playground.strokenanimation.StrokeTestActivity;
@@ -142,5 +143,13 @@ public class MainActivity extends Activity {
      */
     public void viewnvisibleIClick(View view) {
         InVisiableViewClickActivity.launch(this);
+    }
+
+    /**
+     * 系统悬浮视图测试
+     * @param view
+     */
+    public void clickShowSysFloatView(View view) {
+        startActivity(new Intent(this, FloatViewActivity.class));
     }
 }
