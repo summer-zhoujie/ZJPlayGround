@@ -40,4 +40,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation "io.reactivex.rxjava3:rxjava:3.0.0-RC4"
     implementation 'com.github.summer-zhoujie:DevUtils:1.0.2'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
 }

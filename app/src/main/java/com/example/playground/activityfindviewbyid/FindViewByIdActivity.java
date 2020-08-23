@@ -10,6 +10,9 @@ import android.widget.TextView;
 
 import com.example.playground.R;
 
+/**
+ * Activity可以直接查找到fragment中的View
+ */
 public class FindViewByIdActivity extends AppCompatActivity {
 
     @Override
