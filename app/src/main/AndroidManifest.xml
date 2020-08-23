@@ -4,13 +4,13 @@
     package="com.example.playground">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-<!--    系统悬浮窗权限-->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- 系统悬浮窗权限 -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-
-    <uses-permission android:name="android.permission.SET_TIME"
+    <uses-permission
+        android:name="android.permission.SET_TIME"
         tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"
+    <uses-permission
+        android:name="android.permission.WRITE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
 
     <application
@@ -18,11 +18,13 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".floatappView.FloatViewActivity"></activity>
+        <activity android:name=".customview.clipOutOrIn.DiffOfClipOutOrInActivity"></activity>
+        <activity android:name=".customview.CustomViewActivity" />
+        <activity android:name=".floatappView.FloatViewActivity" />
         <activity android:name=".viewinvisiable.InVisiableViewClickActivity" />
         <activity android:name=".dialogtest.DialogCoverActivity" />
         <activity android:name=".activityfindviewbyid.FindViewByIdActivity" />

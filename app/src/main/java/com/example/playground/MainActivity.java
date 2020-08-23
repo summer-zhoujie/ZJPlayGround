@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.playground.activityfindviewbyid.FindViewByIdActivity;
+import com.example.playground.customview.CustomViewActivity;
 import com.example.playground.dexload.DexLoadTest;
 import com.example.playground.dialogtest.DialogTestActivity;
 import com.example.playground.exchangeCard.ExchangeCardActivity;
@@ -52,6 +53,7 @@ public class MainActivity extends Activity {
     public static final String ITEM_9 = "9. FindViewById测试";
     public static final String ITEM_10 = "10. 测试视图不可见时的点击";
     public static final String ITEM_11 = "11. 系统悬浮视图";
+    public static final String ITEM_12 = "12. 自定义View";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,7 @@ public class MainActivity extends Activity {
         recyclerView = findViewById(R.id.list);
 
         final ArrayList<String> data = new ArrayList<>();
+        data.add(ITEM_12);
         data.add(ITEM_11);
         data.add(ITEM_10);
         data.add(ITEM_9);
@@ -76,6 +79,9 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(String title) {
                 switch (title) {
+                    case ITEM_12:
+                        CustomViewActivity.launch(MainActivity.this);
+                        break;
                     case ITEM_11:
                         startActivity(new Intent(MainActivity.this, FloatViewActivity.class));
                         break;
