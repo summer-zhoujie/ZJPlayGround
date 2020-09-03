@@ -1,4 +1,4 @@
-package com.example.playground.customview.clipOutOrIn;
+package com.example.playground.customview.canvas;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 /**
  * 裁剪内部还是外部
  */
-public class ClipOutOrInView extends View {
+public class ClipRectView extends View {
 
 
     final Paint paintBg = new Paint();
@@ -33,15 +33,15 @@ public class ClipOutOrInView extends View {
      */
     final Rect rect = new Rect(200, 200, 400, 600);
 
-    public ClipOutOrInView(Context context) {
+    public ClipRectView(Context context) {
         this(context, null);
     }
 
-    public ClipOutOrInView(Context context, @Nullable AttributeSet attrs) {
+    public ClipRectView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ClipOutOrInView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ClipRectView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView();
     }
@@ -81,7 +81,7 @@ public class ClipOutOrInView extends View {
         postInvalidate();
     }
 
-    public void clipIn() {
+    public void clip() {
         clipOut = false;
         clipIn = true;
         postInvalidate();

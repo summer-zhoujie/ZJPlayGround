@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".customview.paint.JoinUsageActivity">
+
+    <com.example.playground.customview.paint.JoinUsageView
+        android:id="@+id/joinUsageView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/MITER"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="MITER"
+        app:layout_constraintEnd_toStartOf="@+id/ROUND"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/joinUsageView" />
+
+    <Button
+        android:id="@+id/BEVEL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BEVEL"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/ROUND"
+        app:layout_constraintTop_toTopOf="@+id/ROUND" />
+
+    <Button
+        android:id="@+id/ROUND"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ROUND"
+        app:layout_constraintEnd_toStartOf="@+id/BEVEL"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/MITER"
+        app:layout_constraintTop_toTopOf="@+id/MITER" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

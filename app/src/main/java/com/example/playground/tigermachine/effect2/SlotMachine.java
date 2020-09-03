@@ -14,7 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.playground.R;
-import com.zj.tools.mylibrary.ZjLog;
+import com.zj.tools.mylibrary.ZJLog;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -112,13 +112,13 @@ public class SlotMachine extends FrameLayout implements ScrollPickerView.OnSelec
     public boolean setData(CopyOnWriteArrayList<Bitmap> data, int... selectPos) {
 
         if (selectPos == null || selectPos.length != 3 || data == null) {
-            ZjLog.d("参数错误");
+            ZJLog.d("参数错误");
             return false;
         }
 
         for (int pos : selectPos) {
             if (pos >= data.size()) {
-                ZjLog.d("参数错误");
+                ZJLog.d("参数错误");
                 return false;
             }
         }
@@ -225,13 +225,13 @@ public class SlotMachine extends FrameLayout implements ScrollPickerView.OnSelec
      */
     public boolean playMulti(int... arrays) {
         if (arrays == null || arrays.length != 3) {
-            ZjLog.d("参数错误");
+            ZJLog.d("参数错误");
             return false;
         }
 
         for (int array : arrays) {
             if (array >= mPrizeList.size()) {
-                ZjLog.d("参数错误");
+                ZJLog.d("参数错误");
                 return false;
             }
         }

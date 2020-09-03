@@ -8,7 +8,8 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.example.playground.R;
-import com.example.playground.customview.clipOutOrIn.DiffOfClipOutOrInActivity;
+import com.example.playground.customview.canvas.ClipRectUsageActivity;
+import com.example.playground.customview.paint.JoinUsageActivity;
 
 public class CustomViewActivity extends AppCompatActivity {
 
@@ -23,9 +24,16 @@ public class CustomViewActivity extends AppCompatActivity {
     }
 
     /**
-     * 测试裁剪外部和内部的区别
+     * 测试Canvas.clipOut()/Canvas.clip()方法
      */
-    public void diffOfClipOutAndIn(View view) {
-        DiffOfClipOutOrInActivity.launch(this);
+    public void canvas_ClipOutOrClip(View view) {
+        ClipRectUsageActivity.launch(this);
+    }
+
+    /**
+     * 测试Paint.Join( BEVEL MITER ROUND )值
+     */
+    public void paint_Join_BEVEL_MITER_ROUND(View view) {
+        JoinUsageActivity.launch(this);
     }
 }

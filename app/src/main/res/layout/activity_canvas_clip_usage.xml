@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".customview.clipOutOrIn.DiffOfClipOutOrInActivity">
+    tools:context=".customview.canvas.ClipRectUsageActivity">
 
-    <com.example.playground.customview.clipOutOrIn.ClipOutOrInView
+    <com.example.playground.customview.canvas.ClipRectView
         android:id="@+id/clipOutOrInView"
         android:layout_width="0dp"
         android:layout_height="400dp"
@@ -14,7 +14,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-    </com.example.playground.customview.clipOutOrIn.ClipOutOrInView>
+    </com.example.playground.customview.canvas.ClipRectView>
 
 
     <Button
@@ -23,16 +23,19 @@
         android:layout_marginStart="25dp"
         android:layout_marginTop="15dp"
         android:onClick="clipOut"
-        android:text="裁剪外部"
+        android:text="clipOutRect()"
+        android:textAllCaps="false"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/clipOutOrInView" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:onClick="clipIn"
-        android:text="裁剪内部"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="25dp"
+        android:onClick="clip"
+        android:text="clipRect()"
+        android:textAllCaps="false"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/clipOutOrInView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

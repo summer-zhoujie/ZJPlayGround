@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.playground.R;
-import com.zj.tools.mylibrary.ZjLog;
+import com.zj.tools.mylibrary.ZJLog;
 
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -43,7 +43,7 @@ public class Effect2Activity extends AppCompatActivity {
 
             @Override
             public boolean acceptWinResult(int position) {
-                ZjLog.d("win!!! pos = " + position);
+                ZJLog.d("win!!! pos = " + position);
                 return true;
             }
         });

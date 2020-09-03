@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.example.playground.R;
 import com.example.playground.dexload.HiddenApiUtil;
-import com.zj.tools.mylibrary.ZjLog;
+import com.zj.tools.mylibrary.ZJLog;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

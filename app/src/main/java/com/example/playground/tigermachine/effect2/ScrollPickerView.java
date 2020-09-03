@@ -20,7 +20,7 @@ import android.view.animation.Interpolator;
 import android.widget.Scroller;
 
 import com.example.playground.R;
-import com.zj.tools.mylibrary.ZjLog;
+import com.zj.tools.mylibrary.ZJLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -529,7 +529,7 @@ public abstract class ScrollPickerView<T> extends View {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     final float animatedFraction = animation.getAnimatedFraction();
-                    ZjLog.d("animatedFraction=" + animatedFraction);
+                    ZJLog.d("animatedFraction=" + animatedFraction);
                     if (animatedFraction >= 0.25f && animatedFraction <= 0.255f) {
                         if (mListener != null) {
                             mListener.onEnterFastSpeed(ScrollPickerView.this);

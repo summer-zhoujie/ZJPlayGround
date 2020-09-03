@@ -11,10 +11,18 @@
         android:orientation="vertical">
 
         <Button
-            android:text="测试裁剪外部/内部的区别"
-            android:onClick="diffOfClipOutAndIn"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:onClick="canvas_ClipOutOrClip"
+            android:text="测试Canvas.clipOut()/Canvas.clip()方法"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="paint_Join_BEVEL_MITER_ROUND"
+            android:text="测试Paint.Join( BEVEL MITER ROUND )值"
+            android:textAllCaps="false" />
 
     </LinearLayout>
 

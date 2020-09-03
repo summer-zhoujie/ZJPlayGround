@@ -6,7 +6,7 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
-import com.zj.tools.mylibrary.ZjLog;
+import com.zj.tools.mylibrary.ZJLog;
 
 import java.lang.reflect.Constructor;
 import java.nio.ByteBuffer;
@@ -18,7 +18,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        ZjLog.enable = true;
+        ZJLog.init(true,"summerzhou");
 
     }
 }

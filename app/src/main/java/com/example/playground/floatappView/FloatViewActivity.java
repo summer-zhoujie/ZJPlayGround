@@ -16,7 +16,7 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.example.playground.R;
-import com.zj.tools.mylibrary.ZjLog;
+import com.zj.tools.mylibrary.ZJLog;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -67,14 +67,14 @@ public class FloatViewActivity extends AppCompatActivity {
         inflate.findViewById(R.id.bt_increase).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ZjLog.d("增加系统时间30s");
+                ZJLog.d("增加系统时间30s");
                 increaseSystemTime("22", "30", "00");
             }
         });
         inflate.findViewById(R.id.bt_reset).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ZjLog.d("重置时间");
+                ZJLog.d("重置时间");
 
                 new Thread() {
                     @Override
