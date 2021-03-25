@@ -2,10 +2,8 @@ package com.example.playground;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,7 +26,6 @@ import com.example.playground.guessidiom.GenerateIdiom;
 import com.example.playground.permissionrequesttest.PermissionRequestTestActivity;
 import com.example.playground.strokenanimation.StrokeTestActivity;
 import com.example.playground.tigermachine.TigerMachineActivity;
-import com.example.playground.tigermachine.effect1.Effect1Activity;
 import com.example.playground.viewinvisiable.InVisiableViewClickActivity;
 
 import java.util.ArrayList;
@@ -54,6 +52,7 @@ public class MainActivity extends Activity {
     public static final String ITEM_10 = "10. 测试视图不可见时的点击";
     public static final String ITEM_11 = "11. 系统悬浮视图";
     public static final String ITEM_12 = "12. 自定义View";
+    public static final String ITEM_13 = "13. LocationOnScreen方法测试";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +61,7 @@ public class MainActivity extends Activity {
         recyclerView = findViewById(R.id.list);
 
         final ArrayList<String> data = new ArrayList<>();
+        data.add(ITEM_13);
         data.add(ITEM_12);
         data.add(ITEM_11);
         data.add(ITEM_10);
@@ -79,6 +79,9 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(String title) {
                 switch (title) {
+                    case ITEM_13:
+                        LocationOnScreenActivity.launch(MainActivity.this);
+                        break;
                     case ITEM_12:
                         CustomViewActivity.launch(MainActivity.this);
                         break;
@@ -187,7 +190,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    final String title = ((TextView) v).getText().toString();
+                    final String title = (String) v.getTag();
                     listener.onItemClick(title);
                 }
 
@@ -197,7 +200,7 @@ public class MainActivity extends Activity {
         @NonNull
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            final View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.main_adapter_item, null);
+            final View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.main_adapter_item, parent, false);
             return new MyViewHodler(inflate);
         }
 
@@ -206,7 +209,8 @@ public class MainActivity extends Activity {
             MyViewHodler h = (MyViewHodler) holder;
             String title = data.get(position);
             h.title.setText(title);
-            h.title.setOnClickListener(clickListener);
+            h.itemView.setTag(title);
+            h.itemView.setOnClickListener(clickListener);
         }
 
         @Override
@@ -221,6 +225,7 @@ public class MainActivity extends Activity {
             public MyViewHodler(View inflate) {
                 super(inflate);
                 title = inflate.findViewById(R.id.tv_value);
+                itemView.setBackground(itemView.getResources().getDrawable(R.drawable.list_item_bg));
             }
         }
     }

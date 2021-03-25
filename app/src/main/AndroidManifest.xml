@@ -22,7 +22,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".customview.paint.JoinUsageActivity"></activity>
+        <activity android:name=".locationonscreen.LocationOnScreenActivity"></activity>
+        <activity android:name=".customview.paint.JoinUsageActivity" />
         <activity android:name=".customview.canvas.ClipRectUsageActivity" />
         <activity android:name=".customview.CustomViewActivity" />
         <activity android:name=".floatappView.FloatViewActivity" />
