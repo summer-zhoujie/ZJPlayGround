@@ -80,7 +80,7 @@ public class MainActivity extends Activity {
             public void onItemClick(String title) {
                 switch (title) {
                     case ITEM_13:
-                        LocationOnScreenActivity.launch(MainActivity.this);
+//                        LocationOnScreenActivity.launch(MainActivity.this);
                         break;
                     case ITEM_12:
                         CustomViewActivity.launch(MainActivity.this);
