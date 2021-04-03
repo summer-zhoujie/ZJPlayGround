@@ -4,33 +4,6 @@ import java.util.Random;
 
 public class BinarySearchTree {
 
-    public static void main(String[] args) {
-        final BinarySearchTree tree = new BinarySearchTree();
-        System.out.println(tree);
-        final Random random = new Random();
-        final int INIT_SIZE = 10;
-        final int[] ints = new int[INIT_SIZE];
-        for (int i = 0; i < INIT_SIZE; i++) {
-            final int num = random.nextInt(100);
-            System.out.println("add=" + num);
-            ints[i] = num;
-            tree.insert(num);
-        }
-        System.out.println(tree);
-        for (int i = 0; i < 1; i++) {
-            final int anInt = ints[random.nextInt(INIT_SIZE)];
-            System.out.println("remove=" + anInt);
-            tree.remove(anInt);
-        }
-        System.out.println(tree);
-
-        for (int i = 0; i < 1; i++) {
-            final int anInt = ints[random.nextInt(INIT_SIZE)];
-            final Node search = tree.search(anInt);
-            System.out.println("search=" + anInt + ", result=" + (search != null));
-        }
-    }
-
     public static class Node {
         private int data;
         private Node left;
@@ -74,10 +47,7 @@ public class BinarySearchTree {
     private Node doInsert(Node parent, int num) {
         if (parent == null) {
             parent = new Node(num);
-            return parent;
-        }
-
-        if (num > parent.data) {
+        } else if (num > parent.data) {
             parent.right = doInsert(parent.right, num);
         } else if (num < parent.data) {
             parent.left = doInsert(parent.left, num);
@@ -90,51 +60,80 @@ public class BinarySearchTree {
         root = doRemove(root, num);
     }
 
-    private Node doRemove(Node root, int num) {
+    private Node doRemove(Node parent, int num) {
 
-        if (root == null) {
-            return root;
+        if (parent == null) {
+            return null;
         }
 
-        if (num > root.data) {
-            root.right = doRemove(root.right, num);
-            return root;
-        } else if (num < root.data) {
-            root.left = doRemove(root.left, num);
-            return root;
+        if (num > parent.data) {
+            parent.right = doRemove(parent.right, num);
+        } else if (num < parent.data) {
+            parent.left = doRemove(parent.left, num);
         }
-
         // 找出左子树最大的值或者右子树最小的值替换, 这里选择前者来实现
-        if (root.left != null && root.right != null) {
+        else if (parent.left != null && parent.right != null) {
 
-            // find left max
-            Node leftMax = root.left;
-            while (leftMax.right != null) {
-                leftMax = leftMax.right;
-            }
-
-            // del left max node
-            int leftMaxNum = leftMax.data;
-            root.data = leftMaxNum;
-            root.left = doRemove(root.left, leftMaxNum);
-            return root;
+            // 找到左子树最大值替换
+            parent.data = findMax(parent.left).data;
+            // 删除左子树中用于替换的节点
+            parent.left = doRemove(parent.left, parent.data);
         }
         // 左子树为空, 直接用右子树根节点替换被删除的节点
-        else if (root.left == null) {
-            return root.right;
+        else if (parent.left == null) {
+            parent = parent.right;
         }
         // 右子树为空, 直接用左子树根节点替换被删除的节点
-        else if (root.right == null) {
-            return root.left;
+        else if (parent.right == null) {
+            parent = parent.left;
         }
 
-        return root;
+        return parent;
+    }
+
+    private Node findMax(Node node) {
+        if (node == null) {
+            return node;
+        }
+        while (node.right != null) {
+            node = node.right;
+        }
+        return node;
     }
 
     @Override
     public String toString() {
         return root == null ? "空" : root.toString();
     }
+
+
+    public static void main(String[] args) {
+        final BinarySearchTree tree = new BinarySearchTree();
+        System.out.println(tree);
+        final Random random = new Random();
+        final int INIT_SIZE = 10;
+        final int[] ints = new int[INIT_SIZE];
+        for (int i = 0; i < INIT_SIZE; i++) {
+            final int num = random.nextInt(100);
+            System.out.println("add=" + num);
+            ints[i] = num;
+            tree.insert(num);
+        }
+        System.out.println(tree);
+        for (int i = 0; i < 1; i++) {
+            final int anInt = ints[random.nextInt(INIT_SIZE)];
+            System.out.println("remove=" + anInt);
+            tree.remove(anInt);
+        }
+        System.out.println(tree);
+
+        for (int i = 0; i < 1; i++) {
+            final int anInt = ints[random.nextInt(INIT_SIZE)];
+            final Node search = tree.search(anInt);
+            System.out.println("search=" + anInt + ", result=" + (search != null));
+        }
+    }
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // print-utils
