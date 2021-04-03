@@ -1,4 +1,4 @@
-package com.example.playground;
+package com.example.playground.leetcode;
 
 public class Solution_74 {
     public static boolean searchMatrix(int[][] matrix, int target) {
