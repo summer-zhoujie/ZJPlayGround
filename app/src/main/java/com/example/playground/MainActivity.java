@@ -20,6 +20,7 @@ import com.example.playground.activityfindviewbyid.FindViewByIdActivity;
 import com.example.playground.customview.CustomViewActivity;
 import com.example.playground.dexload.DexLoadTest;
 import com.example.playground.dialogtest.DialogTestActivity;
+import com.example.playground.drawcolor.DrawClolorActivity;
 import com.example.playground.exchangeCard.ExchangeCardActivity;
 import com.example.playground.floatappView.FloatViewActivity;
 import com.example.playground.guessidiom.GenerateIdiom;
@@ -53,6 +54,7 @@ public class MainActivity extends Activity {
     public static final String ITEM_11 = "11. 系统悬浮视图";
     public static final String ITEM_12 = "12. 自定义View";
     public static final String ITEM_13 = "13. LocationOnScreen方法测试";
+    public static final String ITEM_14 = "14. 着色测试";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +63,7 @@ public class MainActivity extends Activity {
         recyclerView = findViewById(R.id.list);
 
         final ArrayList<String> data = new ArrayList<>();
+        data.add(ITEM_14);
         data.add(ITEM_13);
         data.add(ITEM_12);
         data.add(ITEM_11);
@@ -79,6 +82,9 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(String title) {
                 switch (title) {
+                    case ITEM_14:
+                        DrawClolorActivity.launch(MainActivity.this);
+                        break;
                     case ITEM_13:
 //                        LocationOnScreenActivity.launch(MainActivity.this);
                         break;
