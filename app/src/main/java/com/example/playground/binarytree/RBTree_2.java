@@ -564,11 +564,11 @@ public class RBTree_2 {
 
         public static void main(String[] args) {
             RBTree<String> bst = new RBTree<String>();
-            bst.addNode("d");
-            bst.addNode("d");
-            bst.addNode("c");
-            bst.addNode("c");
-            bst.addNode("b");
+            bst.addNode("2");
+            bst.addNode("4");
+            bst.addNode("5");
+            bst.addNode("0");
+            bst.addNode("86");
             bst.addNode("f");
 
             bst.addNode("a");

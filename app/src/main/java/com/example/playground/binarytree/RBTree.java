@@ -188,7 +188,7 @@ public class RBTree {
 
     public void doInsert(int newValue) {
 
-        // case 1: 新节点N位于树的根上，没有父节点
+        // case 1: 空树
         if (root == null) {
             root = new Node();
             root.isBlack = true;
@@ -227,7 +227,7 @@ public class RBTree {
                 doInsert_case(t);
             }
         }
-        // 已有相同项
+        // case 2: 已存在
         else {
             // do nothing
         }
