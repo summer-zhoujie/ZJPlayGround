@@ -28,6 +28,7 @@ import com.example.playground.permissionrequesttest.PermissionRequestTestActivit
 import com.example.playground.strokenanimation.StrokeTestActivity;
 import com.example.playground.tigermachine.TigerMachineActivity;
 import com.example.playground.viewinvisiable.InVisiableViewClickActivity;
+import com.example.playground.webviewtest.WebViewTestActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,7 @@ public class MainActivity extends Activity {
     public static final String ITEM_12 = "12. 自定义View";
     public static final String ITEM_13 = "13. LocationOnScreen方法测试";
     public static final String ITEM_14 = "14. 着色测试";
+    public static final String ITEM_15 = "15. WebView&&mac地址";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,7 @@ public class MainActivity extends Activity {
         recyclerView = findViewById(R.id.list);
 
         final ArrayList<String> data = new ArrayList<>();
+        data.add(ITEM_15);
         data.add(ITEM_14);
         data.add(ITEM_13);
         data.add(ITEM_12);
@@ -82,6 +85,9 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(String title) {
                 switch (title) {
+                    case ITEM_15:
+                        WebViewTestActivity.launch(MainActivity.this);
+                        break;
                     case ITEM_14:
                         DrawClolorActivity.launch(MainActivity.this);
                         break;

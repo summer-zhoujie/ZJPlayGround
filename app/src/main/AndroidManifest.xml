@@ -22,7 +22,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".drawcolor.DrawClolorActivity"></activity>
+        <activity android:name=".webviewtest.WebViewTestActivity"></activity>
+        <activity android:name=".drawcolor.DrawClolorActivity" />
         <activity android:name=".locationonscreen.LocationOnScreenActivity" />
         <activity android:name=".customview.paint.JoinUsageActivity" />
         <activity android:name=".customview.canvas.ClipRectUsageActivity" />
