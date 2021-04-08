@@ -13,7 +13,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.playground.R;
 
 public class WebViewTestActivity extends AppCompatActivity {
