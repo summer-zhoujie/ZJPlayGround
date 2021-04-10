@@ -1,14 +1,10 @@
 package com.example.playground.binarytree;
 
 public class RBTree {
-
-    private Node root;
-
     public static class Node {
-        public int value;
-        // 默认插入一个红节点
-        public boolean isBlack = false;
         public Node left, right, parent;
+        public boolean black = false;
+        public int value;
 
         public Node grandparent() {
             return this.parent == null ? null : this.parent.parent;
@@ -36,310 +32,476 @@ public class RBTree {
                 return parent.left;
             }
         }
+
+        public Node siblingLeft() {
+            final Node sibling = sibling();
+            if (sibling == null) {
+                return null;
+            }
+            return sibling.left;
+        }
+
+        public Node siblingRight() {
+            final Node sibling = sibling();
+            if (sibling == null) {
+                return null;
+            }
+            return sibling.right;
+        }
+
+        @Override
+        public String toString() {
+            return show(this);
+        }
     }
 
+    private Node root;
 
-    public boolean doRemove(int delValue) {
+    public void insert(int v) {
+
+        final Node node = new Node();
+        node.left = node.right = node.parent = null;
+        node.black = false;
+        node.value = v;
+
+        // case 1: 插入节点是根
         if (root == null) {
-            return false;
-        }
-        return delete_child(root, delValue);
-    }
-
-    Boolean delete_child(Node p, int data) {
-        if (p.value > data) {
-            if (p.left == null) {
-                return false;
-            }
-            return delete_child(p.left, data);
-        } else if (p.value < data) {
-            if (p.right == null) {
-                return false;
-            }
-            return delete_child(p.right, data);
-        } else if (p.value == data) {
-            if (p.right == null) {
-                delete_one_child(p);
-                return true;
-            }
-            Node smallest = findMin(p.right);
-            p.value = smallest.value;
-            delete_one_child(smallest);
-
-            return true;
+            root = node;
+            root.black = true;
+            return;
         } else {
-            return false;
+            Node p = findParent(v);
+            // case 2: 插入值重复
+            if (p == null) {
+                return;
+            }
+
+            setParent(node, p);
+            if (v > p.value) {
+                p.right = node;
+            } else {
+                p.left = node;
+            }
+
+            fixInsert(node);
         }
     }
 
-    // 删除只有一个孩子的节点
-    void delete_one_child(Node p) {
-        Node child = p.left == null ? p.right : p.left;
+    // 找到属于v的parent准备插入
+    private Node findParent(int v) {
+        Node pre = root;
+        Node index = root;
+        while (index != null) {
 
-        // case 1: p 是根节点且没有孩子, 直接删除
-        if (p.parent == null && p.left == null && p.right == null) {
-            p = null;
-            root = p;
-            return;
+            // 找到相同值直接返回
+            if (index.value == v) {
+                return null;
+            }
+
+            pre = index;
+            index = v < index.value ? index.left : index.right;
         }
+        return pre;
+    }
 
-        // case 2: p 是根节点, 删除p, 直接把孩子作为 root
-        if (p.parent == null) {
-            child.parent = null;
-            root = child;
-            root.isBlack = true;
-            return;
+    // 平衡红黑树
+    private void fixInsert(Node node) {
+
+
+        final Node parent = node.parent;
+        final Node uncle = node.uncle();
+        final Node grandparent = node.grandparent();
+        // case 1: 插入节点是根
+        if (parent == null) {
+            root = node;
+            root.black = true;
         }
-
-        // 孩子提升到p的位置
-        if (p.parent.left == p) {
-            p.parent.left = child;
-        } else {
-            p.parent.right = child;
-        }
-        child.parent = p.parent;
-
-        // case 3: p 是红色节点(儿子一定是黑色), 直接将儿子替换p
-        if (!p.isBlack) {
+        // case 3: 插入节点的 父亲 是黑
+        else if (parent != null && parent.black) {
             // do nothing
         }
-        // case 4: p 是黑色, 儿子是红色, 直接将儿子改为黑色替换p
-        else if (p.isBlack && !child.isBlack) {
-            child.isBlack = true;
-        }
-        // case 5: p 是黑色, 儿子也是黑色
-        else if (p.isBlack && child.isBlack) {
-            delete_case(child);
-        }
+        // case 4: 插入节点的 父亲 是红
+        else if (parent != null && !parent.black) {
 
-    }
-
-    // 此时的p是被child替换之后的
-    void delete_case(Node p) {
-
-        // case 5.1: p 是根节点, 直接把自己置黑
-        if (p.parent == null) {
-            p.isBlack = true;
-            return;
-        }
-
-        // case 5.2: p 的兄弟是红色, 把它转上去
-        if (!p.sibling().isBlack) {
-            p.parent.isBlack = false;
-            p.sibling().isBlack = true;
-            if (p == p.parent.left)
-                rotateLeft(p.sibling());
-//                rotateLeft(p.parent);
-            else
-                rotateRight(p.sibling());
-//                rotateRight(p.parent);
-        }
-
-        // case 5.3: p 和 兄弟 和 兄弟的孩子都是黑色,
-        if (p.parent.isBlack && p.sibling().isBlack
-                && p.sibling().left.isBlack && p.sibling().right.isBlack) {
-            p.sibling().isBlack = false;
-            delete_case(p.parent);
-        }
-        // case 5.4: p 是红的, 兄弟和兄弟孩子都是黑色
-        else if (!p.parent.isBlack && p.sibling().isBlack
-                && p.sibling().left.isBlack && p.sibling().right.isBlack) {
-            p.sibling().isBlack = false;
-            p.parent.isBlack = true;
-        }
-
-        else {
-            if (p.sibling().isBlack) {
-                // case 5.5:
-                if (p == p.parent.left && !p.sibling().left.isBlack
-                        && p.sibling().right.isBlack) {
-                    p.sibling().isBlack = false;
-                    p.sibling().left.isBlack = true;
-                    rotateRight(p.sibling().left);
-                } else if (p == p.parent.right && p.sibling().left.isBlack
-                        && !p.sibling().right.isBlack) {
-                    p.sibling().isBlack = false;
-                    p.sibling().right.isBlack = true;
-                    rotateLeft(p.sibling().right);
+            // case 4.1: 叔叔 也是红
+            if (uncle != null && !uncle.black) {
+                parent.black = true;
+                uncle.black = true;
+                // 有叔叔必定有祖父
+                grandparent.black = false;
+                // 祖父的父亲是 红, 和祖父冲突了
+                fixInsert(grandparent);
+            }
+            // case 4.2: 叔叔 是黑/空
+            else if (uncle == null || uncle.black) {
+                // case 4.2.1: `左左`
+                if (parent == grandparent.left && node == parent.left) {
+                    parent.black = true;
+                    grandparent.black = false;
+                    rotateRight(grandparent);
+                }
+                // case 4.2.2: `左右`
+                else if (parent == grandparent.left && node == parent.right) {
+                    rotateLeft(parent);
+                    fixInsert(parent);
+                }
+                // case 4.2.3: `右右`
+                else if (parent == grandparent.right && node == parent.right) {
+                    parent.black = true;
+                    grandparent.black = false;
+                    rotateLeft(grandparent);
+                }
+                // case 4.2.4: `右左`
+                else if (parent == grandparent.right && node == parent.left) {
+                    rotateRight(parent);
+                    fixInsert(parent);
                 }
             }
-            p.sibling().isBlack = p.parent.isBlack;
-            p.parent.isBlack = true;
-            if (p == p.parent.left) {
-                p.sibling().right.isBlack = true;
-                rotateLeft(p.sibling());
-            } else {
-                p.sibling().left.isBlack = true;
-                rotateRight(p.sibling());
+        }
+
+    }
+
+    public Node remove(int num) {
+        // 树空, 删除失败
+        if (root == null) {
+            return null;
+        } else {
+            final Node numNode = findNum(root, num);
+
+            // 无匹配项, 删除失败
+            if (numNode == null) {
+                return null;
             }
+
+            // 此时, replaceNode 一定是个叶子节点
+            final Node replaceNode = findReplaceNode(numNode);
+
+            if (replaceNode.black) {
+                // 所有的删除操作最后都被转换成一种情况, 删除一个叶子节点
+                fixRemove(replaceNode);
+            }
+
+            replaceNode.value = num;
+            replaceNode.black = numNode.black;
+            if (replaceNode.parent != null) {
+                if (replaceNode.parent.left == replaceNode) {
+                    replaceNode.parent.left = null;
+                } else {
+                    replaceNode.parent.right = null;
+                }
+            }
+            replaceNode.parent = null;
+            return replaceNode;
         }
     }
 
+    // 平衡红黑树
+    // r: 替换的节点
+    private void fixRemove(Node r) {
 
-    private Node findMin(Node node) {
-        if (node == null) {
-            return node;
+        final Node p = r.parent;
+        final Node s = r.sibling();
+        final Node sL = r.siblingLeft();
+        final Node sR = r.siblingRight();
+
+        // case 0: 替换的是根节点
+        if (root == r) {
+            root = null;
         }
+        // case 1: 替换的是 红
+        else if (!r.black) {
+            // do nothing
+            r.black = true;
+        }
+        // case 2: 替换的是 黑
+        else if (r.black) {
+
+            // case 2.1: s 是红, 可以借, 旋转
+            if (s != null && !s.black) {
+                p.black = false;
+                s.black = true;
+                if (s == p.left) {
+                    rotateRight(p);
+                } else {
+                    rotateLeft(p);
+                }
+
+                fixRemove(r);
+            }
+            else if ((s == null || s.black)) {
+
+                // case 2.2: s是黑, sL是红, r是p的右节点
+                if ((sL != null && !sL.black) && r == p.right) {
+                    s.black = p.black;
+                    p.black = true;
+                    sL.black = true;
+                    rotateRight(p);
+                }
+                // case 2.2: s是黑, sR是红, r是p的左节点
+                else if ((sR != null && !sR.black) && r == p.left) {
+                    s.black = p.black;
+                    p.black = true;
+                    sR.black = true;
+                    rotateLeft(p);
+                }
+                // case 2.3: s是黑, sL是红, r是p的左节点
+                else if ((sL != null && !sL.black) && r == p.left) {
+                    s.black = false;
+                    sL.black = true;
+                    rotateRight(s);
+                    fixRemove(r);
+                }
+                // case 2.3: s是黑, sR是红, r是p的右节点
+                else if ((sR != null && !sR.black) && r == p.right) {
+                    s.black = false;
+                    sR.black = true;
+                    rotateLeft(s);
+                    fixRemove(r);
+                }
+            }
+            // case 2.2: s == sL == sR 全黑
+            else if ((s == null || s.black) && (sL == null || sL.black) && (sR == null || sR.black)) {
+                s.black = false;
+                fixRemove(p);
+            }
+        }
+
+    }
+
+    // 递归查找所有替换的点
+    private Node findReplaceNode(Node numNode) {
+        Node replaced;
+        if (numNode.left != null) {
+            replaced = findMax(numNode.left);
+            numNode.value = replaced.value;
+            return findReplaceNode(replaced);
+        } else if (numNode.right != null) {
+            replaced = findMin(numNode.right);
+            numNode.value = replaced.value;
+            return findReplaceNode(replaced);
+        } else {
+            return numNode;
+        }
+    }
+
+    // 找到树最小节点
+    private Node findMin(Node node) {
         while (node.left != null) {
             node = node.left;
         }
         return node;
     }
 
-    public void doInsert(int newValue) {
-
-        // case 1: 空树
-        if (root == null) {
-            root = new Node();
-            root.isBlack = true;
-            root.left = root.right = root.parent = null;
-            root.value = newValue;
-        } else {
-            doInsert(root, newValue);
+    // 找到树最大节点
+    private Node findMax(Node node) {
+        while (node.right != null) {
+            node = node.right;
         }
+        return node;
     }
 
-
-    private void doInsert(Node p, int newValue) {
-        // 去往左子树插入
-        if (p.value > newValue) {
-            if (p.left != null) {
-                doInsert(p.left, newValue);
+    // 找到 num 节点
+    private Node findNum(Node node, int num) {
+        if (node != null) {
+            if (num < node.value) {
+                return findNum(node.left, num);
+            } else if (num > node.value) {
+                return findNum(node.right, num);
             } else {
-                final Node t = new Node();
-                t.value = newValue;
-                t.left = t.right = null;
-                t.parent = p;
-                p.left = t;
-                doInsert_case(t);
+                return node;
             }
         }
-        // 去往右子树插入
-        else if (p.value < newValue) {
-            if (p.right != null) {
-                doInsert(p.right, newValue);
+        return null;
+    }
+
+    private void rotateLeft(Node root) {
+
+        Node p = root.right;
+
+        root.right = p.left;
+        setParent(p.left, root);
+
+        setParent(p, root.parent);
+        if (root.parent != null) {
+            if (root.parent.left == root) {
+                root.parent.left = p;
             } else {
-                final Node t = new Node();
-                t.value = newValue;
-                t.left = t.right = null;
-                t.parent = p;
-                p.right = t;
-                doInsert_case(t);
+                root.parent.right = p;
             }
         }
-        // case 2: 已存在
-        else {
-            // do nothing
-        }
+
+        p.left = root;
+        setParent(root, p);
     }
 
-    private void doInsert_case(Node n) {
+    private void rotateRight(Node root) {
 
-        // case 1: 新节点N位于树的根上，没有父节点
-        if (n.parent == null) {
-            n.isBlack = true;
-            root = n;
-        }
-        // case 2: 新节点的父节点P是黑
-        else if (n.parent.isBlack) {
-            // do nothing
-        }
-        // case 3: 父节点 和 叔父节点 二者都是红色
-        else if (!n.parent.isBlack && n.uncle() != null && !n.uncle().isBlack) {
-            n.parent.isBlack = true;
-            n.uncle().isBlack = true;
-            n.grandparent().isBlack = false;
-            doInsert_case(n.grandparent());
-        }
-        // case 4:父节点P是红色而叔父节点U是黑色或缺少
-        else if (!n.parent.isBlack &&
-                (n.uncle().isBlack) || n.uncle() == null) {
+        Node p = root.left;
 
-            // `左左`
-            if (n.grandparent().left == n.parent && n == n.parent.left) {
-                n.parent.isBlack = true;
-                n.grandparent().isBlack = false;
-                rotateRight(n);
-            }
-            // `左右`
-            else if (n.grandparent().left == n.parent && n == n.parent.right) {
-                rotateLeft(n);
-                n.isBlack = true;
-                n.parent.isBlack = false;
-                rotateRight(n);
-            }
-            // `右右`
-            else if (n.grandparent().right == n.parent && n == n.parent.right) {
-                n.parent.isBlack = true;
-                n.grandparent().isBlack = false;
-                rotateLeft(n);
-            }
-            // `右左`
-            else if (n.grandparent().right == n.parent && n == n.parent.left) {
-                rotateRight(n);
-                n.isBlack = true;
-                n.parent.isBlack = false;
-                rotateLeft(n);
-            }
+        root.left = p.right;
+        setParent(p.right, root);
 
-        }
-
-    }
-
-    private void rotateRight(Node n) {
-
-        Node gp = n.grandparent();
-        Node p = n.parent;
-        Node c = n.right;
-
-        p.left = c;
-        if (c != null) {
-            c.parent = p;
-        }
-        n.right = p;
-        p.parent = n;
-        if (root == p) {
-            root = n;
-        }
-        n.parent = gp;
-        if (gp != null) {
-            if (gp.left == p) {
-                gp.left = n;
+        setParent(p, root.parent);
+        if (root.parent != null) {
+            if (root.parent.left == root) {
+                root.parent.left = p;
             } else {
-                gp.right = n;
+                root.parent.right = p;
+            }
+        }
+
+        p.right = root;
+        setParent(root, p);
+    }
+
+    private void setParent(Node node, Node parent) {
+        if (node != null) {
+            node.parent = parent;
+            // 没有父亲,那么你就是根节点了
+            if (parent == null) {
+                root = node;
             }
         }
     }
 
-    void rotateLeft(Node n) {
-        if (n.parent == null) {
-            root = n;
-            return;
+    @Override
+    public String toString() {
+        return root == null ? "空" : root.toString();
+    }
+
+
+    public static void main(String[] args) {
+        final RBTree t = new RBTree();
+//        final Random random = new Random();
+//        for (int i = 0; i < 10; i++) {
+//            final int v = random.nextInt(100);
+//            System.out.println("add: " + v);
+//            t.insert(v);
+//            System.out.println(t);
+//        }
+
+        System.out.println("add: " + 2);
+        t.insert(2);
+        System.out.println(t);
+
+        System.out.println("add: " + 45);
+        t.insert(45);
+        System.out.println(t);
+
+        System.out.println("add: " + 0);
+        t.insert(0);
+        System.out.println(t);
+
+        System.out.println("add: " + 86);
+        t.insert(86);
+        System.out.println(t);
+
+        System.out.println("add: " + 50);
+        t.insert(50);
+        System.out.println(t);
+
+        System.out.println("add: " + 32);
+        t.insert(32);
+        System.out.println(t);
+
+        System.out.println("add: " + 65);
+        t.insert(65);
+        System.out.println(t);
+
+        System.out.println("add: " + 43);
+        t.insert(43);
+        System.out.println(t);
+
+        System.out.println("add: " + 37);
+        t.insert(37);
+        System.out.println(t);
+
+        System.out.println("add: " + 36);
+        t.insert(36);
+        System.out.println(t);
+
+        System.out.println("remove: " + 50);
+        t.remove(50);
+        System.out.println(t);
+
+        System.out.println("remove: " + 43);
+        t.remove(43);
+        System.out.println(t);
+
+        System.out.println("remove: " + 2);
+        t.remove(2);
+        System.out.println(t);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // print-utils
+
+    private static int getTreeDepth(Node root) {
+        return root == null ? 0 : (1 + Math.max(getTreeDepth(root.left), getTreeDepth(root.right)));
+    }
+
+
+    private static void writeArray(Node currNode, int rowIndex, int columnIndex, String[][] res, int treeDepth) {
+        // 保证输入的树不为空
+        if (currNode == null) return;
+        // 先将当前节点保存到二维数组中
+        res[rowIndex][columnIndex] = String.valueOf((currNode.black ? "B" : "R") + currNode.value);
+
+        // 计算当前位于树的第几层
+        int currLevel = ((rowIndex + 1) / 2);
+        // 若到了最后一层，则返回
+        if (currLevel == treeDepth) return;
+        // 计算当前行到下一行，每个元素之间的间隔（下一行的列索引与当前元素的列索引之间的间隔）
+        int gap = treeDepth - currLevel - 1;
+
+        // 对左儿子进行判断，若有左儿子，则记录相应的"/"与左儿子的值
+        if (currNode.left != null) {
+            res[rowIndex + 1][columnIndex - gap] = "/";
+            writeArray(currNode.left, rowIndex + 2, columnIndex - gap * 2, res, treeDepth);
         }
-        Node gp = n.grandparent();
-        Node p = n.parent;
-        Node c = n.left;
 
-        p.right = c;
-
-        if (c != null) {
-            c.parent = p;
-        }
-        n.left = p;
-        p.parent = n;
-
-        if (root == p) {
-            root = n;
-        }
-        n.parent = gp;
-
-        if (gp != null) {
-            if (gp.left == p) {
-                gp.left = n;
-            } else {
-                gp.right = n;
-            }
+        // 对右儿子进行判断，若有右儿子，则记录相应的"\"与右儿子的值
+        if (currNode.right != null) {
+            res[rowIndex + 1][columnIndex + gap] = "\\";
+            writeArray(currNode.right, rowIndex + 2, columnIndex + gap * 2, res, treeDepth);
         }
     }
+
+
+    public static String show(Node root) {
+        if (root == null) System.out.println("EMPTY!");
+        // 得到树的深度
+        int treeDepth = getTreeDepth(root);
+
+        // 最后一行的宽度为2的（n - 1）次方乘3，再加1
+        // 作为整个二维数组的宽度
+        int arrayHeight = treeDepth * 2 - 1;
+        int arrayWidth = (2 << (treeDepth - 2)) * 3 + 1;
+        // 用一个字符串数组来存储每个位置应显示的元素
+        String[][] res = new String[arrayHeight][arrayWidth];
+        // 对数组进行初始化，默认为一个空格
+        for (int i = 0; i < arrayHeight; i++) {
+            for (int j = 0; j < arrayWidth; j++) {
+                res[i][j] = " ";
+            }
+        }
+
+        // 从根节点开始，递归处理整个树
+        // res[0][(arrayWidth + 1)/ 2] = (char)(root.val + '0');
+        writeArray(root, 0, arrayWidth / 2, res, treeDepth);
+
+        // 此时，已经将所有需要显示的元素储存到了二维数组中，将其拼接并打印即可
+        StringBuilder sb = new StringBuilder();
+        for (String[] line : res) {
+            for (int i = 0; i < line.length; i++) {
+                sb.append(line[i]);
+                if (line[i].length() > 1 && i <= line.length - 1) {
+                    i += line[i].length() > 4 ? 2 : line[i].length() - 1;
+                }
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
 }
-
