@@ -1,5 +1,10 @@
 package com.example.playground.binarytree;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Objects;
+
 public class RBTree {
     public static class Node {
         public Node left, right, parent;
@@ -56,6 +61,25 @@ public class RBTree {
     }
 
     private Node root;
+
+    public Node search(int num) {
+        return doSearch(root, num);
+    }
+
+    private Node doSearch(Node root, int num) {
+        if (root == null) {
+            return null;
+        }
+
+        if (root.value == num) {
+            return root;
+        } else if (root.value > num) {
+            return doSearch(root.left, num);
+        } else if (root.value < num) {
+            return doSearch(root.right, num);
+        }
+        return null;
+    }
 
     public void insert(int v) {
 
@@ -227,8 +251,7 @@ public class RBTree {
                 }
 
                 fixRemove(r);
-            }
-            else if ((s == null || s.black)) {
+            } else if ((s == null || s.black)) {
 
                 // case 2.2: s是黑, sL是红, r是p的右节点
                 if ((sL != null && !sL.black) && r == p.right) {
@@ -431,6 +454,12 @@ public class RBTree {
         System.out.println("remove: " + 2);
         t.remove(2);
         System.out.println(t);
+
+
+    }
+
+    private static void print(Object s) {
+        System.out.println(s);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
