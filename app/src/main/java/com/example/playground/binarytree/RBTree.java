@@ -1,10 +1,5 @@
 package com.example.playground.binarytree;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Objects;
-
 public class RBTree {
     public static class Node {
         public Node left, right, parent;
@@ -144,10 +139,9 @@ public class RBTree {
         else if (parent != null && parent.black) {
             // do nothing
         }
-        // case 4: 插入节点的 父亲 是红
         else if (parent != null && !parent.black) {
 
-            // case 4.1: 叔叔 也是红
+            // case 4: 插入节点的 父亲 是红, 叔叔 也是红
             if (uncle != null && !uncle.black) {
                 parent.black = true;
                 uncle.black = true;
@@ -156,26 +150,25 @@ public class RBTree {
                 // 祖父的父亲是 红, 和祖父冲突了
                 fixInsert(grandparent);
             }
-            // case 4.2: 叔叔 是黑/空
             else if (uncle == null || uncle.black) {
-                // case 4.2.1: `左左`
+                // case 5: 叔叔 是黑/空, `左左`
                 if (parent == grandparent.left && node == parent.left) {
                     parent.black = true;
                     grandparent.black = false;
                     rotateRight(grandparent);
                 }
-                // case 4.2.2: `左右`
+                // case 6: 叔叔 是黑/空, `左右`
                 else if (parent == grandparent.left && node == parent.right) {
                     rotateLeft(parent);
                     fixInsert(parent);
                 }
-                // case 4.2.3: `右右`
+                // case 7: 叔叔 是黑/空, `右右`
                 else if (parent == grandparent.right && node == parent.right) {
                     parent.black = true;
                     grandparent.black = false;
                     rotateLeft(grandparent);
                 }
-                // case 4.2.4: `右左`
+                // case 8: 叔叔 是黑/空, `右左`
                 else if (parent == grandparent.right && node == parent.left) {
                     rotateRight(parent);
                     fixInsert(parent);
@@ -186,13 +179,13 @@ public class RBTree {
     }
 
     public Node remove(int num) {
-        // 树空, 删除失败
+        // case 1: 树空, 删除失败
         if (root == null) {
             return null;
         } else {
             final Node numNode = findNum(root, num);
 
-            // 无匹配项, 删除失败
+            // case 2: 无匹配项, 删除失败
             if (numNode == null) {
                 return null;
             }
@@ -221,26 +214,26 @@ public class RBTree {
 
     // 平衡红黑树
     // r: 替换的节点
-    private void fixRemove(Node r) {
+    private void fixRemove(Node d) {
 
-        final Node p = r.parent;
-        final Node s = r.sibling();
-        final Node sL = r.siblingLeft();
-        final Node sR = r.siblingRight();
+        final Node p = d.parent;
+        final Node s = d.sibling();
+        final Node sL = d.siblingLeft();
+        final Node sR = d.siblingRight();
 
-        // case 0: 替换的是根节点
-        if (root == r) {
+        // case 1: 替换的是根节点
+        if (root == d) {
             root = null;
         }
-        // case 1: 替换的是 红
-        else if (!r.black) {
+        // case 3: 替换的是 红
+        else if (!d.black) {
             // do nothing
-            r.black = true;
+            d.black = true;
         }
-        // case 2: 替换的是 黑
-        else if (r.black) {
+        // 替换的是 黑
+        else if (d.black) {
 
-            // case 2.1: s 是红, 可以借, 旋转
+            // case 4: s 是红, 可以借, 旋转
             if (s != null && !s.black) {
                 p.black = false;
                 s.black = true;
@@ -250,39 +243,39 @@ public class RBTree {
                     rotateLeft(p);
                 }
 
-                fixRemove(r);
+                fixRemove(d);
             } else if ((s == null || s.black)) {
 
-                // case 2.2: s是黑, sL是红, r是p的右节点
-                if ((sL != null && !sL.black) && r == p.right) {
+                // case 5.1: s是黑, sL是红, r是p的右节点
+                if ((sL != null && !sL.black) && d == p.right) {
                     s.black = p.black;
                     p.black = true;
                     sL.black = true;
                     rotateRight(p);
                 }
-                // case 2.2: s是黑, sR是红, r是p的左节点
-                else if ((sR != null && !sR.black) && r == p.left) {
+                // case 5.2: s是黑, sR是红, r是p的左节点
+                else if ((sR != null && !sR.black) && d == p.left) {
                     s.black = p.black;
                     p.black = true;
                     sR.black = true;
                     rotateLeft(p);
                 }
-                // case 2.3: s是黑, sL是红, r是p的左节点
-                else if ((sL != null && !sL.black) && r == p.left) {
+                // case 6.1: s是黑, sL是红, r是p的左节点
+                else if ((sL != null && !sL.black) && d == p.left) {
                     s.black = false;
                     sL.black = true;
                     rotateRight(s);
-                    fixRemove(r);
+                    fixRemove(d);
                 }
-                // case 2.3: s是黑, sR是红, r是p的右节点
-                else if ((sR != null && !sR.black) && r == p.right) {
+                // case 6.2: s是黑, sR是红, r是p的右节点
+                else if ((sR != null && !sR.black) && d == p.right) {
                     s.black = false;
                     sR.black = true;
                     rotateLeft(s);
-                    fixRemove(r);
+                    fixRemove(d);
                 }
             }
-            // case 2.2: s == sL == sR 全黑
+            // case 7: s == sL == sR 全黑
             else if ((s == null || s.black) && (sL == null || sL.black) && (sR == null || sR.black)) {
                 s.black = false;
                 fixRemove(p);
