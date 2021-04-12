@@ -74,4 +74,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button" />
 
+    <Button
+        android:id="@+id/button6"
+        android:onClick="clickShowSysDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="点击显示系统级弹窗" />
+
 </LinearLayout>

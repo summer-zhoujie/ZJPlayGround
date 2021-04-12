@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
@@ -26,6 +27,7 @@ public class DialogTestActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ZJLog.d("");
         setContentView(R.layout.activity_dialog_test);
     }
 
@@ -112,5 +114,51 @@ public class DialogTestActivity extends AppCompatActivity {
 
     public void jump2CoverActivity(View view) {
         DialogCoverActivity.launch(this);
+    }
+
+    public void clickShowSysDialog(View view) {
+        final TestDialog dialog = new TestDialog(getApplicationContext());
+
+        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_PANEL);
+        try {
+            if (Build.VERSION.SDK_INT >= 26) {
+                dialog.getWindow().setType(2038);
+            } else {
+                dialog.getWindow().setType(2003);
+            }
+            dialog.show();
+        } catch (Exception exp) {
+            exp.getMessage();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ZJLog.d("");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ZJLog.d("");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ZJLog.d("");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ZJLog.d("");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        ZJLog.d("");
     }
 }

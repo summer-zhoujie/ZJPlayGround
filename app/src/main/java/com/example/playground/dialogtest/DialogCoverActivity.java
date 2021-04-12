@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.example.playground.R;
+import com.zj.tools.mylibrary.ZJLog;
 
 public class DialogCoverActivity extends AppCompatActivity {
 
@@ -22,6 +23,7 @@ public class DialogCoverActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ZJLog.d("");
         setContentView(R.layout.activity_dialog_cover);
         findViewById(R.id.tv_show_dialog).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -29,5 +31,35 @@ public class DialogCoverActivity extends AppCompatActivity {
                 new TestDialog(contextBelow).show();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ZJLog.d("");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ZJLog.d("");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ZJLog.d("");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ZJLog.d("");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        ZJLog.d("");
     }
 }
