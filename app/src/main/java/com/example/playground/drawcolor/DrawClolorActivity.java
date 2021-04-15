@@ -25,10 +25,6 @@ public class DrawClolorActivity extends AppCompatActivity {
         initView();
     }
 
-    public void clickStart(View view) {
-        iv.toExtract();
-    }
-
     private void initView() {
         iv = findViewById(R.id.iv);
     }

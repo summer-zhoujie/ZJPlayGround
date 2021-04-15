@@ -2,40 +2,52 @@ package com.example.playground.drawcolor;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.View;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 
-import com.example.playground.R;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-public class DrawColorDrawable extends View {
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.zj.tools.mylibrary.ZJLog;
+
+import java.util.ArrayList;
+
+public class DrawColorDrawable extends ScaleView {
 
     /**
      * 绘制线条的Paint,即用户手指绘制Path
      */
     private Paint mPaint = new Paint();
     /**
-     * 记录用户绘制的Path
-     */
-    private Path mPath = new Path();
-    /**
-     * 内存中创建的Canvas
+     * 存放前景图的Bitmap
      */
     private Canvas mCanvas;
     /**
-     * mCanvas绘制内容在其上
+     * 前景图
      */
-    private Bitmap mBitmap;
-
+    private Bitmap mForeBitmap;
+    private boolean mForeBitmapIsReady = false;
+    /**
+     * 缩放过后的背景图
+     */
     private Bitmap mBgBitmap;
-    private boolean toExtract = false;
+    /**
+     * 原始的背景图
+     */
+    private Bitmap mOriBgBitmap;
+    private ArrayList<Path> mPaths;
+    private GestureDetector gestureDetector;
 
     public DrawColorDrawable(Context context) {
         this(context, null);
@@ -43,60 +55,139 @@ public class DrawColorDrawable extends View {
 
     public DrawColorDrawable(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
+
     }
 
     public DrawColorDrawable(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+        super(context, attrs);
         init();
     }
 
     private void init() {
-        mPath = new Path();
 
         // 设置画笔
-        mPaint.setColor(Color.parseColor("#c0c0c0"));
+        mPaint.setColor(Color.parseColor("#FF000000"));
         mPaint.setAntiAlias(true);
         mPaint.setDither(true);
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
 
         // 背景图
-        mBgBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.drawcolor_bg);
+        Glide.with(getContext()).asBitmap().load("file:///android_asset/drawcolor/demo/ori").into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                mBgBitmap = resource;
+                loadForeground();
+            }
+        });
 
-        // 定义挖空的区域
-        mPath = new Path();
-        mPath.moveTo(100, 100);
-        mPath.lineTo(100, 200);
-        mPath.lineTo(200, 200);
-        mPath.lineTo(200, 100);
-        mPath.close();
+        gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                float[] pointer = mapPointer(e.getX(),e.getY());
+                ZJLog.d("点击了 x=" + pointer[0] + ", y=" + pointer[1]);
+                Path aInThePath = PathParserHelper.findAInThePath(mPaths, pointer[0], pointer[1]);
+                if (aInThePath != null) {
+                    ZJLog.d("找到点击的区域了, 开始改变颜色");
+                    mPaint.setStyle(Paint.Style.FILL);
+                    mPaint.setColor(Color.GREEN);
+                    mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+                    mCanvas.drawPath(aInThePath, mPaint);
+
+                    //TODO Summer
+                    RectF bounds = new RectF();
+                    aInThePath.computeBounds(bounds, false);
+                    Paint paint = new Paint();
+                    paint.setStyle(Paint.Style.STROKE);
+                    paint.setStrokeWidth(4);
+                    paint.setColor(Color.GREEN);
+                    mCanvas.drawRect(bounds, paint);
+                    postInvalidate();
+                }
+
+                return false;
+            }
+        });
+    }
+
+    /**
+     * 加载前景图
+     */
+    private void loadForeground() {
+        // 原始背景图
+        Glide.with(getContext()).asBitmap().load("file:///android_asset/drawcolor/demo/ori").fitCenter().into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                mOriBgBitmap = resource;
+                updateScaleParams(getMeasuredWidth(), getMeasuredHeight());
+                PathParserHelper.toPathArray(getContext(), "drawcolor/demo/pathdata", new PathParserHelper.ToPathArrayListener() {
+                    @Override
+                    public void onSuccess(ArrayList<Path> paths) {
+
+                        // 前景图
+                        ZJLog.d("originW=" + mOriBgBitmap.getWidth() + ",originH=" + mOriBgBitmap.getHeight());
+                        mForeBitmap = Bitmap.createBitmap(mOriBgBitmap.getWidth(), mOriBgBitmap.getHeight(), mOriBgBitmap.getConfig());
+                        mCanvas = new Canvas(mForeBitmap);
+                        mCanvas.drawColor(Color.parseColor("#FFD1C343"));
+                        mPaint.setStrokeWidth(5);
+                        mPaint.setStyle(Paint.Style.STROKE);
+                        mPaint.setXfermode(null);
+                        mPaths = paths;
+                        for (Path path : paths) {
+                            mCanvas.drawPath(path, mPaint);
+                        }
+
+                        ZJLog.d("foreW=" + mForeBitmap.getWidth() + ",foreH=" + mForeBitmap.getHeight());
+                        mForeBitmapIsReady = true;
+                        postInvalidate();
+
+                    }
+
+                    @Override
+                    public void onFailed(int code, String msg) {
+                        ZJLog.d("msg = " + msg);
+                    }
+                });
+            }
+        });
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // abstract-func
+
+    @Override
+    protected void onProtectTouchEvent(MotionEvent event) {
+        gestureDetector.onTouchEvent(event);
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
-        canvas.drawBitmap(mBgBitmap, 0, 0, null);
-        Log.d("=summerzhou=", "toExtract = " + toExtract);
-        if (toExtract) {
-            mCanvas.drawPath(mPath, mPaint);
+    protected void onScaleChanged(float mBaseScale) {
+
+    }
+
+    @Override
+    protected void drawScaleBitmap(Canvas canvas) {
+
+
+        // 画背景图
+        if (mBgBitmap != null) {
+            canvas.drawBitmap(mBgBitmap, 0, 0, null);
         }
-        canvas.drawBitmap(mBitmap, 0, 0, null);
+
+        //        Log.d("=summerzhou=", "toExtract = " + toExtract);
+//        if (toExtract) {
+//            mCanvas.drawPath(mPath, mPaint);
+//        }
+
+        // 画前景图
+        if (mForeBitmap != null && mForeBitmapIsReady) {
+            canvas.drawBitmap(mForeBitmap, 0, 0, null);
+        }
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        // 绘制遮盖层
-        int width = getMeasuredWidth();
-        int height = getMeasuredHeight();
-        mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        mCanvas = new Canvas(mBitmap);
-        mCanvas.drawColor(Color.parseColor("#c0c0c0"));
+    protected Bitmap getBgBitmap() {
+        return mOriBgBitmap;
     }
-
-    public void toExtract() {
-        toExtract = !toExtract;
-        invalidate();
-    }
-
 }
