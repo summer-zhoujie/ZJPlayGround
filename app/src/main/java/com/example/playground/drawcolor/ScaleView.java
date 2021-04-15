@@ -36,10 +36,6 @@ public abstract class ScaleView extends View {
      */
     protected abstract void drawScaleBitmap(Canvas canvas);
 
-    /**
-     * onTouchEvent 回调
-     */
-    protected abstract void onProtectTouchEvent(MotionEvent event);
 
     /**
      * 缩放比例发生变化
@@ -227,7 +223,6 @@ public abstract class ScaleView extends View {
         if (event.getActionMasked() == MotionEvent.ACTION_UP) {
             fixTranslate();
         }
-        onProtectTouchEvent(event);
         return true;
     }
 

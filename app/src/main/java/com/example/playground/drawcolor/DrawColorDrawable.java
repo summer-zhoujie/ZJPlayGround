@@ -1,5 +1,7 @@
 package com.example.playground.drawcolor;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -12,6 +14,10 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AnticipateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -48,6 +54,12 @@ public class DrawColorDrawable extends ScaleView {
     private Bitmap mOriBgBitmap;
     private ArrayList<Path> mPaths;
     private GestureDetector gestureDetector;
+    private Bitmap mClipBitmap;
+    private Canvas mClipcanvas;
+    /**
+     * 点击动画是否正在进行中
+     */
+    private boolean isClickAniming = false;
 
     public DrawColorDrawable(Context context) {
         this(context, null);
@@ -84,30 +96,103 @@ public class DrawColorDrawable extends ScaleView {
         gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
-                float[] pointer = mapPointer(e.getX(),e.getY());
+                float[] pointer = mapPointer(e.getX(), e.getY());
                 ZJLog.d("点击了 x=" + pointer[0] + ", y=" + pointer[1]);
                 Path aInThePath = PathParserHelper.findAInThePath(mPaths, pointer[0], pointer[1]);
                 if (aInThePath != null) {
                     ZJLog.d("找到点击的区域了, 开始改变颜色");
-                    mPaint.setStyle(Paint.Style.FILL);
-                    mPaint.setColor(Color.GREEN);
-                    mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
-                    mCanvas.drawPath(aInThePath, mPaint);
+                    // 执行点击动画
+                    doClickAnim(aInThePath, pointer[0], pointer[1]);
 
-                    //TODO Summer
-                    RectF bounds = new RectF();
-                    aInThePath.computeBounds(bounds, false);
-                    Paint paint = new Paint();
-                    paint.setStyle(Paint.Style.STROKE);
-                    paint.setStrokeWidth(4);
-                    paint.setColor(Color.GREEN);
-                    mCanvas.drawRect(bounds, paint);
-                    postInvalidate();
                 }
 
                 return false;
             }
         });
+    }
+
+    /**
+     * 执行点击的动画
+     */
+    private void doClickAnim(Path aInThePath, final float clickX, final float clickY) {
+
+        isClickAniming = true;
+
+        mPaint.setStyle(Paint.Style.FILL);
+        mPaint.setColor(Color.GREEN);
+        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+
+        // 计算path的外接矩形
+        RectF rectF = new RectF();
+        aInThePath.computeBounds(rectF, true);
+        ZJLog.d("rectF = " + rectF.toString());
+        final float maxRadius = findMaxInstanceToRectBounds(rectF, clickX, clickY);
+        ZJLog.d("maxRadius = " + maxRadius);
+
+        // 绘制重合区域
+        if (mClipcanvas == null) {
+            mClipBitmap = Bitmap.createBitmap(mOriBgBitmap.getWidth(), mOriBgBitmap.getHeight(), mOriBgBitmap.getConfig());
+            mClipcanvas = new Canvas(mClipBitmap);
+        } else {
+            mClipcanvas.restore();
+        }
+//        canvas.drawPath(aInThePath, mPaint);
+//        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.MULTIPLY));
+        mPaint.setXfermode(null);
+        mPaint.setColor(Color.GREEN);
+        mClipcanvas.save();
+        mClipcanvas.clipPath(aInThePath);
+
+        ValueAnimator animator = ValueAnimator.ofFloat(0, maxRadius);
+        animator.setDuration(250);
+        animator.setStartDelay(0);
+        animator.setInterpolator(new DecelerateInterpolator());
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                isClickAniming = false;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mPaint.setXfermode(null);
+                mClipcanvas.drawCircle(clickX, clickY, (Float) animation.getAnimatedValue(), mPaint);
+                invalidate();
+            }
+        });
+        animator.start();
+
+    }
+
+    private float findMaxInstanceToRectBounds(RectF rectF, float clickX, float clickY) {
+        float instanceToTop = clickY - rectF.top;
+        float instanceBottom = rectF.bottom - clickY;
+        float instanceRight = rectF.right - clickX;
+        float instanceLeft = clickX - rectF.left;
+        float instanceTopLeft = (float) Math.sqrt((instanceToTop * instanceToTop) + (instanceLeft * instanceLeft));
+        float instanceTopRight = (float) Math.sqrt((instanceToTop * instanceToTop) + (instanceRight * instanceRight));
+        float instanceBottomLeft = (float) Math.sqrt((instanceBottom * instanceBottom) + (instanceLeft * instanceLeft));
+        float instanceBottomRight = (float) Math.sqrt((instanceBottom * instanceBottom) + (instanceRight * instanceRight));
+        float result = Math.max(instanceTopLeft, instanceTopRight);
+        result = Math.max(result, instanceBottomLeft);
+        result = Math.max(result, instanceBottomRight);
+        return result;
     }
 
     /**
@@ -152,13 +237,19 @@ public class DrawColorDrawable extends ScaleView {
         });
     }
 
-
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // abstract-func
 
+
     @Override
-    protected void onProtectTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(MotionEvent event) {
+        // 点击动画进行中不响应其他事件
+        if (isClickAniming) {
+            return true;
+        }
+        boolean b = super.onTouchEvent(event);
         gestureDetector.onTouchEvent(event);
+        return b;
     }
 
     @Override
@@ -183,6 +274,12 @@ public class DrawColorDrawable extends ScaleView {
         // 画前景图
         if (mForeBitmap != null && mForeBitmapIsReady) {
             canvas.drawBitmap(mForeBitmap, 0, 0, null);
+        }
+
+        if (mClipBitmap != null) {
+            mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+            mPaint.setColor(Color.GREEN);
+            mCanvas.drawBitmap(mClipBitmap, 0, 0, mPaint);
         }
     }
 
