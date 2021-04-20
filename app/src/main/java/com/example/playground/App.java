@@ -5,6 +5,7 @@ import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
+import androidx.multidex.MultiDex;
 
 import com.zj.tools.mylibrary.ZJLog;
 
@@ -19,6 +20,6 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         ZJLog.init(true,"summerzhou");
-
+        MultiDex.install(this);
     }
 }

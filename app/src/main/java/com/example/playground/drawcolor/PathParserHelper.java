@@ -59,7 +59,10 @@ public class PathParserHelper {
                             ZJLog.d("path=" + line);
                             paths.add(androidx.core.graphics.PathParser.createPathFromPathData(line));
                         } else {
-                            break;
+                            if (line == null) {
+                                break;
+                            }
+                            continue;
                         }
 
                     }
