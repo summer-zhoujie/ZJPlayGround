@@ -2,6 +2,9 @@ package com.example.playground.arithmetic;
 
 import java.util.ArrayList;
 
+/**
+ * 基数排序
+ */
 class RadixSort {
     public static void sort(int[] arr) {
 
@@ -25,21 +28,41 @@ class RadixSort {
             for (int i = 0; i < arr.length; i++) {
                 // 取出整数的个,十, 百, 千...
                 int num = arr[i] / radix % 10;
-                if (isAllZero && num == 0) {
+                if (isAllZero && num != 0) {
                     isAllZero = false;
                 }
                 buckets.get(num).add(arr[i]);
             }
 
-            // 回填Arr
-
-
             if (isAllZero) {
                 break;
+            }
+
+            // 回填Arr && 清空桶(buckets)中数据
+            int index = 0;
+            for (ArrayList<Integer> bucket : buckets) {
+                while (!bucket.isEmpty()) {
+                    Integer remove = bucket.remove(0);
+                    arr[index++] = remove;
+                }
             }
 
             // 开始下一个位数的比较
             radix *= 10;
         }
+    }
+
+    public static void main(String[] args) {
+        int[] array = {111, 52, 77, 98, 36, 12, 13, 48};
+        sort(array);
+        System.out.println(arrayToString(array));
+    }
+
+    private static String arrayToString(int[] array) {
+        StringBuilder builder = new StringBuilder();
+        for (int t : array) {
+            builder.append(t + " ");
+        }
+        return builder.toString();
     }
 }
