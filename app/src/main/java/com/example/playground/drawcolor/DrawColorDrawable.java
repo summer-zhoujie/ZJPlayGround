@@ -11,13 +11,12 @@ import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AnticipateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +24,7 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.example.playground.R;
 import com.zj.tools.mylibrary.ZJLog;
 
 import java.util.ArrayList;
@@ -45,13 +45,13 @@ public class DrawColorDrawable extends ScaleView {
     private Bitmap mForeBitmap;
     private boolean mForeBitmapIsReady = false;
     /**
-     * 缩放过后的背景图
+     * 背景图
      */
     private Bitmap mBgBitmap;
     /**
-     * 原始的背景图
+     * 前前景图(线框图)
      */
-    private Bitmap mOriBgBitmap;
+    private Bitmap mForeForeBitmap;
     private ArrayList<Path> mPaths;
     private GestureDetector gestureDetector;
     private Bitmap mClipBitmap;
@@ -60,6 +60,8 @@ public class DrawColorDrawable extends ScaleView {
      * 点击动画是否正在进行中
      */
     private boolean isClickAniming = false;
+    private boolean mForeForeBitmapIsReady = false;
+    private Paint mBitmapPaint;
 
     public DrawColorDrawable(Context context) {
         this(context, null);
@@ -77,10 +79,15 @@ public class DrawColorDrawable extends ScaleView {
 
     private void init() {
 
+        mBitmapPaint = new Paint();
+        mBitmapPaint.setAntiAlias(true);
+        mBitmapPaint.setFilterBitmap(true); //对Bitmap进行滤波处理
+        mBitmapPaint.setAntiAlias(true);//设置抗锯齿
+
         // 设置画笔
         mPaint.setColor(Color.parseColor("#FF000000"));
         mPaint.setAntiAlias(true);
-        mPaint.setDither(true);
+        mPaint.setDither(false);
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
 
@@ -89,6 +96,7 @@ public class DrawColorDrawable extends ScaleView {
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                 mBgBitmap = resource;
+                loadForeForeground();
                 loadForeground();
             }
         });
@@ -107,6 +115,36 @@ public class DrawColorDrawable extends ScaleView {
                 }
 
                 return false;
+            }
+        });
+    }
+
+    private void loadForeForeground() {
+
+        updateScaleParams(getMeasuredWidth(), getMeasuredHeight());
+        PathParserHelper.toPathArray(getContext(), "drawcolor/demo/forefore", new PathParserHelper.ToPathArrayListener() {
+            @Override
+            public void onSuccess(ArrayList<Path> paths) {
+
+                // 前前景图
+                mForeForeBitmap = Bitmap.createBitmap(mBgBitmap.getWidth(), mBgBitmap.getHeight(), mBgBitmap.getConfig());
+                Canvas canvas = new Canvas(mForeForeBitmap);
+                mPaint.setStyle(Paint.Style.FILL);
+                mPaint.setXfermode(null);
+                mPaint.setAntiAlias(true);
+                mPaint.setDither(true);
+                for (Path path : paths) {
+                    canvas.drawPath(path, mPaint);
+                }
+                mForeForeBitmapIsReady = true;
+                ZJLog.d("foreforeW=" + mForeForeBitmap.getWidth() + ",foreforeH=" + mForeForeBitmap.getHeight());
+                postInvalidate();
+
+            }
+
+            @Override
+            public void onFailed(int code, String msg) {
+                ZJLog.d("msg = " + msg);
             }
         });
     }
@@ -131,13 +169,11 @@ public class DrawColorDrawable extends ScaleView {
 
         // 绘制重合区域
         if (mClipcanvas == null) {
-            mClipBitmap = Bitmap.createBitmap(mOriBgBitmap.getWidth(), mOriBgBitmap.getHeight(), mOriBgBitmap.getConfig());
+            mClipBitmap = Bitmap.createBitmap(mBgBitmap.getWidth(), mBgBitmap.getHeight(), mBgBitmap.getConfig());
             mClipcanvas = new Canvas(mClipBitmap);
         } else {
             mClipcanvas.restore();
         }
-//        canvas.drawPath(aInThePath, mPaint);
-//        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.MULTIPLY));
         mPaint.setXfermode(null);
         mPaint.setColor(Color.GREEN);
         mClipcanvas.save();
@@ -168,13 +204,10 @@ public class DrawColorDrawable extends ScaleView {
 
             }
         });
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mPaint.setXfermode(null);
-                mClipcanvas.drawCircle(clickX, clickY, (Float) animation.getAnimatedValue(), mPaint);
-                invalidate();
-            }
+        animator.addUpdateListener(animation -> {
+            mPaint.setXfermode(null);
+            mClipcanvas.drawCircle(clickX, clickY, (Float) animation.getAnimatedValue(), mPaint);
+            invalidate();
         });
         animator.start();
 
@@ -199,40 +232,33 @@ public class DrawColorDrawable extends ScaleView {
      * 加载前景图
      */
     private void loadForeground() {
-        // 原始背景图
-        Glide.with(getContext()).asBitmap().load("file:///android_asset/drawcolor/demo/ori").fitCenter().into(new SimpleTarget<Bitmap>() {
+        updateScaleParams(getMeasuredWidth(), getMeasuredHeight());
+        PathParserHelper.toPathArray(getContext(), "drawcolor/demo/pathdata", new PathParserHelper.ToPathArrayListener() {
             @Override
-            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                mOriBgBitmap = resource;
-                updateScaleParams(getMeasuredWidth(), getMeasuredHeight());
-                PathParserHelper.toPathArray(getContext(), "drawcolor/demo/pathdata", new PathParserHelper.ToPathArrayListener() {
-                    @Override
-                    public void onSuccess(ArrayList<Path> paths) {
+            public void onSuccess(ArrayList<Path> paths) {
 
-                        // 前景图
-                        ZJLog.d("originW=" + mOriBgBitmap.getWidth() + ",originH=" + mOriBgBitmap.getHeight());
-                        mForeBitmap = Bitmap.createBitmap(mOriBgBitmap.getWidth(), mOriBgBitmap.getHeight(), mOriBgBitmap.getConfig());
-                        mCanvas = new Canvas(mForeBitmap);
-                        mCanvas.drawColor(Color.parseColor("#FFD1C343"));
-                        mPaint.setStrokeWidth(5);
-                        mPaint.setStyle(Paint.Style.STROKE);
-                        mPaint.setXfermode(null);
-                        mPaths = paths;
-                        for (Path path : paths) {
-                            mCanvas.drawPath(path, mPaint);
-                        }
+                // 前景图
+                ZJLog.d("originW=" + mBgBitmap.getWidth() + ",originH=" + mBgBitmap.getHeight());
+                mForeBitmap = Bitmap.createBitmap(mBgBitmap.getWidth(), mBgBitmap.getHeight(), mBgBitmap.getConfig());
+                mCanvas = new Canvas(mForeBitmap);
+                mCanvas.drawColor(Color.parseColor("#FFD1C343"));
+                mPaint.setColor(Color.TRANSPARENT);
+                mPaint.setStyle(Paint.Style.STROKE);
+                mPaint.setXfermode(null);
+                mPaths = paths;
+                for (Path path : paths) {
+                    mCanvas.drawPath(path, mPaint);
+                }
 
-                        ZJLog.d("foreW=" + mForeBitmap.getWidth() + ",foreH=" + mForeBitmap.getHeight());
-                        mForeBitmapIsReady = true;
-                        postInvalidate();
+                ZJLog.d("foreW=" + mForeBitmap.getWidth() + ",foreH=" + mForeBitmap.getHeight());
+                mForeBitmapIsReady = true;
+                postInvalidate();
 
-                    }
+            }
 
-                    @Override
-                    public void onFailed(int code, String msg) {
-                        ZJLog.d("msg = " + msg);
-                    }
-                });
+            @Override
+            public void onFailed(int code, String msg) {
+                ZJLog.d("msg = " + msg);
             }
         });
     }
@@ -254,28 +280,29 @@ public class DrawColorDrawable extends ScaleView {
 
     @Override
     protected void onScaleChanged(float mBaseScale) {
+        ZJLog.d("mBaseScale = " + mBaseScale);
 
     }
 
     @Override
     protected void drawScaleBitmap(Canvas canvas) {
 
-
         // 画背景图
         if (mBgBitmap != null) {
             canvas.drawBitmap(mBgBitmap, 0, 0, null);
         }
-
-        //        Log.d("=summerzhou=", "toExtract = " + toExtract);
-//        if (toExtract) {
-//            mCanvas.drawPath(mPath, mPaint);
-//        }
 
         // 画前景图
         if (mForeBitmap != null && mForeBitmapIsReady) {
             canvas.drawBitmap(mForeBitmap, 0, 0, null);
         }
 
+        // 画前前景图
+        if (mForeForeBitmap != null && mForeForeBitmapIsReady) {
+            canvas.drawBitmap(mForeForeBitmap, 0, 0, mBitmapPaint);
+        }
+
+        // 点击动画刷新
         if (mClipBitmap != null) {
             mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
             mPaint.setColor(Color.GREEN);
@@ -285,6 +312,6 @@ public class DrawColorDrawable extends ScaleView {
 
     @Override
     protected Bitmap getBgBitmap() {
-        return mOriBgBitmap;
+        return mBgBitmap;
     }
 }

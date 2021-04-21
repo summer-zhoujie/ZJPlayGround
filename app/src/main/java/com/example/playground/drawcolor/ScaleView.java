@@ -2,10 +2,10 @@ package com.example.playground.drawcolor;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
@@ -41,6 +41,8 @@ public abstract class ScaleView extends View {
      * 缩放比例发生变化
      */
     protected abstract void onScaleChanged(float mBaseScale);
+
+    PaintFlagsDrawFilter pfd = new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
 
     GestureDetector mGestureDetector;
 
@@ -108,6 +110,9 @@ public abstract class ScaleView extends View {
         canvas.save();
         canvas.concat(mUserMatrix);
 
+
+
+        canvas.setDrawFilter(pfd);
         mCanvasMatrix = canvas.getMatrix();
         mCanvasMatrix.invert(mInvertMatrix);
 
@@ -152,7 +157,7 @@ public abstract class ScaleView extends View {
                 float[] points = mapPoint(fx, fy, mInvertMatrix);
                 scaleFactor = getRealScaleFactor(scaleFactor);
                 mUserMatrix.preScale(scaleFactor, scaleFactor, points[0], points[1]);
-                onScaleChanged(mBaseScale);
+                onScaleChanged(getRealScale());
                 fixTranslate();
                 invalidate();
                 return true;
@@ -263,7 +268,7 @@ public abstract class ScaleView extends View {
     }
 
     //--- 限制缩放比例 ---
-    private static final float MAX_SCALE = 4.0f;    //最大缩放比例
+    private static final float MAX_SCALE = 20.0f;    //最大缩放比例
     private static final float MIN_SCALE = 0.5f;    // 最小缩放比例
 
     private float getRealScaleFactor(float currentScaleFactor) {
@@ -280,5 +285,10 @@ public abstract class ScaleView extends View {
             realScale = currentScaleFactor;
         }
         return realScale;
+    }
+
+    private float getRealScale() {
+        float userScale = getMatrixValue(MSCALE_X, mUserMatrix);
+        return userScale;
     }
 }
