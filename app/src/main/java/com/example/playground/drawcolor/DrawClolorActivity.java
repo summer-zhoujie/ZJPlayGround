@@ -15,17 +15,9 @@ public class DrawClolorActivity extends AppCompatActivity {
     public static void launch(Context context) {
         context.startActivity(new Intent(context,DrawClolorActivity.class));
     }
-
-    private DrawColorDrawable iv;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_draw_clolor);
-        initView();
-    }
-
-    private void initView() {
-        iv = findViewById(R.id.iv);
     }
 }

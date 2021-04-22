@@ -94,13 +94,14 @@ public class PathParserHelper {
         });
     }
 
-    public static Path findAInThePath(ArrayList<Path> arrayList, float x, float y) {
+    public static Area findAInThePath(ArrayList<Area> arrayList, float x, float y) {
 
-        if (arrayList==null||arrayList.isEmpty()) {
+        if (arrayList == null || arrayList.isEmpty()) {
             return null;
         }
 
-        for (Path path : arrayList) {
+        for (Area area : arrayList) {
+            Path path = area.path;
             //创建一个矩形
             RectF rectF = new RectF();
             //获取到当前省份的矩形边界
@@ -111,7 +112,7 @@ public class PathParserHelper {
             region.setPath(path, new Region((int) rectF.left, (int) rectF.top, (int) rectF.right, (int) rectF.bottom));
             //返回是否这个区域包含传进来的坐标
             if (region.contains((int) x, (int) y)) {
-                return path;
+                return area;
             }
         }
         return null;
