@@ -4,13 +4,17 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -22,9 +26,11 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.example.playground.R;
 import com.zj.tools.mylibrary.ZJLog;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class DrawColorDrawable extends ScaleView {
 
@@ -84,6 +90,8 @@ public class DrawColorDrawable extends ScaleView {
     private Float clickAnimatedValue;
     private float clickX;
     private float clickY;
+    private Paint shaderPaint;
+
 
     public DrawColorDrawable(Context context) {
         this(context, null);
@@ -100,6 +108,12 @@ public class DrawColorDrawable extends ScaleView {
     }
 
     private void init() {
+
+        // 透明画布
+        shaderPaint = new Paint();
+        Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.hint_shader64_planb);
+        shaderPaint.setFilterBitmap(true);
+        shaderPaint.setShader(new BitmapShader(bitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT));
 
         // 前景图画笔
         mForePaint = new Paint();
@@ -144,7 +158,7 @@ public class DrawColorDrawable extends ScaleView {
                 float[] pointer = mapPointer(e.getX(), e.getY());
                 ZJLog.d("点击了 x=" + pointer[0] + ", y=" + pointer[1]);
                 Area aInThePath = PathParserHelper.findAInThePath(mMidPaths, pointer[0], pointer[1]);
-                if (aInThePath != null) {
+                if (aInThePath != null&& aInThePath.status == Area.STATUS.SHADER) {
                     ZJLog.d("找到点击的区域了, 开始改变颜色");
                     // 执行点击动画
                     doClickAnim(aInThePath, pointer[0], pointer[1]);
@@ -201,9 +215,11 @@ public class DrawColorDrawable extends ScaleView {
 
         // 绘制重合区域
         if (mClipcanvas == null) {
-            mClipBitmap = Bitmap.createBitmap(mBgBitmap.getWidth(), mBgBitmap.getHeight(), mBgBitmap.getConfig());
+            int width = mBgBitmap.getWidth();
+            int height = mBgBitmap.getHeight();
+            mClipBitmap = Bitmap.createBitmap(width, height, mBgBitmap.getConfig());
             mClipcanvas = new Canvas(mClipBitmap);
-            mClipcanvas.drawColor(Color.WHITE);
+            mClipcanvas.drawRect(new Rect(0,0,width,height),shaderPaint);
         } else {
             mClipcanvas.restore();
         }
@@ -319,10 +335,20 @@ public class DrawColorDrawable extends ScaleView {
 
         // 画中间图层
         if (mMidBitmapIsReady) {
-
             for (Area mMidPath : mMidPaths) {
+
+                canvas.save();
+                // 挖成透明
+                if (mMidPath.status == Area.STATUS.SHADER) {
+
+                    // 用图片绘制
+                    canvas.clipPath(mMidPath.path);
+                    canvas.drawPath(mMidPath.path, shaderPaint);
+                }
+
                 // 点击动画
-                if (mMidPath.status == Area.STATUS.CLIPING) {
+                else if (mMidPath.status == Area.STATUS.CLIPING) {
+                    canvas.clipPath(mMidPath.path);
                     mClipPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
                     mClipcanvas.drawCircle(clickX, clickY, clickAnimatedValue, mClipPaint);
                     mClipPaint.setXfermode(null);
@@ -336,6 +362,8 @@ public class DrawColorDrawable extends ScaleView {
                     mMidPaint.setXfermode(null);
                     canvas.drawPath(mMidPath.path, mMidPaint);
                 }
+
+                canvas.restore();
             }
 
         }
@@ -352,5 +380,24 @@ public class DrawColorDrawable extends ScaleView {
     @Override
     protected Bitmap getBgBitmap() {
         return mBgBitmap;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // public - func
+
+    public void randomShader() {
+        if (mMidPaths != null && !mMidPaths.isEmpty()) {
+            for (Area area : mMidPaths) {
+                area.status = Area.STATUS.DEFAULT;
+            }
+        }
+        Random random = new Random();
+        for (int i = 0; i < 6; i++) {
+            int randomIndex = random.nextInt(40);
+            if (mMidPaths != null && mMidPaths.size() > randomIndex) {
+                mMidPaths.get(randomIndex).status = Area.STATUS.SHADER;
+            }
+        }
+        postInvalidate();
     }
 }

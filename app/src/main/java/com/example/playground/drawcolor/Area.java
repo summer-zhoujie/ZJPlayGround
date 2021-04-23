@@ -5,7 +5,13 @@ import android.graphics.Path;
 
 class Area {
 
+    /**
+     * 闭合路径
+     */
     public Path path;
+    /**
+     * 状态
+     */
     public int status;
     /**
      * 动画过程中的路径
@@ -20,7 +26,7 @@ class Area {
         /**
          * 选中: 被选中填成透明格子
          */
-        public final static int CHOOSED = 2;
+        public final static int SHADER = 2;
         /**
          * 挖空: 被挖空显露出原图
          */

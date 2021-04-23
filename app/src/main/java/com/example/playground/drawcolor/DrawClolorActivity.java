@@ -12,12 +12,24 @@ import com.example.playground.R;
 public class DrawClolorActivity extends AppCompatActivity {
 
 
+    private DrawColorDrawable iv;
+
     public static void launch(Context context) {
-        context.startActivity(new Intent(context,DrawClolorActivity.class));
+        context.startActivity(new Intent(context, DrawClolorActivity.class));
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_draw_clolor);
+        initView();
+    }
+
+    public void clickShader(View view) {
+        iv.randomShader();
+    }
+
+    private void initView() {
+        iv = findViewById(R.id.iv);
     }
 }
