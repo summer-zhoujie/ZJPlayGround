@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.playground.activityfindviewbyid.FindViewByIdActivity;
+import com.example.playground.bitmap.BitmapTestActivity;
 import com.example.playground.customview.CustomViewActivity;
 import com.example.playground.dexload.DexLoadTest;
 import com.example.playground.dialogtest.DialogTestActivity;
@@ -24,6 +25,7 @@ import com.example.playground.drawcolor.DrawClolorActivity;
 import com.example.playground.exchangeCard.ExchangeCardActivity;
 import com.example.playground.floatappView.FloatViewActivity;
 import com.example.playground.guessidiom.GenerateIdiom;
+import com.example.playground.largeImage.LargeImageViewActivity;
 import com.example.playground.permissionrequesttest.PermissionRequestTestActivity;
 import com.example.playground.strokenanimation.StrokeTestActivity;
 import com.example.playground.tigermachine.TigerMachineActivity;
@@ -57,6 +59,8 @@ public class MainActivity extends Activity {
     public static final String ITEM_13 = "13. LocationOnScreen方法测试";
     public static final String ITEM_14 = "14. 着色测试";
     public static final String ITEM_15 = "15. WebView&&mac地址";
+    public static final String ITEM_16 = "16. Bitmap 测试";
+    public static final String ITEM_17 = "17. Bitmap大图无损加载";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +69,8 @@ public class MainActivity extends Activity {
         recyclerView = findViewById(R.id.list);
 
         final ArrayList<String> data = new ArrayList<>();
+        data.add(ITEM_17);
+        data.add(ITEM_16);
         data.add(ITEM_15);
         data.add(ITEM_14);
         data.add(ITEM_13);
@@ -85,6 +91,12 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(String title) {
                 switch (title) {
+                    case ITEM_17:
+                        LargeImageViewActivity.launch(MainActivity.this);
+                        break;
+                    case ITEM_16:
+                        BitmapTestActivity.launch(MainActivity.this);
+                        break;
                     case ITEM_15:
                         WebViewTestActivity.launch(MainActivity.this);
                         break;

@@ -331,6 +331,7 @@ public class DrawColorDrawable extends ScaleView {
         // 画背景图
         if (mBgBitmap != null) {
             canvas.drawBitmap(mBgBitmap, 0, 0, mBgBitmapPaint);
+            ZJLog.d("mBgBitmap.getByteCount() = "+mBgBitmap.getByteCount());
         }
 
         // 画中间图层
