@@ -1,2 +1,3 @@
+include ':stepcount'
 include ':app'
 rootProject.name='ZJPlayGround'

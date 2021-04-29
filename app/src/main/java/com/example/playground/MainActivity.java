@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +26,7 @@ import com.example.playground.floatappView.FloatViewActivity;
 import com.example.playground.guessidiom.GenerateIdiom;
 import com.example.playground.largeImage.LargeImageViewActivity;
 import com.example.playground.permissionrequesttest.PermissionRequestTestActivity;
+import com.example.playground.step.StepCountActivity;
 import com.example.playground.strokenanimation.StrokeTestActivity;
 import com.example.playground.tigermachine.TigerMachineActivity;
 import com.example.playground.viewinvisiable.InVisiableViewClickActivity;
@@ -61,6 +61,7 @@ public class MainActivity extends Activity {
     public static final String ITEM_15 = "15. WebView&&mac地址";
     public static final String ITEM_16 = "16. Bitmap 测试";
     public static final String ITEM_17 = "17. Bitmap大图无损加载";
+    public static final String ITEM_18 = "18. 计步";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +70,7 @@ public class MainActivity extends Activity {
         recyclerView = findViewById(R.id.list);
 
         final ArrayList<String> data = new ArrayList<>();
+        data.add(ITEM_18);
         data.add(ITEM_17);
         data.add(ITEM_16);
         data.add(ITEM_15);
@@ -91,6 +93,9 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(String title) {
                 switch (title) {
+                    case ITEM_18:
+                        StepCountActivity.launch(MainActivity.this);
+                        break;
                     case ITEM_17:
                         LargeImageViewActivity.launch(MainActivity.this);
                         break;

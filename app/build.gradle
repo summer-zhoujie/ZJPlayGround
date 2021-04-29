@@ -54,4 +54,7 @@ dependencies {
 
     // dex 分包
     implementation 'com.android.support:multidex:1.0.3'
+
+    // 计步
+    implementation project(':stepcount')
 }

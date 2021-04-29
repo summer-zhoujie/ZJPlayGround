@@ -22,7 +22,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".bitmap.BitmapTestActivity"></activity>
+        <activity android:name=".step.StepCountActivity"></activity>
+        <activity android:name=".bitmap.BitmapTestActivity" />
         <activity android:name=".webviewtest.WebViewTestActivity" />
         <activity android:name=".drawcolor.DrawClolorActivity" />
         <activity android:name=".locationonscreen.LocationOnScreenActivity" />
