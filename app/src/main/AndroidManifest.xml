@@ -22,7 +22,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".step.StepCountActivity"></activity>
+        <activity
+            android:name=".dragview.DragViewActivity"
+            android:exported="true" />
+        <activity android:name=".onmeasure.OnMeasureTestActivity" />
+        <activity android:name=".step.StepCountActivity" />
         <activity android:name=".bitmap.BitmapTestActivity" />
         <activity android:name=".webviewtest.WebViewTestActivity" />
         <activity android:name=".drawcolor.DrawClolorActivity" />

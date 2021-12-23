@@ -20,17 +20,20 @@ import com.example.playground.bitmap.BitmapTestActivity;
 import com.example.playground.customview.CustomViewActivity;
 import com.example.playground.dexload.DexLoadTest;
 import com.example.playground.dialogtest.DialogTestActivity;
+import com.example.playground.dragview.DragViewActivity;
 import com.example.playground.drawcolor.DrawClolorActivity;
 import com.example.playground.exchangeCard.ExchangeCardActivity;
 import com.example.playground.floatappView.FloatViewActivity;
 import com.example.playground.guessidiom.GenerateIdiom;
 import com.example.playground.largeImage.LargeImageViewActivity;
+import com.example.playground.onmeasure.OnMeasureTestActivity;
 import com.example.playground.permissionrequesttest.PermissionRequestTestActivity;
 import com.example.playground.step.StepCountActivity;
 import com.example.playground.strokenanimation.StrokeTestActivity;
 import com.example.playground.tigermachine.TigerMachineActivity;
 import com.example.playground.viewinvisiable.InVisiableViewClickActivity;
 import com.example.playground.webviewtest.WebViewTestActivity;
+import com.zj.tools.mylibrary.ZJHiddenApiUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +65,8 @@ public class MainActivity extends Activity {
     public static final String ITEM_16 = "16. Bitmap 测试";
     public static final String ITEM_17 = "17. Bitmap大图无损加载";
     public static final String ITEM_18 = "18. 计步";
+    public static final String ITEM_19 = "19. onMeasure打点测试";
+    public static final String ITEM_20 = "20. 事件分发测试代码";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +75,8 @@ public class MainActivity extends Activity {
         recyclerView = findViewById(R.id.list);
 
         final ArrayList<String> data = new ArrayList<>();
+        data.add(ITEM_20);
+        data.add(ITEM_19);
         data.add(ITEM_18);
         data.add(ITEM_17);
         data.add(ITEM_16);
@@ -93,6 +100,12 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(String title) {
                 switch (title) {
+                    case ITEM_20:
+                        startActivity(new Intent(MainActivity.this, DragViewActivity.class));
+                        break;
+                    case ITEM_19:
+                        OnMeasureTestActivity.launch(MainActivity.this);
+                        break;
                     case ITEM_18:
                         StepCountActivity.launch(MainActivity.this);
                         break;
