@@ -19,6 +19,7 @@ import com.example.playground.activityfindviewbyid.FindViewByIdActivity;
 import com.example.playground.bitmap.BitmapTestActivity;
 import com.example.playground.customview.CustomViewActivity;
 import com.example.playground.dexload.DexLoadTest;
+import com.example.playground.dexload.DexLoadTestActivity;
 import com.example.playground.dialogtest.DialogTestActivity;
 import com.example.playground.dragview.DragViewActivity;
 import com.example.playground.drawcolor.DrawClolorActivity;
@@ -143,7 +144,7 @@ public class MainActivity extends Activity {
                         startActivity(new Intent(MainActivity.this, DialogTestActivity.class));
                         break;
                     case ITEM_6:
-                        DexLoadTest.run();
+                        startActivity(new Intent(MainActivity.this, DexLoadTestActivity.class));
                         break;
                     case ITEM_5:
                         startActivity(new Intent(MainActivity.this, TigerMachineActivity.class));

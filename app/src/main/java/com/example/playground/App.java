@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi;
 import androidx.multidex.MultiDex;
 
 import com.zj.tools.mylibrary.ZJLog;
+import com.zj.tools.mylibrary.ZJToast;
 
 import java.lang.reflect.Constructor;
 import java.nio.ByteBuffer;
@@ -19,7 +20,8 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        ZJLog.init(true,"summerzhou");
+        ZJLog.init(true,"summer");
+        ZJToast.init(this);
         MultiDex.install(this);
     }
 }
