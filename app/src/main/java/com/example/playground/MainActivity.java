@@ -3,6 +3,7 @@ package com.example.playground;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import com.example.playground.bitmap.BitmapTestActivity;
 import com.example.playground.customview.CustomViewActivity;
 import com.example.playground.dexload.DexLoadTest;
 import com.example.playground.dexload.DexLoadTestActivity;
+import com.example.playground.dexload.DexReplaceUtils;
 import com.example.playground.dialogtest.DialogTestActivity;
 import com.example.playground.dragview.DragViewActivity;
 import com.example.playground.drawcolor.DrawClolorActivity;
@@ -35,7 +37,9 @@ import com.example.playground.tigermachine.TigerMachineActivity;
 import com.example.playground.viewinvisiable.InVisiableViewClickActivity;
 import com.example.playground.webviewtest.WebViewTestActivity;
 import com.zj.tools.mylibrary.ZJHiddenApiUtils;
+import com.zj.tools.mylibrary.ZJLog;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,6 +77,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         recyclerView = findViewById(R.id.list);
 
         final ArrayList<String> data = new ArrayList<>();

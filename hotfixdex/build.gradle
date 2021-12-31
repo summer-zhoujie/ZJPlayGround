@@ -1,0 +1,62 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "29.0.3"
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+}
+
+task clearHotFixJar(type: Delete){
+    delete("build/libs/hotfix.jar")
+}
+
+task makeHotFixJar(type: Jar){
+//指定生成的jar名
+    baseName 'hotfix'
+    //archiveName = 'dexlibrary1'   //这样指定名称也可以
+    //从哪里打包class文件
+    from('build/intermediates/javac/release/classes/com/example/hotfixdex/')
+    //将assets目录打入jar包
+    //from fileTree(dir: 'src/main', includes: ['assets/**'])
+    //打包到jar后的目录结构
+    into('com/example/hotfixdex/')
+    //去掉不需要打包的目录和文件
+    exclude('test/', 'BuildConfig.class', 'R.class')
+    //去掉R$开头的文件
+    exclude { it.name.startsWith('R$') }}
+
+makeHotFixJar.dependsOn(clearHotFixJar, build)

@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" /> <!-- 系统悬浮窗权限 -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission
         android:name="android.permission.SET_TIME"
         tools:ignore="ProtectedPermissions" />
@@ -14,6 +15,7 @@
         tools:ignore="ProtectedPermissions" />
 
     <application
+        android:requestLegacyExternalStorage="true"
         android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
