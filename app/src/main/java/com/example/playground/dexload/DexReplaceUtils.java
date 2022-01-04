@@ -21,7 +21,7 @@ import dalvik.system.DexClassLoader;
 
 public class DexReplaceUtils {
 
-    public static void doReplace(Context context, String addPath) {
+    public static void  doReplace(Context context, String addPath) {
         if (TextUtils.isEmpty(addPath)) {
             ZJLog.d("doReplace error, addPath == null");
             return;
@@ -59,12 +59,6 @@ public class DexReplaceUtils {
 //            object_parentPathList = field_pathList.get(parentClassLoad);
             field_dexElements.set(object_parentPathList, array_elements_new);
             ZJLog.d(">>>success!!!");
-
-            Class<?> aClass = Class.forName("com.example.hotfixdex.ClassBeenHotFixed");
-            Constructor<?> constructor = aClass.getConstructor();
-            Object o = constructor.newInstance();
-            Method print = aClass.getMethod("print", Context.class);
-            print.invoke(o, context);
 
         } catch (Throwable e) {
             ZJLog.d("doReplace error, " + Log.getStackTraceString(e));

@@ -1,16 +1,15 @@
 package com.example.playground.dexload
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
 import android.view.View
 import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import com.example.hotfixdex.ClassBeenHotFixed
 import com.example.playground.R
 import com.zj.tools.mylibrary.ZJLog
 import java.io.File
@@ -67,18 +66,19 @@ class DexLoadTestActivity : AppCompatActivity() {
 
     private fun clickLoadBtn(v: View) {
         ZJLog.d("开始加载修复包")
-        val path =
-            Environment.getExternalStorageDirectory().absolutePath
-//        DexReplaceUtils.doReplace(
-//            this,
-//            Environment.getExternalStorageDirectory().absolutePath + File.separator + "replace.aar"
-//        )
-        FixDexUtils.loadFixedDex(this, File(path))
-
+        DexReplaceUtils.doReplace(
+            this,
+            externalCacheDir?.absolutePath + File.separator + "hot_fix.dex"
+        )
     }
 
     private fun clickPrint(v: View) {
-        ClassBeenHotFixed().print(this)
+        // 直接import会导致加载修复包无效, 此时findclass会直接从内存读取, 不会读取我们替换的dex
+        val aClass = Class.forName("com.example.hotfixdex.ClassBeenHotFixed")
+        val constructor = aClass.getConstructor()
+        val o = constructor.newInstance()
+        val print = aClass.getMethod("print", Context::class.java)
+        print.invoke(o, this)
     }
 
 }
