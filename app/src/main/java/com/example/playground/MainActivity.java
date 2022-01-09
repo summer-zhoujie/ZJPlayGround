@@ -31,6 +31,7 @@ import com.example.playground.guessidiom.GenerateIdiom;
 import com.example.playground.largeImage.LargeImageViewActivity;
 import com.example.playground.onmeasure.OnMeasureTestActivity;
 import com.example.playground.permissionrequesttest.PermissionRequestTestActivity;
+import com.example.playground.rotateconfigchanged.RotateConfigChangeActivity;
 import com.example.playground.step.StepCountActivity;
 import com.example.playground.strokenanimation.StrokeTestActivity;
 import com.example.playground.tigermachine.TigerMachineActivity;
@@ -72,6 +73,7 @@ public class MainActivity extends Activity {
     public static final String ITEM_18 = "18. 计步";
     public static final String ITEM_19 = "19. onMeasure打点测试";
     public static final String ITEM_20 = "20. 事件分发测试代码";
+    public static final String ITEM_21 = "21. 旋转屏幕UI默认恢复情况";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +83,7 @@ public class MainActivity extends Activity {
         recyclerView = findViewById(R.id.list);
 
         final ArrayList<String> data = new ArrayList<>();
+        data.add(ITEM_21);
         data.add(ITEM_20);
         data.add(ITEM_19);
         data.add(ITEM_18);
@@ -106,6 +109,9 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(String title) {
                 switch (title) {
+                    case ITEM_21:
+                        startActivity(new Intent(MainActivity.this, RotateConfigChangeActivity.class));
+                        break;
                     case ITEM_20:
                         startActivity(new Intent(MainActivity.this, DragViewActivity.class));
                         break;
