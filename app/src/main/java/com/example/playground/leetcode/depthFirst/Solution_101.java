@@ -1,5 +1,7 @@
 package com.example.playground.leetcode.depthFirst;
 
+import java.util.LinkedList;
+
 public class Solution_101 {
     public static class TreeNode {
         int val;
@@ -15,7 +17,24 @@ public class Solution_101 {
     }
 
     public boolean isSymmetric(TreeNode root) {
+        TreeNode left = root.left;
+        TreeNode right = root.right;
+        return inorder(left, right);
+    }
 
+    private boolean inorder(TreeNode left, TreeNode right) {
+        if (left == null && right == null) {
+            return true;
+        } else if (left == null || right == null) {
+            return false;
+        }
+
+        boolean isLeftOk = inorder(left.left, right.right);
+        if (left.val != right.val) {
+            return false;
+        }
+        boolean isRightOK = inorder(left.right,right.left);
+        return isLeftOk && isRightOK;
     }
 
     public static void main(String[] args) {
