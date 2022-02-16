@@ -5,6 +5,12 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+
 /**
  * Example local unit test, which will execute on the development machine (host).
  *
@@ -120,7 +126,7 @@ public class ExampleUnitTest {
             return 0;
         }
         neg = (sum - target) / 2;
-        System.out.println("neg = "+neg+", sum="+sum+", target = "+target);
+        System.out.println("neg = " + neg + ", sum=" + sum + ", target = " + target);
         int[] dp = new int[neg + 1];
         // init
         dp[0] = 1;
@@ -130,7 +136,7 @@ public class ExampleUnitTest {
                 if (j >= nums[i]) {
                     dp[j] += dp[j - nums[i]];
                 }
-                System.out.println(dp[j]+", i="+i);
+                System.out.println(dp[j] + ", i=" + i);
             }
             System.out.println("===");
         }
@@ -140,8 +146,220 @@ public class ExampleUnitTest {
     @Test
     public void testFindTargetSumWays() {
         int targetSumWays = findTargetSumWays(new int[]{1, 1, 1, 1, 1}, 3);
-        Assert.assertEquals(5,targetSumWays);
-        targetSumWays = findTargetSumWays(new int[]{0,0,0,0,0,0,0,0,1}, 1);
-        Assert.assertEquals(256,targetSumWays);
+        Assert.assertEquals(5, targetSumWays);
+        targetSumWays = findTargetSumWays(new int[]{0, 0, 0, 0, 0, 0, 0, 0, 1}, 1);
+        Assert.assertEquals(256, targetSumWays);
+    }
+
+    /**
+     * 11. 盛最多水的容器
+     * <p>
+     * 给定一个长度为 n 的整数数组height。有n条垂线，第 i 条线的两个端点是(i, 0)和(i, height[i])。
+     * <p>
+     * 找出其中的两条线，使得它们与x轴共同构成的容器可以容纳最多的水。
+     * <p>
+     * 返回容器可以储存的最大水量。
+     * <p>
+     * 说明：你不能倾斜容器。
+     * <p>
+     * 最大储水量
+     * i j
+     * (j-i)*Math.min(height[i],height[j])
+     *
+     * @param height
+     * @return
+     */
+    public int maxArea(int[] height) {
+        int result = 0;
+        int i = 0, j = height.length - 1;
+        result = (j - i) * Math.min(height[i], height[j]);
+        while (i < j) {
+            if (height[i] > height[j]) {
+                j--;
+            } else {
+                i++;
+            }
+            int newValue = (j - i) * Math.min(height[i], height[j]);
+            result = Math.max(result, newValue);
+        }
+        return result;
+    }
+
+    @Test
+    public void testMaxArea() {
+        int i = maxArea(new int[]{1, 8, 6, 2, 5, 4, 8, 3, 7});
+        Assert.assertEquals(49, i);
+    }
+
+    /**
+     * 15. 三数之和
+     * <p>
+     * 给你一个包含 n 个整数的数组nums，判断nums中是否存在三个元素 a，b，c ，使得a + b + c = 0 ？请你找出所有和为 0 且不重复的三元组。
+     * <p>
+     * 注意：答案中不可以包含重复的三元组。
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> threeSum(int[] nums) {
+
+        // sort
+        for (int i = 0; i < nums.length - 1; i++) {
+            int curP = i + 1;
+            int curPValue = nums[curP];
+            while (curP > 0 && curPValue < nums[curP - 1]) {
+                nums[curP] = nums[curP - 1];
+                curP--;
+            }
+            nums[curP] = curPValue;
+        }
+
+        List<List<Integer>> result = new ArrayList<>();
+
+        for (int first = 0; first < nums.length; first++) {
+            if (first > 0 && nums[first] == nums[first - 1]) {
+                continue;
+            }
+            int target = -nums[first];
+            int third = nums.length - 1;
+            for (int second = first + 1; second < nums.length; second++) {
+                if (second > first + 1 && nums[second] == nums[second - 1]) {
+                    continue;
+                }
+
+                while (second < third && nums[second] + nums[third] > target) {
+                    third--;
+                }
+
+                if (second == third) {
+                    break;
+                }
+
+                if (nums[second] + nums[third] == target) {
+                    ArrayList<Integer> resultItem = new ArrayList<>();
+                    resultItem.add(nums[first]);
+                    resultItem.add(nums[second]);
+                    resultItem.add(nums[third]);
+                    result.add(resultItem);
+                }
+
+            }
+        }
+        return result;
+    }
+
+
+    @Test
+    public void testThreeSum() {
+        List<List<Integer>> lists = threeSum(new int[]{1, -1, -1, 0});
+        System.out.println(lists);
+    }
+
+
+    /**
+     * 16. 最接近的三数之和
+     * 给你一个长度为 n 的整数数组nums和 一个目标值target。请你从 nums 中选出三个整数，使它们的和与target最接近。
+     * <p>
+     * 返回这三个数的和。
+     * <p>
+     * 假定每组输入只存在恰好一个解。
+     * <p>
+     * 示例 1：
+     * <p>
+     * 输入：nums = [-1,2,1,-4], target = 1
+     * 输出：2
+     * 解释：与 target 最接近的和是 2 (-1 + 2 + 1 = 2) 。
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int threeSumClosest(int[] nums, int target) {
+
+        for (int i = 0; i < nums.length - 1; i++) {
+            int curP = i + 1;
+            int curPValue = nums[curP];
+            while (curP > 0 && curPValue < nums[curP - 1]) {
+                nums[curP] = nums[curP - 1];
+                curP--;
+            }
+            nums[curP] = curPValue;
+        }
+
+        int result = 10000000;
+        for (int first = 0; first < nums.length; first++) {
+            if (first > 0 && nums[first] == nums[first - 1]) {
+                continue;
+            }
+            int second = first + 1;
+            int third = nums.length - 1;
+            while (second < third) {
+                int sum = nums[first] + nums[second] + nums[third];
+                int diff = sum - target;
+                if (Math.abs(sum - target) < Math.abs(result - target)) {
+                    result = sum;
+                }
+                if (diff > 0) {
+                    third--;
+                } else if (diff == 0) {
+                    return sum;
+                } else {
+                    second++;
+                }
+
+                if (second >= third) {
+                    break;
+                }
+
+
+            }
+        }
+        return result;
+    }
+
+    @Test
+    public void testThreeSumClosest() {
+        int i = threeSumClosest(new int[]{0, 2, 1, -3}, 1);
+        assertEquals(0, i);
+    }
+
+    /**
+     * 3. 无重复字符的最长子串
+     * <p>
+     * 给定一个字符串 s ，请你找出其中不含有重复字符的 最长子串 的长度。
+     * <p>
+     * 输入: s = "abcabcbb"
+     * 输出: 3
+     * 解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
+     *
+     * @param s
+     * @return
+     */
+    public int lengthOfLongestSubstring(String s) {
+        if (s == null) {
+            return 0;
+        }
+        int result = 0;
+        HashSet<Character> characters = new HashSet<>();
+        int l = 0,r=0;
+        while (l <= r && r < s.length()) {
+            if (!characters.contains(s.charAt(r))) {
+                characters.add(s.charAt(r));
+                result = Math.max(result, characters.size());
+                r++;
+            } else {
+                char needRemove = s.charAt(l);
+                characters.remove(needRemove);
+                l++;
+            }
+        }
+        result = Math.max(result, characters.size());
+        return result;
+    }
+
+    @Test
+    public void testLengthOfLongestSubstring() {
+        int abcabcbb = lengthOfLongestSubstring("pwwkew");
+        Assert.assertEquals(3, abcabcbb);
     }
 }
