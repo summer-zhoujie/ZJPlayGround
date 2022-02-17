@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -341,7 +342,7 @@ public class ExampleUnitTest {
         }
         int result = 0;
         HashSet<Character> characters = new HashSet<>();
-        int l = 0,r=0;
+        int l = 0, r = 0;
         while (l <= r && r < s.length()) {
             if (!characters.contains(s.charAt(r))) {
                 characters.add(s.charAt(r));
@@ -364,20 +365,69 @@ public class ExampleUnitTest {
     }
 
     /**
-     * 
      * 5. 最长回文子串
      * 给你一个字符串 s，找到 s 中最长的回文子串。
-     *
+     * <p>
      * 示例 1：
-     *
+     * <p>
      * 输入：s = "babad"
      * 输出："bab"
      * 解释："aba" 同样是符合题意的答案。
+     * <p>
+     * 状态转移方程
+     * dp[i][j]表示i~j是回文字串
+     * dp[i][j] = (dp[i+1][j-1] == true && s[i-1] = s[j+1])
+     * <p>
+     * 边界条件
+     * dp[i][i] = true
+     * dp[i][i+1] = s[i]==s[i+1]
      *
      * @param s
      * @return
      */
     public String longestPalindrome(String s) {
+        if (s == null || s.length() == 0) {
+            return s;
+        }
+        int length = s.length();
+        if (length == 1) {
+            return s;
+        }
 
+        int l = 0, r = 0;
+        boolean[] dp = new boolean[length];
+        List<String> strings = new ArrayList<>();
+        //init
+        for (int i = length - 1; i >= 0; i--) {
+            for (int j = length - 1; j >= i; j--) {
+                if (i == j) {
+                    dp[j] = true;
+                } else if (j - i == 1) {
+                    dp[j] = s.charAt(i) == s.charAt(j);
+                } else {
+                    dp[j] = dp[j - 1] && (s.charAt(i) == s.charAt(j));
+                }
+
+                if (dp[j] && (j - i > r - l)) {
+                    l = i;
+                    r = j;
+                }
+
+            }
+            strings.add(Arrays.toString(dp));
+
+        }
+        Collections.reverse(strings);
+        for (String string : strings) {
+            System.out.println(string);
+        }
+        return s.substring(l, r+1);
+    }
+
+    @Test
+    public void testlongestPalindrome() {
+        String babad = longestPalindrome("babad");
+        assertEquals("bab",babad);
+        assertEquals("aba",babad);
     }
 }
