@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -421,13 +422,180 @@ public class ExampleUnitTest {
         for (String string : strings) {
             System.out.println(string);
         }
-        return s.substring(l, r+1);
+        return s.substring(l, r + 1);
     }
 
     @Test
     public void testlongestPalindrome() {
         String babad = longestPalindrome("babad");
-        assertEquals("bab",babad);
-        assertEquals("aba",babad);
+        assertEquals("bab", babad);
+        assertEquals("aba", babad);
     }
+
+    /**
+     * 36. 有效的数独
+     *
+     * @param board
+     * @return
+     */
+    public boolean isValidSudoku(char[][] board) {
+        final int[][] rows = new int[9][9];
+        final int[][] columns = new int[9][9];
+        final int[][][] grids = new int[3][3][9];
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (board[i][j] == '.') {
+                    continue;
+                }
+                int target = board[i][j] - '0';
+                final int a = rows[i][target]++;
+                final int b = columns[j][target]++;
+                final int c = grids[i / 3][j / 3][target]++;
+                if (a > 1 || b > 1 || c > 1) {
+                    return false;
+                }
+
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 49. 字母异位词分组
+     *
+     * @param strs
+     * @return
+     */
+    public List<List<String>> groupAnagrams(String[] strs) {
+        List<List<String>> result = new ArrayList<>();
+        HashMap<String, List<String>> map = new HashMap<>();
+        for (int i = 0; i < strs.length; i++) {
+            String item = strs[i];
+
+            //find list
+            String validKey = null;
+            for (String key : map.keySet()) {
+                validKey = key;
+                for (int j = 0; j < item.length(); j++) {
+                    if (!key.contains(item.charAt(j) + "")) {
+                        validKey = null;
+                        break;
+                    }
+                }
+
+                if (validKey != null) {
+                    break;
+                }
+            }
+
+            List<String> listFinded = null;
+            if (validKey == null) {
+                listFinded = new ArrayList<>();
+                result.add(0, listFinded);
+                map.put(item, listFinded);
+            } else {
+                listFinded = map.get(validKey);
+            }
+
+            listFinded.add(item);
+        }
+        return result;
+    }
+
+
+    /**
+     * 6. Z 字形变换
+     */
+    public String convert(String s, int numRows) {
+        final StringBuilder result = new StringBuilder();
+        int length = s.length();
+        int cycLen = 2 * numRows - 2;
+        // i 第几行
+        for (int i = 0; i < numRows; i++) {
+
+            for (int j = 0; j + i < length; j += cycLen) {
+                result.append(s.charAt(j + i));
+                if (i != 0 && i != numRows - 1 && j + cycLen - i < length) {
+                    result.append(s.charAt(j + cycLen - i));
+                }
+            }
+        }
+        return result.toString();
+    }
+
+    @Test
+    public void testconvert() {
+        final String paypalishiring = convert("PAYPALISHIRING", 3);
+    }
+
+    /**
+     * 8. 字符串转换整数 (atoi)
+     */
+    public int myAtoi(String s) {
+        int curDigit = 1;
+        long result = 0;
+        int end = 0;
+        int symbol = 1;
+        boolean hasDigit = false;
+        int length = s.length();
+
+        // find + -
+        for (int i = 0; i < length; i++) {
+            final char c = s.charAt(i);
+            if (c == '-') {
+                symbol = -1;
+            } else if (Character.isDigit(c)) {
+                hasDigit = true;
+                int value = c - '0';
+                result = result * 10 + value * symbol;
+                if (result > Integer.MAX_VALUE) {
+                    return Integer.MAX_VALUE;
+                } else if (result < Integer.MIN_VALUE) {
+                    return Integer.MIN_VALUE;
+                }
+            } else if (c == '.' && hasDigit) {
+                return (int) result;
+            } else if (c != '+' && c != ' ' && !hasDigit) {
+                return 0;
+            }
+        }
+
+        return (int) result;
+    }
+
+    @Test
+    public void testmyAtoi() {
+        final int i = myAtoi(" -42");
+        System.out.println(i);
+    }
+
+    /**
+     * 22.括号生成
+     */
+    public List<String> generateParenthesis(int n) {
+        List<String> list = new ArrayList<>();
+        final StringBuilder sb = new StringBuilder();
+        generateAll(sb, list, 0, 0, n);
+        return list;
+    }
+
+    private void generateAll(StringBuilder sb, List<String> list, int left, int right, int max) {
+        if (sb.length() == max * 2) {
+            list.add(sb.toString());
+            return;
+        }
+
+        if (left < max) {
+            sb.append('(');
+            generateAll(sb, list, left+1, right, max);
+            sb.deleteCharAt(sb.length() - 1);
+        }
+
+        if (left > right) {
+            sb.append(")");
+            generateAll(sb, list, left, right + 1, max);
+            sb.deleteCharAt(sb.length() - 1);
+        }
+    }
+
 }
