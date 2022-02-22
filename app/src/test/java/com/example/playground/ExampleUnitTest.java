@@ -5,13 +5,18 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+import java.util.Map;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -587,7 +592,7 @@ public class ExampleUnitTest {
 
         if (left < max) {
             sb.append('(');
-            generateAll(sb, list, left+1, right, max);
+            generateAll(sb, list, left + 1, right, max);
             sb.deleteCharAt(sb.length() - 1);
         }
 
@@ -596,6 +601,449 @@ public class ExampleUnitTest {
             generateAll(sb, list, left, right + 1, max);
             sb.deleteCharAt(sb.length() - 1);
         }
+    }
+
+    /*
+     * 12. 整数转罗马数字
+     * 罗马数字包含以下七种字符：I，V，X，L，C，D和M。
+     * <p>
+     * 字符          数值
+     * I             1
+     * V             5
+     * X             10
+     * L             50
+     * C             100
+     * D             500
+     * M             1000
+     * 例如， 罗马数字 2 写做II，即为两个并列的 1。12 写做XII，即为X+II。 27 写做XXVII, 即为XX+V+II。
+     * <p>
+     * 通常情况下，罗马数字中小的数字在大的数字的右边。但也存在特例，例如 4 不写做IIII，而是IV。数字 1 在数字 5 的左边，所表示的数等于大数 5 减小数 1 得到的数值 4 。同样地，数字 9 表示为IX。这个特殊的规则只适用于以下六种情况：
+     * <p>
+     * I可以放在V(5) 和X(10) 的左边，来表示 4 和 9。
+     * X可以放在L(50) 和C(100) 的左边，来表示 40 和90。
+     * C可以放在D(500) 和M(1000) 的左边，来表示400 和900。
+     * 给你一个整数，将其转为罗马数字。
+     * <p>
+     * <p>
+     * <p>
+     * 示例1:
+     * <p>
+     * 输入:num = 3
+     * 输出: "III"
+     *
+     * @param num
+     * @return
+     */
+    public String intToRoman(int num) {
+        LinkedHashMap<Integer, String> map = new LinkedHashMap<>();
+        map.put(1000, "M");
+        map.put(900, "CM");
+        map.put(500, "D");
+        map.put(400, "CD");
+        map.put(100, "C");
+        map.put(90, "XC");
+        map.put(50, "L");
+        map.put(40, "XL");
+        map.put(10, "X");
+        map.put(9, "IX");
+        map.put(5, "V");
+        map.put(4, "IV");
+        map.put(1, "I");
+
+        int curNum = num;
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<Integer, String> entry : map.entrySet()) {
+
+            Integer key = entry.getKey();
+            int multiple = curNum / key;
+            for (int i = 1; i <= multiple; i++) {
+                sb.append(entry.getValue());
+            }
+            curNum = curNum % key;
+
+        }
+        return sb.toString();
+    }
+
+    @Test
+    public void testIntToRoman() {
+        String s = intToRoman(3);
+        assertEquals("III", s);
+    }
+
+    /**
+     * 13. 罗马数字转整数
+     * 罗马数字包含以下七种字符: I， V， X， L，C，D 和 M。
+     * <p>
+     * 字符          数值
+     * I             1
+     * V             5
+     * X             10
+     * L             50
+     * C             100
+     * D             500
+     * M             1000
+     * 例如， 罗马数字 2 写做 II ，即为两个并列的 1 。12 写做 XII ，即为 X + II 。 27 写做  XXVII, 即为 XX + V + II 。
+     * <p>
+     * 通常情况下，罗马数字中小的数字在大的数字的右边。但也存在特例，例如 4 不写做 IIII，而是 IV。数字 1 在数字 5 的左边，所表示的数等于大数 5 减小数 1 得到的数值 4 。同样地，数字 9 表示为 IX。这个特殊的规则只适用于以下六种情况：
+     * <p>
+     * I 可以放在 V (5) 和 X (10) 的左边，来表示 4 和 9。
+     * X 可以放在 L (50) 和 C (100) 的左边，来表示 40 和 90。
+     * C 可以放在 D (500) 和 M (1000) 的左边，来表示 400 和 900。
+     * 给定一个罗马数字，将其转换成整数。
+     * <p>
+     * 输入: s = "III"
+     * 输出: 3
+     *
+     * @param s
+     * @return
+     */
+    public int romanToInt(String s) {
+        LinkedHashMap<Character, Integer> map = new LinkedHashMap<>();
+        map.put('M', 1000);
+        map.put('D', 500);
+        map.put('C', 100);
+        map.put('L', 50);
+        map.put('X', 10);
+        map.put('V', 5);
+        map.put('I', 1);
+
+        int result = 0;
+        int length = s.length();
+        for (int i = 0; i < length; i++) {
+            int value = map.get(s.charAt(i));
+            if (i + 1 < length && value < map.get(s.charAt(i + 1))) {
+                result -= value;
+            } else {
+                result += value;
+            }
+
+        }
+        return result;
+    }
+
+    @Test
+    public void testRomanToInt() {
+        int mcmxciv = romanToInt("MCMXCIV");
+        assertEquals(1994, mcmxciv);
+    }
+
+    /**
+     * 17. 电话号码的字母组合
+     *
+     * @param digits
+     * @return
+     */
+    public List<String> letterCombinations(String digits) {
+        String[] map = new String[]{"abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+        List<String> result = new ArrayList<>();
+        if (digits == null || digits == "") {
+            return result;
+        }
+
+        for (int i = 0; i < digits.length(); i++) {
+            int l = digits.charAt(i) - '2';
+
+            if (result.isEmpty()) {
+                for (int j = 0; j < map[l].length(); j++) {
+                    char c = map[l].charAt(j);
+                    result.add(c + "");
+                }
+                continue;
+            }
+
+            int size = result.size();
+            for (int k = 0; k < size; k++) {
+                String second = result.get(k);
+                for (int j = 0; j < map[l].length() - 1; j++) {
+                    char c = map[l].charAt(j);
+                    result.add(second + c);
+                }
+                result.set(k, second + map[l].charAt(map[l].length() - 1));
+            }
+
+
+        }
+
+        return result;
+    }
+
+    @Test
+    public void testletterCombinations() {
+        List<String> strings = letterCombinations("2");
+        System.out.println(strings);
+    }
+
+
+    /**
+     * 45.跳跃游戏
+     *
+     * @param nums
+     * @return
+     */
+
+    public int jump(int[] nums) {
+        if (nums == null || nums.length <= 0) {
+            return 0;
+        }
+        int length = nums.length;
+        int step = 0;
+        int nextEnd = 0;
+        int maxPosition = 0;
+        for (int i = 0; i < nums.length; i++) {
+            maxPosition = Math.max(maxPosition, i + nums[i]);
+            if (i == nextEnd) {
+                nextEnd = maxPosition;
+                step++;
+            }
+        }
+        return step;
+    }
+
+    private void doJump(int[] nums, int curStep, int pos, int length) {
+    }
+
+    @Test
+    public void testJump() {
+        int jump = jump(new int[]{2, 3, 1, 1, 4});
+    }
+
+    /**
+     * 55. 跳跃游戏
+     *
+     * @param nums
+     * @return
+     */
+    public boolean canJump(int[] nums) {
+        if (nums == null || nums.length <= 1) {
+            return true;
+        }
+
+        int maxJumpLength = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (i <= maxJumpLength) {
+                maxJumpLength = Math.max(maxJumpLength, nums[i] + i);
+                if (maxJumpLength >= nums.length - 1) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    @Test
+    public void testcanJump() {
+        boolean b = canJump(new int[]{2, 3, 1, 1, 4});
+        System.out.println(b);
+    }
+
+    public class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+
+        TreeNode() {
+        }
+
+        TreeNode(int val) {
+            this.val = val;
+        }
+
+        TreeNode(int val, TreeNode left, TreeNode right) {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
+    }
+
+    /**
+     * 102. 二叉树的层序遍历
+     */
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> result = new ArrayList<>();
+        Deque<TreeNode> nodes = new LinkedList<>();
+        if (root != null) {
+            nodes.offerLast(root);
+        }
+
+        while (!nodes.isEmpty()) {
+            int size = nodes.size();
+            ArrayList<Integer> item = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                TreeNode pop = nodes.pollFirst();
+                item.add(pop.val);
+                if (pop.left != null) {
+                    nodes.offerLast(pop.left);
+                }
+                if (pop.right != null) {
+                    nodes.offerLast(pop.right);
+                }
+
+            }
+            result.add(item);
+        }
+        return result;
+    }
+
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> result = new ArrayList<>();
+        Deque<TreeNode> nodes = new LinkedList<>();
+        if (root != null) {
+            nodes.offerLast(root);
+        }
+
+        boolean dir = false;
+        while (!nodes.isEmpty()) {
+            int size = nodes.size();
+            ArrayList<Integer> item = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                TreeNode pop = nodes.pollFirst();
+                if (dir) {
+                    item.add(pop.val);
+                } else {
+                    item.add(0, pop.val);
+                }
+                if (pop.left != null) {
+                    nodes.offerLast(pop.left);
+                }
+                if (pop.right != null) {
+                    nodes.offerLast(pop.right);
+                }
+            }
+            dir = !dir;
+            result.add(item);
+        }
+        return result;
+    }
+
+    /**
+     * 18.四数之和
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+
+        List<List<Integer>> result = new ArrayList<>();
+
+        int length = nums.length;
+        for (int i = 1; i < length; i++) {
+            int swapValue = nums[i];
+            int curPos = i;
+            while (curPos > 0 && swapValue < nums[curPos - 1]) {
+                nums[curPos] = nums[curPos - 1];
+                curPos--;
+            }
+            nums[curPos] = swapValue;
+        }
+        System.out.println(Arrays.toString(nums));
+
+        for (int a = 0; a < length; a++) {
+            if (a != 0 && nums[a] == nums[a - 1]) {
+                continue;
+            }
+            for (int b = a + 1; b < length; b++) {
+                if (b != a + 1 && nums[b] == nums[b - 1]) {
+                    continue;
+                }
+
+
+                int curTarget = target - nums[a] - nums[b];
+                int d = length - 1;
+
+                for (int c = b + 1; c < length; c++) {
+                    if (c != b + 1 && nums[c] == nums[c - 1]) {
+                        continue;
+                    }
+
+                    while (c < d) {
+                        int diff = nums[c] + nums[d] - curTarget;
+                        if (diff == 0) {
+                            List<Integer> item = new ArrayList<>();
+                            item.add(nums[a]);
+                            item.add(nums[b]);
+                            item.add(nums[c]);
+                            item.add(nums[d]);
+                            result.add(item);
+                            break;
+                        } else if (diff < 0) {
+                            break;
+                        } else {
+                            d--;
+                        }
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+
+    /**
+     * 输入：nums = [1,0,-1,0,-2,2], target = 0
+     * 输出：[[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]
+     */
+    @Test
+    public void testfourSum() {
+        List<List<Integer>> lists = fourSum(new int[]{1, 0, -1, 0, -2, 2}, 0);
+        System.out.println(lists);
+    }
+
+    public class ListNode {
+        int val;
+        ListNode next;
+
+        ListNode() {
+        }
+
+        ListNode(int val) {
+            this.val = val;
+        }
+
+        ListNode(int val, ListNode next) {
+            this.val = val;
+            this.next = next;
+        }
+    }
+
+    /**
+     * 19. 删除链表的倒数第 N 个结点
+     *
+     * @param head
+     * @param n
+     * @return
+     */
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        if (head == null) {
+            return head;
+        }
+        ListNode preN = null;
+        ListNode curN = head;
+        for (int i = 0; i < n - 1; i++) {
+            curN = curN.next;
+        }
+
+        while (true) {
+            curN = curN.next;
+            if (curN == null) {
+                if (preN == null) {
+                    return head.next;
+                } else {
+                    preN.next = preN.next.next;
+                }
+                break;
+            }
+
+            if (preN == null) {
+                preN = head;
+            } else {
+                preN = preN.next;
+            }
+        }
+        return head;
     }
 
 }
