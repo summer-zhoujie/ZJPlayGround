@@ -36,4 +36,8 @@ public class CustomViewActivity extends AppCompatActivity {
     public void paint_Join_BEVEL_MITER_ROUND(View view) {
         JoinUsageActivity.launch(this);
     }
+
+    public void gradient_circle_progress(View view) {
+        startActivity(new Intent(this,CircleGradientActivity.class));
+    }
 }

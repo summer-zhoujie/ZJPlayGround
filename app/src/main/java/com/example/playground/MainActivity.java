@@ -41,8 +41,14 @@ import com.zj.tools.mylibrary.ZJHiddenApiUtils;
 import com.zj.tools.mylibrary.ZJLog;
 
 import java.io.File;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Action;
@@ -180,6 +186,14 @@ public class MainActivity extends Activity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(adapter);
+
+
+        Calendar calendar = Calendar.getInstance();
+        long currentTime = calendar.getTimeInMillis();
+        calendar.setTimeZone(TimeZone.getTimeZone("GMT+08:00"));
+        calendar.setTimeInMillis(currentTime);
+        ZJLog.d("getTodayBeginTime: " + calendar.getTimeInMillis());
+        ZJLog.d("currentTimeMillis: " + System.currentTimeMillis());
     }
 
     /**
