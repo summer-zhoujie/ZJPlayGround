@@ -132,6 +132,7 @@ public class RunDayProcessViewClear extends View {
 
         LinearGradient linearGradient = new LinearGradient(w/2,0,w/2,h,PROCESS_COLOR_START,PROCESS_COLOR_END, Shader.TileMode.CLAMP);
         paint_process_bg.setShader(linearGradient);
+        paint_process.setShader(linearGradient);
 
         process_bg_bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(process_bg_bitmap);
@@ -158,8 +159,8 @@ public class RunDayProcessViewClear extends View {
             ZJLog.d("");
 //            canvas.drawBitmap(process_bg_bitmap,0,0,paint_bitmap);
             canvas.drawArc(arcRect, bgStartAngle, processSweepAngle, false, paint_process);
-            paint_process_bg.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-            canvas.drawRect(0, 0, w, h, paint_process_bg);
+//            paint_process_bg.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+//            canvas.drawRect(0, 0, w, h, paint_process_bg);
 //            paint_bitmap.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
 //            canvas.drawBitmap(process_bg_fore_bitmap,0,0,paint_bitmap);
 //            canvas.restore();
