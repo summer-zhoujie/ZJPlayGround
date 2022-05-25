@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
@@ -15,6 +16,8 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
+
+import com.zj.tools.mylibrary.ZJLog;
 
 import java.util.Random;
 
@@ -30,14 +33,15 @@ public class RunDayProcessViewClear extends View {
     /**
      * 进度条轨道的颜色
      */
-    private final static int BACKGROUND_COLOR = Color.parseColor("#3D51BA");
+    private final static int BACKGROUND_COLOR = Color.WHITE;//Color.parseColor("#3D51BA");
     /**
      * 进度条的颜色
      */
-    private final static int PROCESS_COLOR_START = Color.parseColor("#F1FF61");
-    private final static int PROCESS_COLOR_END = Color.parseColor("#62FFA6");
+    private final static int PROCESS_COLOR_START = Color.RED;//Color.parseColor("#F1FF61");
+    private final static int PROCESS_COLOR_END = Color.GREEN;//Color.parseColor("#62FFA6");
     private Paint paint_bg;
     private Paint paint_process_bg;
+    private Paint paint_bitmap = new Paint();
     private RectF arcRect = null;
     /**
      * 定义进度条的宽度
@@ -58,6 +62,11 @@ public class RunDayProcessViewClear extends View {
     private Paint paint_process;
     private float processSweepAngle = 0;
     private Bitmap process_bg_bitmap;
+    private Path path = new Path();
+    private RectF arcRectOut;
+    private RectF arcRectInner;
+    private Bitmap process_bg_fore_bitmap;
+    private Canvas canvas_2;
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,7 +89,8 @@ public class RunDayProcessViewClear extends View {
 
     private void init() {
 
-        PROCESS_WIDTH = 10;
+        //TODO Summer
+        PROCESS_WIDTH = 30;
 
         paint_bg = new Paint();
         paint_bg.setColor(BACKGROUND_COLOR);
@@ -90,7 +100,7 @@ public class RunDayProcessViewClear extends View {
         paint_bg.setStrokeCap(Paint.Cap.ROUND);
 
         paint_process = new Paint();
-        paint_process.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+        paint_process.setColor(Color.RED);
         paint_process.setAntiAlias(true);
         paint_process.setStyle(Paint.Style.STROKE);
         paint_process.setStrokeWidth(PROCESS_WIDTH);
@@ -99,6 +109,10 @@ public class RunDayProcessViewClear extends View {
         paint_process_bg = new Paint();
         paint_process_bg.setAntiAlias(true);
         paint_process_bg.setStyle(Paint.Style.FILL);
+
+        path.setFillType(Path.FillType.EVEN_ODD);
+
+        paint_bitmap.setStyle(Paint.Style.FILL);
 
     }
 
@@ -109,17 +123,24 @@ public class RunDayProcessViewClear extends View {
         this.h = h;
         int padding = PROCESS_WIDTH;
         arcRect = new RectF(0 + padding, 0 + padding, w - padding, w - padding);
+        arcRectOut = new RectF(0 , 0 , w , w );
+        arcRectInner = new RectF(0 + padding, 0 + padding, w - padding, w - padding);
 
         // 计算进度和背景圆弧的长度
         bgSweepAngle = actPercent * 360;
         processSweepAngle = bgSweepAngle * process / max;
 
-        LinearGradient linearGradient = new LinearGradient(0,0,w,h,PROCESS_COLOR_START,PROCESS_COLOR_END, Shader.TileMode.CLAMP);
+        LinearGradient linearGradient = new LinearGradient(w/2,0,w/2,h,PROCESS_COLOR_START,PROCESS_COLOR_END, Shader.TileMode.CLAMP);
         paint_process_bg.setShader(linearGradient);
 
         process_bg_bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(process_bg_bitmap);
         canvas.drawRect(0, 0, w, h, paint_process_bg);
+
+        process_bg_fore_bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        canvas_2 = new Canvas(process_bg_fore_bitmap);
+        canvas_2.drawColor(0x00FFFFFF);
+        ZJLog.d("");
     }
 
     @Override
@@ -127,10 +148,21 @@ public class RunDayProcessViewClear extends View {
         super.draw(canvas);
         if (h != -1 && w != -1 && arcRect != null) {
 //            canvas.drawArc(arcRect, bgStartAngle, bgSweepAngle, false, paint_bg);
-            canvas.save();
-            canvas.drawBitmap(process_bg_bitmap,w,h,paint_process_bg);
-//            canvas.drawArc(arcRect, bgStartAngle, processSweepAngle, false, paint_process);
-            canvas.restore();
+//            canvas.save();
+
+//            path.reset();
+//            path.addArc(arcRectOut, bgStartAngle, processSweepAngle);
+//            path.addArc(arcRectInner, bgStartAngle, processSweepAngle);
+//            canvas.clipPath(path);
+//            canvas.drawRect(0,0,w,h,paint_process_bg);
+            ZJLog.d("");
+//            canvas.drawBitmap(process_bg_bitmap,0,0,paint_bitmap);
+            canvas.drawArc(arcRect, bgStartAngle, processSweepAngle, false, paint_process);
+            paint_process_bg.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+            canvas.drawRect(0, 0, w, h, paint_process_bg);
+//            paint_bitmap.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+//            canvas.drawBitmap(process_bg_fore_bitmap,0,0,paint_bitmap);
+//            canvas.restore();
         }
     }
 
@@ -145,7 +177,7 @@ public class RunDayProcessViewClear extends View {
     public void setProcess(float newValue) {
         //TODO Summer
         Random random = new Random();
-        newValue = 1.0f;
+        newValue = 0.8f;
         this.process = Math.max(newValue, 0.0f);
         this.process = Math.min(newValue, 1.0f);
 
