@@ -80,6 +80,7 @@ public class MainActivity extends Activity {
     public static final String ITEM_19 = "19. onMeasure打点测试";
     public static final String ITEM_20 = "20. 事件分发测试代码";
     public static final String ITEM_21 = "21. 旋转屏幕UI默认恢复情况";
+    public static final String ITEM_22 = "22. TextView缩放";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +90,7 @@ public class MainActivity extends Activity {
         recyclerView = findViewById(R.id.list);
 
         final ArrayList<String> data = new ArrayList<>();
+        data.add(ITEM_22);
         data.add(ITEM_21);
         data.add(ITEM_20);
         data.add(ITEM_19);
@@ -115,7 +117,10 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(String title) {
                 switch (title) {
-                    case ITEM_21:
+                    case ITEM_22:
+                        startActivity(new Intent(MainActivity.this, TextViewAutosizeActivity.class));
+                        break;
+                        case ITEM_21:
                         startActivity(new Intent(MainActivity.this, RotateConfigChangeActivity.class));
                         break;
                     case ITEM_20:

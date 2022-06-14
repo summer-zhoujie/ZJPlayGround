@@ -15,5 +15,7 @@ public class CircleGradientActivity extends AppCompatActivity {
         setContentView(R.layout.activity_circle_gradient);
         RunDayProcessViewClear rundayprocessviewclear = findViewById(R.id.RunDayProcessViewClear);
         rundayprocessviewclear.setProcess(1.0f);
+        RunBigProcessView runbigprocessview = findViewById(R.id.RunBigProcessView);
+        runbigprocessview.setProcess(1.0f);
     }
 }

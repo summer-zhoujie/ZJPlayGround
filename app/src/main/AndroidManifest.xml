@@ -25,6 +25,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".TextViewAutosizeActivity"
+            android:exported="false" />
+        <activity
             android:name=".customview.CircleGradientActivity"
             android:exported="false" />
         <activity
