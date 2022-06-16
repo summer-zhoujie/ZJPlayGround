@@ -19,5 +19,5 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
--printusage /Users/summer/Downloads/usage.txt
--printseeds /Users/summer/Downloads/seeds.txt
+#-printusage /Users/summer/Downloads/usage.txt
+#-printseeds /Users/summer/Downloads/seeds.txt
