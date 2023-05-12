@@ -38,6 +38,28 @@
         android:text="弹出popWindow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
+    <Button
+        android:id="@+id/bt_popdialogAndWindow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="188dp"
+        android:layout_marginTop="20dp"
+        android:onClick="clickShowDialog_Popwindow"
+        android:text="先弹Dialog再弹popWindow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <Button
+        android:id="@+id/bt_popWindowAndDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="188dp"
+        android:layout_marginTop="20dp"
+        android:onClick="clickShowPopwindow_Dialog"
+        android:text="先弹popWindow再弹Dialog"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
 
     <Button
         android:id="@+id/bt_toast"

@@ -161,4 +161,14 @@ public class DialogTestActivity extends AppCompatActivity {
         super.onStop();
         ZJLog.d("");
     }
+
+    public void clickShowDialog_Popwindow(View view) {
+        click2Show(view);
+        clickShowPopwindow(view);
+    }
+
+    public void clickShowPopwindow_Dialog(View view) {
+        clickShowPopwindow(view);
+        click2Show(view);
+    }
 }
