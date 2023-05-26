@@ -24,7 +24,7 @@ class DragView @kotlin.jvm.JvmOverloads constructor(
     private var isLongPressThisTime = false
     private var gesture: GestureDetector
     private val simpleOnGestureListener = object : GestureDetector.SimpleOnGestureListener() {
-        override fun onLongPress(e: MotionEvent?) {
+        override fun onLongPress(e: MotionEvent) {
             super.onLongPress(e)
             isLongPressThisTime = true
         }
@@ -38,7 +38,7 @@ class DragView @kotlin.jvm.JvmOverloads constructor(
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         // 监听长按的触发
-        gesture.onTouchEvent(ev)
+        ev?.let { gesture.onTouchEvent(it) }
         return super.dispatchTouchEvent(ev)
     }
 
@@ -99,18 +99,18 @@ class DragView @kotlin.jvm.JvmOverloads constructor(
             animator.duration = 300
             animator.interpolator = DecelerateInterpolator()
             animator.addListener(object : Animator.AnimatorListener{
-                override fun onAnimationStart(animation: Animator?) {
+                override fun onAnimationStart(animation: Animator) {
                 }
 
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationEnd(animation: Animator) {
                     isClickable=true
                 }
 
-                override fun onAnimationCancel(animation: Animator?) {
+                override fun onAnimationCancel(animation: Animator) {
                     isClickable = true
                 }
 
-                override fun onAnimationRepeat(animation: Animator?) {
+                override fun onAnimationRepeat(animation: Animator) {
                 }
 
             })

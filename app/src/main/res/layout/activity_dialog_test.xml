@@ -55,8 +55,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="188dp"
         android:layout_marginTop="20dp"
-        android:onClick="clickShowPopwindow_Dialog"
-        android:text="先弹popWindow再弹Dialog"
+        android:onClick="clickShowDoubleDialog"
+        android:text="弹出两个dialog"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 

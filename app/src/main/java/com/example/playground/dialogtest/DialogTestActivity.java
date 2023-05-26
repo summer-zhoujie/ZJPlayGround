@@ -167,8 +167,8 @@ public class DialogTestActivity extends AppCompatActivity {
         clickShowPopwindow(view);
     }
 
-    public void clickShowPopwindow_Dialog(View view) {
-        clickShowPopwindow(view);
-        click2Show(view);
+    public void clickShowDoubleDialog(View view) {
+        new TestDialog(this).show(0.74f);
+        new TestNoDimDialog(this).show();
     }
 }

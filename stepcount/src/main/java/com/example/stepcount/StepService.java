@@ -17,9 +17,6 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
 
-
-import androidx.core.app.NotificationCompat;
-
 import com.example.stepcount.beans.StepData;
 import com.example.stepcount.db.LocalDBHelper;
 import com.example.stepcount.interfaces.StepValuePassListener;
@@ -96,10 +93,6 @@ public class StepService extends Service implements SensorEventListener {
      * IBinder对象，向Activity传递数据的桥梁
      */
     private StepBinder stepBinder = new StepBinder();
-    /**
-     * 通知构建者
-     */
-    private NotificationCompat.Builder mBuilder;
     /**
      * 启动到今天为止所有的步数总计
      */

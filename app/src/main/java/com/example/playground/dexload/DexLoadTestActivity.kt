@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import com.example.playground.R
 import com.zj.tools.mylibrary.ZJLog
 import java.io.File
@@ -36,9 +35,9 @@ class DexLoadTestActivity : AppCompatActivity() {
             val checkSelfPermission =
                 ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
             if (checkSelfPermission == PERMISSION_GRANTED) {
-                loadBtn.isVisible = true
+                loadBtn.visibility = View.VISIBLE
             } else {
-                loadBtn.isVisible = false
+                loadBtn.visibility = View.GONE
                 requestPermissions(
                     arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
                     PERMISSION_REQUEST_CODE
@@ -52,6 +51,7 @@ class DexLoadTestActivity : AppCompatActivity() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_REQUEST_CODE && grantResults.isNotEmpty()) {
             var isGranted = true
             for (grantResult in grantResults) {
@@ -60,7 +60,7 @@ class DexLoadTestActivity : AppCompatActivity() {
                     break
                 }
             }
-            loadBtn.isVisible = isGranted
+            loadBtn.visibility = if (isGranted) View.VISIBLE else View.GONE
         }
     }
 
