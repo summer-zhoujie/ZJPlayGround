@@ -25,6 +25,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".parserString.ParserStringActivity"
+            android:exported="false" />
+        <activity
             android:name=".motionlayout.MotionLayoutTestActivity"
             android:exported="false" />
         <activity
@@ -42,51 +45,72 @@
         <activity
             android:name=".dragview.DragViewActivity"
             android:exported="true" />
-        <activity android:name=".onmeasure.OnMeasureTestActivity"
-            android:exported="false"/>
-        <activity android:name=".step.StepCountActivity"
-            android:exported="false"/>
-        <activity android:name=".bitmap.BitmapTestActivity"
-            android:exported="false"/>
-        <activity android:name=".webviewtest.WebViewTestActivity"
-            android:exported="false"/>
-        <activity android:name=".drawcolor.DrawClolorActivity"
-            android:exported="false"/>
-        <activity android:name=".locationonscreen.LocationOnScreenActivity"
-            android:exported="false"/>
-        <activity android:name=".customview.paint.JoinUsageActivity"
-            android:exported="false"/>
-        <activity android:name=".customview.canvas.ClipRectUsageActivity"
-            android:exported="false"/>
-        <activity android:name=".customview.CustomViewActivity"
-            android:exported="false"/>
-        <activity android:name=".floatappView.FloatViewActivity"
-            android:exported="false"/>
-        <activity android:name=".viewinvisiable.InVisiableViewClickActivity"
-            android:exported="false"/>
+        <activity
+            android:name=".onmeasure.OnMeasureTestActivity"
+            android:exported="false" />
+        <activity
+            android:name=".step.StepCountActivity"
+            android:exported="false" />
+        <activity
+            android:name=".bitmap.BitmapTestActivity"
+            android:exported="false" />
+        <activity
+            android:name=".webviewtest.WebViewTestActivity"
+            android:exported="false" />
+        <activity
+            android:name=".drawcolor.DrawClolorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".locationonscreen.LocationOnScreenActivity"
+            android:exported="false" />
+        <activity
+            android:name=".customview.paint.JoinUsageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".customview.canvas.ClipRectUsageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".customview.CustomViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".floatappView.FloatViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".viewinvisiable.InVisiableViewClickActivity"
+            android:exported="false" />
         <activity
             android:name=".dialogtest.DialogCoverActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.Dialog" />
-        <activity android:name=".activityfindviewbyid.FindViewByIdActivity"
-            android:exported="false"/>
-        <activity android:name=".permissionrequesttest.PermissionRequestTestActivity"
-            android:exported="false"/>
-        <activity android:name=".dialogtest.DialogTestActivity"
-            android:exported="false"/>
-        <activity android:name=".tigermachine.effect2.Effect2Activity"
-            android:exported="false"/>
-        <activity android:name=".tigermachine.TigerMachineActivity"
-            android:exported="false"/>
-        <activity android:name=".tigermachine.effect1.Effect1Activity"
-            android:exported="false"/>
-        <activity android:name=".strokenanimation.StrokeTestActivity"
-            android:exported="false"/>
-        <activity android:name=".exchangeCard.ExchangeCardActivity"
-            android:exported="false"/>
-        <activity android:name=".largeImage.LargeImageViewActivity"
-            android:exported="false"/>
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".activityfindviewbyid.FindViewByIdActivity"
+            android:exported="false" />
+        <activity
+            android:name=".permissionrequesttest.PermissionRequestTestActivity"
+            android:exported="false" />
+        <activity
+            android:name=".dialogtest.DialogTestActivity"
+            android:exported="false" />
+        <activity
+            android:name=".tigermachine.effect2.Effect2Activity"
+            android:exported="false" />
+        <activity
+            android:name=".tigermachine.TigerMachineActivity"
+            android:exported="false" />
+        <activity
+            android:name=".tigermachine.effect1.Effect1Activity"
+            android:exported="false" />
+        <activity
+            android:name=".strokenanimation.StrokeTestActivity"
+            android:exported="false" />
+        <activity
+            android:name=".exchangeCard.ExchangeCardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".largeImage.LargeImageViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -30,6 +30,7 @@ import com.example.playground.floatappView.FloatViewActivity;
 import com.example.playground.guessidiom.GenerateIdiom;
 import com.example.playground.largeImage.LargeImageViewActivity;
 import com.example.playground.onmeasure.OnMeasureTestActivity;
+import com.example.playground.parserString.ParserStringActivity;
 import com.example.playground.permissionrequesttest.PermissionRequestTestActivity;
 import com.example.playground.rotateconfigchanged.RotateConfigChangeActivity;
 import com.example.playground.step.StepCountActivity;
@@ -81,6 +82,7 @@ public class MainActivity extends Activity {
     public static final String ITEM_20 = "20. 事件分发测试代码";
     public static final String ITEM_21 = "21. 旋转屏幕UI默认恢复情况";
     public static final String ITEM_22 = "22. TextView缩放";
+    public static final String ITEM_23 = "23. 反编译字符串解析";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +92,7 @@ public class MainActivity extends Activity {
         recyclerView = findViewById(R.id.list);
 
         final ArrayList<String> data = new ArrayList<>();
+        data.add(ITEM_23);
         data.add(ITEM_22);
         data.add(ITEM_21);
         data.add(ITEM_20);
@@ -117,10 +120,13 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(String title) {
                 switch (title) {
+                    case ITEM_23:
+                        startActivity(new Intent(MainActivity.this, ParserStringActivity.class));
+                        break;
                     case ITEM_22:
                         startActivity(new Intent(MainActivity.this, TextViewAutosizeActivity.class));
                         break;
-                        case ITEM_21:
+                    case ITEM_21:
                         startActivity(new Intent(MainActivity.this, RotateConfigChangeActivity.class));
                         break;
                     case ITEM_20:

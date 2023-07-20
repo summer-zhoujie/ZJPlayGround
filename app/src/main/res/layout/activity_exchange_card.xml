@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="10dp"
     android:background="#111111"
-    tools:context=".MainActivity" >
+    android:paddingBottom="10dp"
+    tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/tvcai"
@@ -23,14 +24,14 @@
         android:layout_height="96dp"
         android:layout_alignTop="@+id/puke3"
         android:layout_marginLeft="20dp"
-        android:layout_toRightOf="@+id/puke3"/>
+        android:layout_toRightOf="@+id/puke3" />
 
     <ImageView
         android:id="@+id/puke2"
         android:layout_width="71dp"
         android:layout_height="96dp"
-        android:layout_alignParentLeft="true"
         android:layout_below="@+id/tvcai"
+        android:layout_alignParentLeft="true"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="36dp" />
 
@@ -51,5 +52,25 @@
         android:layout_marginTop="40dp"
         android:background="#cdcdcd"
         android:text="重新玩一次" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tablayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnplayagian"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@android:color/transparent"
+        android:overScrollMode="never"
+        app:tabIndicatorColor="@null"
+        app:tabIndicatorHeight="0dp"
+        app:tabMode="scrollable">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Java" />
+    </com.google.android.material.tabs.TabLayout>
 
 </RelativeLayout>
