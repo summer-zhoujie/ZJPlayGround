@@ -83,6 +83,7 @@ public class MainActivity extends Activity {
     public static final String ITEM_21 = "21. 旋转屏幕UI默认恢复情况";
     public static final String ITEM_22 = "22. TextView缩放";
     public static final String ITEM_23 = "23. 反编译字符串解析";
+    public static final String ITEM_24 = "24. Glide运行断点";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +93,7 @@ public class MainActivity extends Activity {
         recyclerView = findViewById(R.id.list);
 
         final ArrayList<String> data = new ArrayList<>();
+        data.add(ITEM_24);
         data.add(ITEM_23);
         data.add(ITEM_22);
         data.add(ITEM_21);
@@ -120,6 +122,9 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(String title) {
                 switch (title) {
+                    case ITEM_24:
+                        startActivity(new Intent(MainActivity.this, GlideTestActivity.class));
+                        break;
                     case ITEM_23:
                         startActivity(new Intent(MainActivity.this, ParserStringActivity.class));
                         break;
