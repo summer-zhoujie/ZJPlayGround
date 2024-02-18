@@ -14,6 +14,8 @@ import java.lang.reflect.Constructor;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+import aestest.AESTest;
+
 public class App extends Application {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -23,5 +25,6 @@ public class App extends Application {
         ZJLog.init(true,"summer");
         ZJToast.init(this);
         MultiDex.install(this);
+        AESTest.mainMy();
     }
 }
