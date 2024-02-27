@@ -1,6 +1,7 @@
 package arithmetic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
@@ -8,7 +9,397 @@ import java.util.Stack;
 public class LeetCode {
 
     public static void main(String[] args) {
+        new Solution_204().countPrimes(499979);
+    }
 
+    /**
+     * 204. 计数质数
+     * 尝试过
+     * 中等
+     * 相关标签
+     * 相关企业
+     * 提示
+     * 给定整数 n ，返回 所有小于非负整数 n 的质数的数量 。
+     *
+     *
+     *
+     * 示例 1：
+     *
+     * 输入：n = 10
+     * 输出：4
+     * 解释：小于 10 的质数一共有 4 个, 它们是 2, 3, 5, 7 。
+     * 示例 2：
+     *
+     * 输入：n = 0
+     * 输出：0
+     * 示例 3：
+     *
+     * 输入：n = 1
+     * 输出：0
+     *
+     *
+     * 提示：
+     *
+     * 0 <= n <= 5 * 106
+     */
+    static class Solution_204 {
+        public int countPrimes(int n) {
+
+            // 埃氏筛
+            int[] arr = new int[n];
+            Arrays.fill(arr,1);
+            int res = 0;
+            for (int i = 2; i < n; i++) {
+                if(arr[i]==1){
+                    res++;
+                    if ((long) i * i < n) {
+                        for (int j = i * i; j < n; j += i) {
+                            System.out.println("j=" + j + ",n=" + n);
+                            arr[j] = 0;
+                        }
+                    }
+                }
+            }
+            return res;
+        }
+    }
+
+    /**
+     * 2867. 统计树中的合法路径数目
+     * 困难
+     * 相关标签
+     * 相关企业
+     * 提示
+     * 给你一棵 n 个节点的无向树，节点编号为 1 到 n 。给你一个整数 n 和一个长度为 n - 1 的二维整数数组 edges ，其中 edges[i] = [ui, vi] 表示节点 ui 和 vi 在树中有一条边。
+     * <p>
+     * 请你返回树中的 合法路径数目 。
+     * <p>
+     * 如果在节点 a 到节点 b 之间 恰好有一个 节点的编号是质数，那么我们称路径 (a, b) 是 合法的 。
+     * <p>
+     * 注意：
+     * <p>
+     * 路径 (a, b) 指的是一条从节点 a 开始到节点 b 结束的一个节点序列，序列中的节点 互不相同 ，且相邻节点之间在树上有一条边。
+     * 路径 (a, b) 和路径 (b, a) 视为 同一条 路径，且只计入答案 一次 。
+     */
+    static class Solution_2867 {
+        int N = 100001;
+        boolean[] prime = new boolean[N];
+
+        {
+            Arrays.fill(prime, true);
+            prime[1] = false;
+            for (int i = 2; i * i < N; i++) {
+                if (prime[i]) {
+                    for (int j = i * i; j < N; j += i) {
+                        prime[j] = false;
+                    }
+                }
+            }
+        }
+
+        public long countPaths(int n, int[][] edges) {
+
+
+            // 分析每个节点的第一层通路,存储在G中
+            List<Integer>[] G = new ArrayList[n + 1];
+            for (int i = 0; i < G.length; i++) {
+                G[i] = new ArrayList<>();
+            }
+            for (int[] edge : edges) {
+                int i = edge[0];
+                int j = edge[1];
+                G[i].add(j);
+                G[j].add(i);
+            }
+
+
+            long result = 0;
+            int cur = 0;
+            List<Integer> seachArr = new ArrayList<>();
+            // 存储计算的每个子树的节点数量
+            int[] count = new int[n + 1];
+            for (int i = 1; i <= n; i++) {
+                if (!prime[i]) {
+                    continue;
+                }
+
+                cur = 0;
+                // 开始遍历这个素数的每个子树
+                for (Integer j : G[i]) {
+                    if (prime[j]) {
+                        continue;
+                    }
+
+                    if (count[j] == 0) {
+                        seachArr.clear();
+                        deepFirstSearch(G, j, seachArr, i);
+                        for (Integer node : seachArr) {
+                            count[node] = seachArr.size();
+                        }
+                    }
+                    result += count[j] * cur;
+                    cur+=count[j];
+                }
+
+                result+=cur;
+            }
+            return result;
+        }
+
+        private void deepFirstSearch(List<Integer>[] G, Integer i, List<Integer> seachArr, int pre) {
+            seachArr.add(i);
+            for (Integer j : G[i]) {
+                if (j != pre && !prime[j]) {
+                    deepFirstSearch(G,j,seachArr,i);
+                }
+            }
+        }
+
+        public boolean isPrime(int value) {
+            if (value <= 1) {
+                return false;
+            }
+            for (int i = 2; i <= Math.sqrt(value); i++) {
+                if (value % i == 0) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    /**
+     * 2. 两数相加
+     * 中等
+     * 相关标签
+     * 相关企业
+     * 给你两个 非空 的链表，表示两个非负的整数。它们每位数字都是按照 逆序 的方式存储的，并且每个节点只能存储 一位 数字。
+     * <p>
+     * 请你将两个数相加，并以相同形式返回一个表示和的链表。
+     * <p>
+     * 你可以假设除了数字 0 之外，这两个数都不会以 0 开头。
+     */
+    class Solution_2 {
+
+        public class ListNode {
+            int val;
+            ListNode next;
+
+            ListNode() {
+            }
+
+            ListNode(int val) {
+                this.val = val;
+            }
+
+            ListNode(int val, ListNode next) {
+                this.val = val;
+                this.next = next;
+            }
+        }
+
+        public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+            ListNode result = new ListNode(0);
+            ListNode p = result;
+            ListNode p1 = l1;
+            ListNode p2 = l2;
+            while (p1 != null || p2 != null) {
+                int p1Value = p1 == null ? 0 : p1.val;
+                int p2Value = p2 == null ? 0 : p2.val;
+                int addValue = p.val + p1Value + p2Value;
+                p.val = addValue % 10;
+                int nextLevelNum = addValue / 10;
+                p1 = p1 == null ? null : p1.next;
+                p2 = p2 == null ? null : p2.next;
+                if (nextLevelNum > 0 || p1 != null || p2 != null) {
+                    p.next = new ListNode(nextLevelNum);
+                }
+                p = p.next;
+            }
+
+            return result;
+        }
+    }
+
+    /**
+     * 938. 二叉搜索树的范围和
+     * 简单
+     * 相关标签
+     * 相关企业
+     * 给定二叉搜索树的根结点 root，返回值位于范围 [low, high] 之间的所有结点的值的和。
+     */
+    class Solution_938 {
+
+        public class TreeNode {
+            int val;
+            TreeNode left;
+            TreeNode right;
+
+            TreeNode() {
+            }
+
+            TreeNode(int val) {
+                this.val = val;
+            }
+
+            TreeNode(int val, TreeNode left, TreeNode right) {
+                this.val = val;
+                this.left = left;
+                this.right = right;
+            }
+        }
+
+        public int rangeSumBST(TreeNode root, int low, int high) {
+            return rangeSumBST_Recursive(root, low, high);
+        }
+
+        public int rangeSumBST_Recursive(TreeNode root, int low, int high) {
+            if (root == null) {
+                return 0;
+            }
+            if (root.val < low) {
+                return rangeSumBST_Recursive(root.right, low, high);
+            } else if (root.val <= high) {
+                int left = rangeSumBST_Recursive(root.left, low, high);
+                int right = rangeSumBST_Recursive(root.right, low, high);
+                return root.val + left + right;
+            } else {
+                return rangeSumBST_Recursive(root.left, low, high);
+            }
+        }
+    }
+
+    /**
+     * 2583. 二叉树中的第 K 大层和
+     * 中等
+     * 相关标签
+     * 相关企业
+     * 提示
+     * 给你一棵二叉树的根节点 root 和一个正整数 k 。
+     * <p>
+     * 树中的 层和 是指 同一层 上节点值的总和。
+     * <p>
+     * 返回树中第 k 大的层和（不一定不同）。如果树少于 k 层，则返回 -1 。
+     * <p>
+     * 注意，如果两个节点与根节点的距离相同，则认为它们在同一层。
+     */
+    class kthLargestLevelSum_2583 {
+        public class TreeNode {
+            int val;
+            TreeNode left;
+            TreeNode right;
+
+            TreeNode() {
+            }
+
+            TreeNode(int val) {
+                this.val = val;
+            }
+
+            TreeNode(int val, TreeNode left, TreeNode right) {
+                this.val = val;
+                this.left = left;
+                this.right = right;
+            }
+        }
+
+        public long kthLargestLevelSum(TreeNode root, int k) {
+            HashMap<Integer, Long> result = new HashMap<>();
+
+            kthLargestLevelSum_Recursive(root, 1, result);
+            if (result.get(k - 1) == null) {
+                return -1;
+            }
+
+            // 插入排序
+            long[] sortArr = new long[k];
+            for (Long value : result.values()) {
+                if (value == null) {
+                    continue;
+                }
+                int index = k - 1;
+                while (index >= 0 && value > sortArr[index]) {
+                    if (index < k - 1) {
+                        //do swap
+                        sortArr[index + 1] = sortArr[index];
+                    }
+                    index--;
+                }
+                index++;
+                if (index < k) {
+                    sortArr[index] = value;
+                }
+            }
+            return sortArr[k - 1];
+        }
+
+        public void kthLargestLevelSum_Recursive(TreeNode root, int curFloor, HashMap<Integer, Long> result) {
+            if (root == null) {
+                return;
+            }
+            int curIndex = curFloor - 1;
+            Long integer = result.get(curIndex);
+            long preValue = integer == null ? 0 : integer;
+            result.put(curIndex, preValue + root.val);
+            kthLargestLevelSum_Recursive(root.left, curFloor + 1, result);
+            kthLargestLevelSum_Recursive(root.right, curFloor + 1, result);
+        }
+    }
+
+    /**
+     * 给定两个整数数组，preorder 和 postorder ，其中 preorder 是一个具有 无重复 值的二叉树的前序遍历，postorder 是同一棵树的后序遍历，重构并返回二叉树。
+     * <p>
+     * 如果存在多个答案，您可以返回其中 任何 一个。
+     */
+    class BuildTree_899 {
+        public class TreeNode {
+            int val;
+            TreeNode left;
+            TreeNode right;
+
+            TreeNode() {
+            }
+
+            TreeNode(int val) {
+                this.val = val;
+            }
+
+            TreeNode(int val, TreeNode left, TreeNode right) {
+                this.val = val;
+                this.left = left;
+                this.right = right;
+            }
+        }
+
+        public TreeNode constructFromPrePost(int[] preorder, int[] postorder) {
+            if (preorder == null || preorder.length == 0) {
+                return null;
+            }
+            HashMap<Integer, Integer> valueMapIndexOfPostorder = new HashMap<>();
+            for (int i = 0; i < postorder.length; i++) {
+                valueMapIndexOfPostorder.put(postorder[i], i);
+            }
+            return constructFromPrePostRecursive(valueMapIndexOfPostorder, preorder, postorder, 0, preorder.length - 1, 0, postorder.length - 1);
+        }
+
+        private TreeNode constructFromPrePostRecursive(HashMap<Integer, Integer> valueMapIndexOfPostorder, int[] preorder, int[] postorder, int preorder_left, int preorder_right, int postorder_left, int postorder_right) {
+            if (preorder_left > preorder_right || postorder_left > postorder_right) {
+                return null;
+            }
+            TreeNode root = new TreeNode(preorder[preorder_left]);
+            // 还有左树
+            if (preorder_left + 1 <= preorder_right) {
+                int leftTreeLength = valueMapIndexOfPostorder.get(preorder[preorder_left + 1]) - postorder_left + 1;
+                root.left = constructFromPrePostRecursive(valueMapIndexOfPostorder, preorder, postorder, preorder_left + 1, preorder_left + leftTreeLength, postorder_left, postorder_left + leftTreeLength - 1);
+
+                // 还有右树
+                if (preorder_left + leftTreeLength + 1 <= preorder_right) {
+                    root.right = constructFromPrePostRecursive(valueMapIndexOfPostorder, preorder, postorder, preorder_left + leftTreeLength + 1, preorder_right, postorder_left + leftTreeLength, postorder_right - 1);
+                }
+            }
+
+            return root;
+        }
     }
 
     /**
@@ -20,14 +411,21 @@ public class LeetCode {
             int val;
             TreeNode left;
             TreeNode right;
-            TreeNode() {}
-            TreeNode(int val) { this.val = val; }
+
+            TreeNode() {
+            }
+
+            TreeNode(int val) {
+                this.val = val;
+            }
+
             TreeNode(int val, TreeNode left, TreeNode right) {
                 this.val = val;
                 this.left = left;
                 this.right = right;
             }
         }
+
         public TreeNode buildTree_106(int[] inorder, int[] postorder) {
             if (inorder == null || inorder.length == 0) {
                 return null;
@@ -36,7 +434,7 @@ public class LeetCode {
             for (int i = 0; i < inorder.length; i++) {
                 valueIndexInInorderMap.put(inorder[i], i);
             }
-            return buildTreeNodeRecursive(valueIndexInInorderMap,inorder,postorder,0,inorder.length-1,0,postorder.length-1);
+            return buildTreeNodeRecursive(valueIndexInInorderMap, inorder, postorder, 0, inorder.length - 1, 0, postorder.length - 1);
         }
 
         public TreeNode buildTreeNodeRecursive(HashMap<Integer, Integer> valueIndexInInorderMap, int[] inorder, int[] postorder, int inorderLeft, int inorderRight, int postorderLeft, int postorderRight) {
@@ -47,19 +445,8 @@ public class LeetCode {
             int indexOfRootInInorder = valueIndexInInorderMap.get(root.val);
             int leftTreeLength = indexOfRootInInorder - inorderLeft;
             root.left = buildTreeNodeRecursive(valueIndexInInorderMap, inorder, postorder, inorderLeft, indexOfRootInInorder - 1, postorderLeft, postorderLeft + leftTreeLength - 1);
-            root.right = buildTreeNodeRecursive(valueIndexInInorderMap, inorder, postorder, indexOfRootInInorder+1, inorderRight, postorderLeft + leftTreeLength, postorderRight-1);
+            root.right = buildTreeNodeRecursive(valueIndexInInorderMap, inorder, postorder, indexOfRootInInorder + 1, inorderRight, postorderLeft + leftTreeLength, postorderRight - 1);
             return root;
-        }
-
-        public TreeNode buildTree_106_PlanB(int[] inorder, int[] postorder) {
-            if (inorder == null || inorder.length == 0) {
-                return null;
-            }
-            HashMap<Integer, Integer> valueIndexInInorderMap = new HashMap<>();
-            for (int i = 0; i < inorder.length; i++) {
-                valueIndexInInorderMap.put(inorder[i], i);
-            }
-            return buildTreeNodeRecursive(valueIndexInInorderMap,inorder,postorder,0,inorder.length-1,0,postorder.length-1);
         }
     }
 
