@@ -9,7 +9,294 @@ import java.util.Stack;
 public class LeetCode {
 
     public static void main(String[] args) {
-        new Solution_204().countPrimes(499979);
+        int[] arrs = {4, 4, 4, 5, 6};
+        boolean i = new Solution_2369().validPartition(arrs);
+        System.out.println(i);
+    }
+
+    static class Solution_232{
+        class MyQueue {
+            private Stack<Integer> stack1 = new Stack<Integer>();
+            private Stack<Integer> stack2 = new Stack<Integer>();
+
+            public MyQueue() {
+
+            }
+
+            public void push(int x) {
+                stack2.push(x);
+            }
+
+            public int pop() {
+                if (stack1.size() <= 0) {
+                    while (!stack2.isEmpty()) {
+                        stack1.push(stack2.pop());
+                    }
+                }
+                return stack1.pop();
+            }
+
+            public int peek() {
+                if (stack1.size() <= 0) {
+                    while (!stack2.isEmpty()) {
+                        stack1.push(stack2.pop());
+                    }
+                }
+                return stack1.peek();
+            }
+
+            public boolean empty() {
+                return stack1.empty() && stack2.empty();
+            }
+        }
+    }
+
+    /**
+     * 2369. 检查数组是否存在有效划分
+     */
+    static class Solution_2369 {
+        // 使用动态规划的解决方案
+        // 长度位n的数组是否存在有效划分的结果依赖
+        // 长度n-2的数组划分结果
+        // || 长度n-3的数组划分结果
+        public boolean validPartition(int[] nums) {
+            int n = nums.length + 1;
+            boolean[] cacheArr = new boolean[n];
+            cacheArr[0] = true;
+            for (int i = 1; i < n; i++) {
+                if (i - 2 >= 0 && cacheArr[i - 2] && nums[i - 1] == nums[i - 2]) {
+                    cacheArr[i] = true;
+                } else if (i - 3 >= 0 && cacheArr[i - 3] && nums[i - 1] == nums[i - 2] && nums[i - 1] == nums[i - 3]) {
+                    cacheArr[i] = true;
+                } else if (i - 3 >= 0 && cacheArr[i - 3] && nums[i - 1] == nums[i - 2] + 1 && nums[i - 1] == nums[i - 3] + 2) {
+                    cacheArr[i] = true;
+                }
+            }
+            return cacheArr[nums.length];
+        }
+
+        // 超时了
+        public boolean validPartition_planB(int[] nums) {
+            // 2个相同 3个相同 3连续
+            return dfs(nums, 0);
+        }
+
+        private boolean dfs(int[] nums, int startIndex) {
+            if (startIndex == nums.length) {
+                // 一组有效遍历结束
+                return true;
+            }
+            if (startIndex == nums.length - 1 || startIndex < 0) {
+                return false;
+            }
+            if (nums[startIndex] == nums[startIndex + 1]) {
+                System.out.println("[" + nums[startIndex] + "," + nums[startIndex + 1] + "]");
+                // 找到2个相同,继续往下
+                if (dfs(nums, startIndex + 2)) {
+                    return true;
+                }
+            }
+
+            if (startIndex + 2 < nums.length && nums[startIndex] == nums[startIndex + 1] && nums[startIndex] == nums[startIndex + 2]) {
+                System.out.println("[" + nums[startIndex] + "," + nums[startIndex + 1] + "," + nums[startIndex + 2] + "]");
+                // 找到3个相同,继续往下
+                if (dfs(nums, startIndex + 3)) {
+                    return true;
+                }
+            }
+
+            if (startIndex + 2 < nums.length && nums[startIndex] + 1 == nums[startIndex + 1] && nums[startIndex] + 2 == nums[startIndex + 2]) {
+                System.out.println("[" + nums[startIndex] + "," + nums[startIndex + 1] + "," + nums[startIndex + 2] + "]");
+                //找到三个连续,继续往下
+                if (dfs(nums, startIndex + 3)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    /**
+     * 2581. 统计可能的树根数目
+     */
+    static class Solution_2581 {
+
+        public int rootCount(int[][] edges, int[][] guesses, int k) {
+            HashMap<String, Integer> map = new HashMap<>();
+            for (int[] guess : guesses) {
+                map.put(guess[0] + "," + guess[1], 1);
+            }
+            int n = edges.length + 1;
+
+            List<Integer>[] G = new List[n];
+            for (int i = 0; i < G.length; i++) {
+                G[i] = new ArrayList<>();
+            }
+
+            for (int[] edge : edges) {
+                int i = edge[0];
+                int j = edge[1];
+                G[i].add(j);
+                G[j].add(i);
+            }
+
+            int result = 0;
+
+            // 广度遍历获取动态规划第一步结果,初始节点为0时
+            int kCount = df_search(G, 0, -1, map);
+            if (kCount >= k) {
+                result++;
+            }
+
+            // 从0节点开始进行广度偏移
+            result += df_move(G, 0, -1, map, kCount, k);
+
+            return result;
+        }
+
+        private int df_move(List<Integer>[] g, int start, int exclude, HashMap<String, Integer> map, int curKCount, int k) {
+            int result = 0;
+            for (Integer i : g[start]) {
+                if (i != exclude) {
+                    String oldKey = start + "," + i;
+                    String newKey = i + "," + start;
+                    boolean containsOldKey = map.containsKey(oldKey);
+                    boolean containsNewKey = map.containsKey(newKey);
+                    int newKCount = curKCount;
+                    if (containsOldKey && !containsNewKey) {
+                        newKCount -= 1;
+                    } else if (!containsOldKey && containsNewKey) {
+                        newKCount += 1;
+                    }
+                    if (newKCount >= k) {
+                        result += 1;
+                    }
+                    result += df_move(g, i, start, map, newKCount, k);
+                }
+            }
+            return result;
+        }
+
+        private int df_search(List<Integer>[] g, int start, int exclude, HashMap<String, Integer> map) {
+            int result = 0;
+            for (Integer i : g[start]) {
+                if (i != exclude) {
+                    String key = start + "," + i;
+                    if (map.get(key) != null) {
+                        result += 1;
+                    }
+                    result += df_search(g, i, start, map);
+                }
+            }
+            return result;
+        }
+
+        /**
+         * 时间上不合格
+         *
+         * @param edges
+         * @param guesses
+         * @param k
+         * @return
+         */
+        public int rootCount_PlanB(int[][] edges, int[][] guesses, int k) {
+            int n = edges.length + 1;
+
+            List<Integer>[] G = new List[n];
+            for (int i = 0; i < G.length; i++) {
+                G[i] = new ArrayList<>();
+            }
+
+            for (int[] edge : edges) {
+                int i = edge[0];
+                int j = edge[1];
+                G[i].add(j);
+                G[j].add(i);
+            }
+
+            int result = 0;
+            int[] floor = new int[n];
+            for (int i = 0; i < n; i++) {
+                int count = 0;
+                //构建节点层数关系
+                bfs(G, i, -1, floor, 1);
+                for (int[] guess : guesses) {
+                    if (floor[guess[0]] < floor[guess[1]]) {
+                        count++;
+                        if (count >= k) {
+                            result++;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private void bfs(List<Integer>[] g, int root, int exclude, int[] floor, int curFloor) {
+            floor[root] = curFloor;
+            for (Integer i : g[root]) {
+                if (i != exclude) {
+                    bfs(g, i, root, floor, curFloor + 1);
+                }
+            }
+        }
+
+
+    }
+
+    /**
+     * 2673. 使二叉树所有路径值相等的最小代价
+     * 中等
+     * 相关标签
+     * 相关企业
+     * 提示
+     * 给你一个整数 n 表示一棵 满二叉树 里面节点的数目，节点编号从 1 到 n 。根节点编号为 1 ，树中每个非叶子节点 i 都有两个孩子，分别是左孩子 2 * i 和右孩子 2 * i + 1 。
+     * <p>
+     * 树中每个节点都有一个值，用下标从 0 开始、长度为 n 的整数数组 cost 表示，其中 cost[i] 是第 i + 1 个节点的值。每次操作，你可以将树中 任意 节点的值 增加 1 。你可以执行操作 任意 次。
+     * <p>
+     * 你的目标是让根到每一个 叶子结点 的路径值相等。请你返回 最少 需要执行增加操作多少次。
+     * <p>
+     * 注意：
+     * <p>
+     * 满二叉树 指的是一棵树，它满足树中除了叶子节点外每个节点都恰好有 2 个子节点，且所有叶子节点距离根节点距离相同。
+     * 路径值 指的是路径上所有节点的值之和。
+     * <p>
+     * <p>
+     * 输入：n = 7, cost = [1,5,2,2,3,3,1]
+     * 输出：6
+     * 解释：我们执行以下的增加操作：
+     * - 将节点 4 的值增加一次。
+     * - 将节点 3 的值增加三次。
+     * - 将节点 7 的值增加两次。
+     * 从根到叶子的每一条路径值都为 9 。
+     * 总共增加次数为 1 + 3 + 2 = 6 。
+     * 这是最小的答案。
+     */
+    static class Solution_2673 {
+        public int minIncrements(int n, int[] cost) {
+            int result = 0;
+            // 计算二叉树层数, 满二叉树层数一定是整数(层数从1开始)
+            int floor = (int) (Math.log(n + 1) / Math.log(2));
+
+            // 按层数倒序遍历,广度优先
+            for (int curFloor = floor; curFloor > 1; curFloor--) {
+
+                // 计算当前层第一个节点编号
+                int i = ((int) Math.pow(2, curFloor - 1));
+                int curFloorCount = i;
+                for (int j = 0; j < curFloorCount / 2; j++) {
+                    int indexLeft = i + 2 * j - 1;
+                    int indexRight = i + 2 * j;
+                    int parentIndex = (indexRight) / 2 - 1;
+                    int abs = Math.abs(cost[indexLeft] - cost[indexRight]);
+                    result += abs;
+                    cost[parentIndex] += Math.max(cost[indexLeft], cost[indexRight]);
+                }
+            }
+            return result;
+        }
     }
 
     /**
@@ -20,26 +307,26 @@ public class LeetCode {
      * 相关企业
      * 提示
      * 给定整数 n ，返回 所有小于非负整数 n 的质数的数量 。
-     *
-     *
-     *
+     * <p>
+     * <p>
+     * <p>
      * 示例 1：
-     *
+     * <p>
      * 输入：n = 10
      * 输出：4
      * 解释：小于 10 的质数一共有 4 个, 它们是 2, 3, 5, 7 。
      * 示例 2：
-     *
+     * <p>
      * 输入：n = 0
      * 输出：0
      * 示例 3：
-     *
+     * <p>
      * 输入：n = 1
      * 输出：0
-     *
-     *
+     * <p>
+     * <p>
      * 提示：
-     *
+     * <p>
      * 0 <= n <= 5 * 106
      */
     static class Solution_204 {
@@ -47,10 +334,10 @@ public class LeetCode {
 
             // 埃氏筛
             int[] arr = new int[n];
-            Arrays.fill(arr,1);
+            Arrays.fill(arr, 1);
             int res = 0;
             for (int i = 2; i < n; i++) {
-                if(arr[i]==1){
+                if (arr[i] == 1) {
                     res++;
                     if ((long) i * i < n) {
                         for (int j = i * i; j < n; j += i) {
@@ -138,10 +425,10 @@ public class LeetCode {
                         }
                     }
                     result += count[j] * cur;
-                    cur+=count[j];
+                    cur += count[j];
                 }
 
-                result+=cur;
+                result += cur;
             }
             return result;
         }
@@ -150,7 +437,7 @@ public class LeetCode {
             seachArr.add(i);
             for (Integer j : G[i]) {
                 if (j != pre && !prime[j]) {
-                    deepFirstSearch(G,j,seachArr,i);
+                    deepFirstSearch(G, j, seachArr, i);
                 }
             }
         }
