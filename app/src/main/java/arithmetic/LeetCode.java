@@ -1,20 +1,377 @@
 package arithmetic;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+import androidx.core.util.Pair;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Stack;
 
 public class LeetCode {
 
     public static void main(String[] args) {
-        int[] arrs = {4, 4, 4, 5, 6};
-        boolean i = new Solution_2369().validPartition(arrs);
+        int[] i = new Solution_2575().divisibilityArray("10000000001000000000301999999996100000000091", 1000000000);
         System.out.println(i);
     }
 
-    static class Solution_232{
+    /**
+     * 2731. 移动机器人
+     */
+    static class Solution_2731 {
+        public int sumDistance(int[] nums, String s, int d) {
+            int length = nums.length;
+            long[] newPos = new long[length];
+            for (int i = 0; i < length; i++) {
+                int addNum = s.charAt(i) == 'R' ? 1 : -1;
+                newPos[i] = addNum * d + nums[i];
+            }
+            // 插入排序
+            for (int i = 1; i < length; i++) {
+                int cur = i;
+                long targetValue = newPos[cur];
+                while (cur > 0 && targetValue < newPos[cur - 1]) {
+                    newPos[cur] = newPos[cur - 1];
+                    cur--;
+                }
+                newPos[cur] = targetValue;
+            }
+
+            long result = 0;
+            for (int i = 1; i < length; i++) {
+                result += (newPos[i] - newPos[i - 1]) * i % 1_0000_0000_7 * (length - 1 - i + 1) % 1_0000_0000_7;
+                result %= 1_0000_0000_7;
+            }
+            return (int) result;
+        }
+    }
+
+    /**
+     * 2575. 找出字符串的可整除数组
+     */
+    static class Solution_2575 {
+        public int[] divisibilityArray(String word, int m) {
+            int n = word.length();
+            int[] result = new int[n];
+            long remainder = 0;
+            for (int i = 0; i < n; i++) {
+                int charNum = Integer.parseInt(String.valueOf(word.charAt(i)));
+                long curNum = charNum + remainder * 10;
+                remainder = curNum % m;
+                result[i] = remainder == 0 ? 1 : 0;
+            }
+            return result;
+        }
+    }
+
+    /**
+     * 2578. 最小和分割
+     */
+    static class Solution_2578 {
+        public int splitNum(int num) {
+            String numStr = num + "";
+            int length = numStr.length();
+            List<Integer> sortNumItem = new ArrayList<>(length);
+            // 插入排序
+            for (int i = 0; i < length; i++) {
+                int j = Integer.parseInt(String.valueOf(numStr.charAt(i)));
+                if (sortNumItem.isEmpty()) {
+                    sortNumItem.add(j);
+                } else {
+                    for (int k = sortNumItem.size() - 1; k >= 0; k--) {
+                        if (sortNumItem.get(k) <= j) {
+                            sortNumItem.add(k + 1, j);
+                            break;
+                        } else if (k == 0) {
+                            sortNumItem.add(0, j);
+                        }
+                    }
+                }
+            }
+
+            StringBuilder num1Str = new StringBuilder();
+            StringBuilder num2Str = new StringBuilder();
+            for (int i = 0; i < sortNumItem.size(); i++) {
+                if (i % 2 == 0) {
+                    num1Str.append(sortNumItem.get(i));
+                } else {
+                    num2Str.append(sortNumItem.get(i));
+                }
+            }
+            int i = Integer.parseInt(num1Str.toString()) + Integer.parseInt(num2Str.toString());
+            return i;
+        }
+
+
+        public int splitNum_planB(int num) {
+            String numStr = num + "";
+            int length = numStr.length();
+            int[] cnt = new int[10];
+            for (int i = 0; i < length; i++) {
+                int item = num % 10;
+                cnt[item]++;
+                num = num / 10;
+            }
+            int cntIndex = 0;
+            int num1 = 0;
+            int num2 = 0;
+            for (int i = 0; i < length; i++) {
+                int curNum = -1;
+                for (int j = cntIndex; j < cnt.length; j++) {
+                    if (cnt[j] > 0) {
+                        curNum = j;
+                        cnt[j] -= 1;
+                        break;
+                    }
+                }
+                if (curNum < 0) {
+                    break;
+                }
+                if (i % 2 == 0) {
+                    num1 = num1 * 10 + curNum;
+                } else {
+                    num2 = num2 * 10 + curNum;
+                }
+            }
+            return num1 + num2;
+        }
+    }
+
+    /**
+     * 2917. 找出数组中的 K-or 值
+     */
+    static class Solution_2917 {
+        /**
+         * 给你一个下标从 0 开始的整数数组 nums 和一个整数 k 。
+         * <p>
+         * nums 中的 K-or 是一个满足以下条件的非负整数：
+         * <p>
+         * 只有在 nums 中，至少存在 k 个元素的第 i 位值为 1 ，那么 K-or 中的第 i 位的值才是 1 。
+         * 返回 nums 的 K-or 值。
+         * <p>
+         * 注意 ：对于整数 x ，如果 (2i AND x) == 2i ，则 x 中的第 i 位值为 1 ，其中 AND 为按位与运算符。
+         */
+
+        public int findKOr(int[] nums, int k) {
+            int result = 0;
+            int curCount = 0;
+            int curBit = 1;
+            for (int j = 0; j < 32; j++) {
+                curCount = 0;
+                for (int num : nums) {
+                    if ((num & curBit) == curBit) {
+                        curCount++;
+                    }
+                }
+                if (curCount >= k) {
+                    result += curBit;
+                }
+                curBit = curBit << 1;
+            }
+            return result;
+        }
+
+    }
+
+    static class Solution_1976 {
+
+        public int countPaths_PlanB(int n, int[][] roads) {
+            //定义邻接矩阵
+            long[][] g = new long[n][n];
+            //初始化邻接矩阵
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    g[i][j] = Long.MAX_VALUE / 2;
+                }
+            }
+            for (int[] road : roads) {
+                int i = road[0];
+                int j = road[1];
+                int time = road[2];
+                g[i][j] = time;
+                g[j][i] = time;
+            }
+
+            // 0到数组下标节点的距离
+            long[] dis = new long[n];
+            for (int i = 1; i < dis.length; i++) {
+                dis[i] = Long.MAX_VALUE / 2;
+            }
+            dis[0] = 0;
+
+            // 0到数组下标节点的路径数量
+            int[] pathCount = new int[n];
+            pathCount[0] = 1;
+
+            // 标记下标节点是否移动到S分组中, Dijkstra算法分为S和T两组
+            boolean[] isInSGroup = new boolean[n];
+
+            while (true) {
+                int x = -1;
+                for (int i = 0; i < n; i++) {
+                    if (!isInSGroup[i] && (x < 0 || dis[i] < dis[x])) {
+                        x = i;
+                    }
+                }
+
+                if (x == n - 1) {
+                    return pathCount[n - 1];
+                }
+
+                isInSGroup[x] = true;
+                for (int j = 0; j < n; j++) {
+                    long newDis = dis[x] + g[x][j];
+
+                    if (newDis < dis[j]) {
+                        dis[j] = newDis;
+                        pathCount[j] = pathCount[x];
+                    } else if (newDis == dis[j]) {
+                        pathCount[j] = (pathCount[j] + pathCount[x]) % 1_0000_0000_7;
+                    }
+                }
+            }
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.N)
+        public int countPaths_PlanC(int n, int[][] roads) {
+            // 邻接关系网
+            List<int[]>[] g = new ArrayList[n];
+            for (int i = 0; i < g.length; i++) {
+                g[i] = new ArrayList<>();
+            }
+            for (int[] road : roads) {
+                int i = road[0];
+                int j = road[1];
+                int dis = road[2];
+                g[i].add(new int[]{j, dis});
+                g[j].add(new int[]{i, dis});
+            }
+
+            // 路径数量记录
+            int[] pathCount = new int[n];
+            pathCount[0] = 1;
+
+            // dis距离记录
+            long[] dis = new long[n];
+            for (int i = 1; i < dis.length; i++) {
+                dis[i] = Long.MAX_VALUE / 2;
+            }
+            dis[0] = 0;
+
+            // 查找最小dis值对应的节点node
+            PriorityQueue<Long[]> minNodes = new PriorityQueue<>((ajq1, ajq2) -> {
+                return Long.compare(ajq1[0], ajq2[0]);
+            });
+            minNodes.offer(new Long[]{0L, 0L});
+
+            while (!minNodes.isEmpty()) {
+                Long[] poll = minNodes.poll();
+                long xdis = poll[0];
+                int x = Math.toIntExact(poll[1]);
+
+                if (xdis > dis[x]) {
+                    continue;
+                }
+
+                for (int[] gg : g[x]) {
+                    int y = gg[0];
+                    int yDis = gg[1];
+                    long newYDis = xdis + yDis;
+                    if (newYDis < dis[y]) {
+                        dis[y] = newYDis;
+                        pathCount[y] = pathCount[x];
+                        minNodes.offer(new Long[]{newYDis, (long) y});
+                    } else if (newYDis == dis[y]) {
+                        pathCount[y] = (pathCount[y] + pathCount[x]) % 1_0000_0000_7;
+                    }
+                }
+            }
+            return (int) pathCount[n - 1];
+        }
+
+        public int countPaths(int n, int[][] roads) {
+
+            List<Integer>[] nodes = new List[n];
+            for (int i = 0; i < nodes.length; i++) {
+                nodes[i] = new ArrayList<>();
+            }
+            for (int[] road : roads) {
+                int i = road[0];
+                int j = road[1];
+                int time = road[2];
+                nodes[i].add(j);
+                nodes[i].add(time);
+                nodes[j].add(i);
+                nodes[j].add(time);
+            }
+
+            int initRoadCount = 0;
+            int initRoadTime = Integer.MAX_VALUE;
+            int[] result = new int[]{initRoadCount, initRoadTime};
+            HashSet<Integer> paths = new HashSet<>();
+            dfs(nodes, 0, n - 1, ",-1,", result, 0);
+            return result[0];
+        }
+
+        private void dfs(List<Integer>[] nodes, int start, int target, String paths, int[] result, int curTime) {
+            System.out.println("start=" + start + ", target=" + target);
+            if (start == target) {
+                if (curTime < result[1]) {
+                    result[0] = 1;
+                    result[1] = curTime;
+                } else if (curTime == result[1]) {
+                    result[0] += 1;
+                }
+                System.out.println("return!");
+                return;
+            }
+            List<Integer> node = nodes[start];
+            for (int i = 0; i < node.size() - 1; i += 2) {
+                int nextNode = node.get(i);
+                int nextNodeTime = node.get(i + 1);
+                if (!paths.contains("," + nextNode + ",")) {
+                    dfs(nodes, nextNode, target, paths + (nextNode + ","), result, curTime + nextNodeTime);
+                }
+            }
+        }
+    }
+
+    static class Solution_901 {
+        class StockSpanner {
+            private ArrayList<Integer> prices = new ArrayList<>();
+            private HashMap<Integer, Integer> pricesIndex2Span = new HashMap<>();
+
+            public StockSpanner() {
+
+            }
+
+            public int next(int price) {
+                prices.add(price);
+                //计算当前span值
+                int span = 1;
+                int curIndex = prices.size() - 2;
+                while (curIndex >= 0) {
+                    if (price >= prices.get(curIndex)) {
+                        Integer spanOfCurIndex = pricesIndex2Span.get(curIndex);
+                        span += spanOfCurIndex;
+                        curIndex -= spanOfCurIndex;
+                    } else {
+                        curIndex = -1;
+                    }
+                }
+                pricesIndex2Span.put(prices.size() - 1, span);
+                return span;
+            }
+        }
+    }
+
+    static class Solution_232 {
         class MyQueue {
             private Stack<Integer> stack1 = new Stack<Integer>();
             private Stack<Integer> stack2 = new Stack<Integer>();
