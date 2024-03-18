@@ -3,7 +3,6 @@ package arithmetic;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
-import androidx.core.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,9 +15,162 @@ import java.util.Stack;
 
 public class LeetCode {
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public static void main(String[] args) {
-        int[] i = new Solution_2575().divisibilityArray("10000000001000000000301999999996100000000091", 1000000000);
-        System.out.println(i);
+        int[] arrr = {-4, -5};
+        NumArray numArray = new NumArray(arrr);
+        numArray.sumRange(0, 1);
+    }
+
+    /**
+     * 303. 区域和检索 - 数组不可变
+     */
+   static class NumArray {
+
+        private long[] sum = null;
+
+        public NumArray(int[] nums) {
+            sum = new long[nums.length];
+
+            for (int i = 0; i < nums.length; i++) {
+                if (i == 0) {
+                    sum[i] = nums[i];
+                } else {
+                    sum[i] = nums[i] + sum[i - 1];
+                }
+            }
+        }
+
+        public int sumRange(int left, int right) {
+            if (left - 1 >= 0) {
+                return (int) (sum[right] - sum[left - 1]);
+            }
+            return (int) sum[right];
+        }
+    }
+
+    /**
+     * 2312. 卖木头块
+     */
+    static class Solution_2312 {
+        public long sellingWood(int m, int n, int[][] prices) {
+            long[][] result = new long[m + 1][n + 1];
+            for (int i = 0; i < prices.length; i++) {
+                int[] priceItem = prices[i];
+                int x = priceItem[0];
+                int y = priceItem[1];
+                result[x][y] = priceItem[2];
+            }
+
+            for (int i = 1; i <= m; i++) {
+                for (int j = 1; j <= n; j++) {
+                    for (int k = 1; k < j; k++) {
+                        result[i][j] = Math.max(result[i][j], result[i][k] + result[i][j - k]);
+                    }
+                    for (int k = 1; k < i; k++) {
+                        result[i][j] = Math.max(result[i][j], result[k][j] + result[i - k][j]);
+                    }
+                }
+            }
+            return result[m][n];
+        }
+    }
+
+    /**
+     * 2386. 找出数组的第 K 大和
+     */
+    static class Solution_2386 {
+        @RequiresApi(api = Build.VERSION_CODES.N)
+        public long kSum(int[] nums, int k) {
+
+            long maxSum = 0;
+            for (int i = 0; i < nums.length; i++) {
+                if (nums[i] > 0) {
+                    maxSum += nums[i];
+                } else {
+                    nums[i] = -nums[i];
+                }
+            }
+
+            // 对nums排序,小的放前面 (排序方式:冒泡)
+            for (int i = nums.length - 1; i >= 0; i--) {
+                boolean hasSwap = false;
+                for (int j = 0; j < i; j++) {
+                    if (nums[j] > nums[j + 1]) {
+                        swap(nums, j, j + 1);
+                        hasSwap = true;
+                    }
+                }
+                if (!hasSwap) {
+                    break;
+                }
+            }
+
+            PriorityQueue<Pair<Long, Integer>> priorityQueue = new PriorityQueue<Pair<Long, Integer>>((Comparator<Pair<Long, Integer>>) (n1, n2) -> {
+                if (n1.first < n2.first) {
+                    return -1;
+                } else if (n1.first > n2.first) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            });
+
+            priorityQueue.offer(new Pair<>(0L, 0));
+            while (--k > 0) {
+                Pair<Long, Integer> poll = priorityQueue.poll();
+                Long sum = poll.first;
+                int index = poll.second;
+                if (index < nums.length) {
+                    priorityQueue.offer(new Pair<>(sum + nums[index], index + 1));
+                    if (index > 0) {
+                        priorityQueue.offer(new Pair<>(sum + nums[index] - nums[index - 1], index + 1));
+                    }
+                }
+            }
+            return maxSum - priorityQueue.poll().first;
+        }
+
+        private void swap(int[] nums, int j, int i) {
+            int temp = nums[j];
+            nums[j] = nums[i];
+            nums[i] = temp;
+        }
+
+        public static class Pair<F, S> {
+            public final F first;
+            public final S second;
+
+            /**
+             * Constructor for a Pair.
+             *
+             * @param first  the first object in the Pair
+             * @param second the second object in the pair
+             */
+            public Pair(F first, S second) {
+                this.first = first;
+                this.second = second;
+            }
+        }
+    }
+
+    /**
+     * 2834. 找出美丽数组的最小和
+     */
+    static class Solution_2834 {
+        public int minimumPossibleSum(int n, int target) {
+            int mod = 1_0000_0000_7;
+            long result = 0;
+            if (target / 2 >= n) {
+                return (int) (((1L + n) * n / 2L) % mod);
+            }
+
+            int m = target / 2;
+            result = ((1L + m) * m / 2L);
+            long right = (((long) target + target + n - m - 1) * (n - m) / 2) % mod;
+            result = (result + right) % mod;
+            return (int) result;
+        }
     }
 
     /**
