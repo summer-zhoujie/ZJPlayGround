@@ -4,9 +4,11 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,15 +19,140 @@ public class LeetCode {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static void main(String[] args) {
-        int[] arrr = {-4, -5};
-        NumArray numArray = new NumArray(arrr);
-        numArray.sumRange(0, 1);
+        long l = new Solution_1969().minNonZeroProduct(3);
+        System.out.println("count: " + l);
+    }
+
+    /**
+     * 1969. 数组元素的最小非零乘积
+     * <p>
+     * <p>
+     * 输入：p = 3
+     * 输出：1512
+     * 解释：nums = [001, 010, 011, 100, 101, 110, 111]
+     * - 第一次操作中，我们交换第二个和第五个元素最左边的数位。
+     * - 结果数组为 [001, 110, 011, 100, 001, 110, 111] 。
+     * - 第二次操作中，我们交换第三个和第四个元素中间的数位。
+     * - 结果数组为 [001, 110, 001, 110, 001, 110, 111] 。
+     * 数组乘积 1 * 6 * 1 * 6 * 1 * 6 * 7 = 1512 是最小乘积。
+     */
+    static class Solution_1969 {
+        public int minNonZeroProduct(int p) {
+            int mod = 1_0000_0000_7;
+            long pow_2_p = fastPow(2, p, mod) % mod;
+            long pow_2_p_1 = pow_2_p / 2;
+            return (int) ((pow_2_p - 1) * fastPow(pow_2_p - 2, pow_2_p_1 - 1, mod) % mod);
+        }
+
+        public long fastPow(long x, long t, int mod) {
+            long res = 1;
+            while (t > 0) {
+                if ((t & 1) == 1) {
+                    res = res * x % mod;
+                }
+                x = x * x % mod;
+                t = t >> 1;
+            }
+            return res;
+        }
+    }
+
+    /**
+     * 1793. 好子数组的最大分数
+     */
+    static class Solution_1793 {
+        public int maximumScore(int[] nums, int k) {
+            // 单调栈
+            int n = nums.length;
+            int[] left = new int[n];
+            Stack<Integer> stack = new Stack<>();
+            for (int i = 0; i < n; i++) {
+                int x = nums[i];
+                while (!stack.isEmpty() && x <= nums[stack.peek()]) {
+                    stack.pop();
+                }
+                left[i] = stack.isEmpty() ? -1 : stack.peek();
+                stack.push(i);
+            }
+
+            stack.clear();
+            int[] right = new int[n];
+            for (int i = n - 1; i >= 0; i--) {
+                int x = nums[i];
+                while (!stack.isEmpty() && x <= nums[stack.peek()]) {
+                    stack.pop();
+                }
+                right[i] = stack.isEmpty() ? n : stack.peek();
+                stack.push(i);
+            }
+
+            int maxScore = Integer.MIN_VALUE;
+            for (int i = 0; i < n; i++) {
+                int h = nums[i];
+                int l = left[i];
+                int r = right[i];
+                if (l < k && k < r) {
+                    maxScore = Math.max(maxScore, h * (r - l - 1));
+                }
+            }
+            return maxScore;
+        }
+    }
+
+    /**
+     * 2316. 统计无向图中无法互相到达点对数
+     */
+    static class Solution_2316 {
+        public long countPairs(int n, int[][] edges) {
+
+            // 遍历得出路径拓扑
+            ArrayList<Integer>[] G = new ArrayList[n];
+            for (int i = 0; i < G.length; i++) {
+                G[i] = new ArrayList<>();
+            }
+            for (int[] edge : edges) {
+                int x = edge[0];
+                int y = edge[1];
+                G[x].add(y);
+                G[y].add(x);
+            }
+
+            // 记录哪些点还没有被遍历
+            HashSet<Integer> unVisitor = new HashSet<>();
+            for (int i = 0; i < n; i++) {
+                unVisitor.add(i);
+            }
+
+            long result = 0;
+            long sumPreAll = 0;
+
+            // 挨个遍历得到每个独立子树
+            for (int i = 0; i < n; i++) {
+                if (unVisitor.contains(i)) {
+                    int size = dsf(unVisitor, i, G);
+                    result += sumPreAll * size;
+                    sumPreAll += size;
+                }
+            }
+            return result;
+        }
+
+        private int dsf(HashSet<Integer> unVisitor, int i, ArrayList<Integer>[] g) {
+            unVisitor.remove(i);
+            int count = 1;
+            for (Integer integer : g[i]) {
+                if (unVisitor.contains(integer)) {
+                    count += dsf(unVisitor, integer, g);
+                }
+            }
+            return count;
+        }
     }
 
     /**
      * 303. 区域和检索 - 数组不可变
      */
-   static class NumArray {
+    static class NumArray {
 
         private long[] sum = null;
 
