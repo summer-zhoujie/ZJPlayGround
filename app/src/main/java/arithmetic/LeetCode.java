@@ -4,11 +4,9 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,8 +17,78 @@ public class LeetCode {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static void main(String[] args) {
-        long l = new Solution_1969().minNonZeroProduct(3);
-        System.out.println("count: " + l);
+//        long l = new Solution_1969().minNonZeroProduct(3);
+//        System.out.println("count: " + l);
+
+        /**
+         * ["FrequencyTracker[]","hasFrequency[1]","add[3]","hasFrequency[1]","hasFrequency[1]","add[6]","add[2]","add[6]","deleteOne[6]","deleteOne[6]","hasFrequency[2]","add[2]","hasFrequency[2]","hasFrequency[1]"]
+         */
+        FrequencyTracker frequencyTracker = new FrequencyTracker();
+        frequencyTracker.hasFrequency(1);
+        frequencyTracker.add(3);
+        frequencyTracker.hasFrequency(1);
+        frequencyTracker.hasFrequency(1);
+        frequencyTracker.add(6);
+        frequencyTracker.add(2);
+        frequencyTracker.add(6);
+        frequencyTracker.deleteOne(6);
+        frequencyTracker.deleteOne(6);
+        frequencyTracker.hasFrequency(2);
+        frequencyTracker.add(2);
+        frequencyTracker.hasFrequency(2);
+        frequencyTracker.hasFrequency(1);
+    }
+
+
+    /**
+     * 2671. 频率跟踪器
+     */
+    static class FrequencyTracker {
+        private final int N = 1_00001;
+        private int[] frequencys = null;
+        private HashMap<Integer, Integer> frequencysMap = new HashMap<>();
+
+        public FrequencyTracker() {
+            frequencys = new int[N];
+            Arrays.fill(frequencys, 0);
+        }
+
+        public void add(int number) {
+            Integer integer = frequencysMap.get(frequencys[number]);
+            if (integer != null && integer > 1) {
+                frequencysMap.put(frequencys[number], integer - 1);
+            } else {
+                frequencysMap.remove(frequencys[number]);
+            }
+            frequencys[number] += 1;
+            Integer integerNew = frequencysMap.get(frequencys[number]);
+            if (integerNew != null) {
+                frequencysMap.put(frequencys[number], integerNew + 1);
+            } else {
+                frequencysMap.put(frequencys[number], 1);
+            }
+        }
+
+        public void deleteOne(int number) {
+            Integer integer = frequencysMap.get(frequencys[number]);
+            if (integer != null && integer > 1) {
+                frequencysMap.put(frequencys[number], integer - 1);
+            } else {
+                frequencysMap.remove(frequencys[number]);
+            }
+            frequencys[number] = Math.max(0, frequencys[number] - 1);
+            Integer integerNew = frequencysMap.get(frequencys[number]);
+            if (integerNew != null) {
+                frequencysMap.put(frequencys[number], integerNew + 1);
+            } else {
+                frequencysMap.put(frequencys[number], 1);
+            }
+        }
+
+        public boolean hasFrequency(int frequency) {
+            Integer integer = frequencysMap.get(frequency);
+            return integer != null && integer > 0;
+        }
     }
 
     /**
