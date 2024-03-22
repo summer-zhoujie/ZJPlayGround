@@ -23,20 +23,109 @@ public class LeetCode {
         /**
          * ["FrequencyTracker[]","hasFrequency[1]","add[3]","hasFrequency[1]","hasFrequency[1]","add[6]","add[2]","add[6]","deleteOne[6]","deleteOne[6]","hasFrequency[2]","add[2]","hasFrequency[2]","hasFrequency[1]"]
          */
-        FrequencyTracker frequencyTracker = new FrequencyTracker();
-        frequencyTracker.hasFrequency(1);
-        frequencyTracker.add(3);
-        frequencyTracker.hasFrequency(1);
-        frequencyTracker.hasFrequency(1);
-        frequencyTracker.add(6);
-        frequencyTracker.add(2);
-        frequencyTracker.add(6);
-        frequencyTracker.deleteOne(6);
-        frequencyTracker.deleteOne(6);
-        frequencyTracker.hasFrequency(2);
-        frequencyTracker.add(2);
-        frequencyTracker.hasFrequency(2);
-        frequencyTracker.hasFrequency(1);
+//        FrequencyTracker frequencyTracker = new FrequencyTracker();
+//        frequencyTracker.hasFrequency(1);
+//        frequencyTracker.add(3);
+//        frequencyTracker.hasFrequency(1);
+//        frequencyTracker.hasFrequency(1);
+//        frequencyTracker.add(6);
+//        frequencyTracker.add(2);
+//        frequencyTracker.add(6);
+//        frequencyTracker.deleteOne(6);
+//        frequencyTracker.deleteOne(6);
+//        frequencyTracker.hasFrequency(2);
+//        frequencyTracker.add(2);
+//        frequencyTracker.hasFrequency(2);
+//        frequencyTracker.hasFrequency(1);
+
+        int[][] grid = new int[][]{{3, 4, 2, 1}, {4, 2, 3, 1}, {2, 1, 0, 0}, {2, 4, 0, 0}};
+        int i = new Solution_2617().minimumVisitedCells_planB(grid);
+        System.out.println(i);
+    }
+
+
+
+    static class Solution_2617 {
+        @RequiresApi(api = Build.VERSION_CODES.N)
+        public int minimumVisitedCells_planB(int[][] grid) {
+            int m = grid.length;
+            int n = grid[0].length;
+            PriorityQueue<int[]>[] cols = new PriorityQueue[n];
+            for (int i = 0; i < cols.length; i++) {
+                cols[i] = new PriorityQueue<>((Comparator<int[]>) (n1, n2) -> {
+                    return n1[0] - n2[0];
+                });
+            }
+            PriorityQueue<int[]> row = new PriorityQueue<>((Comparator<int[]>) (n1, n2) -> {
+                return n1[0] - n2[0];
+            });
+            int result = Integer.MAX_VALUE;
+            for (int i = 0; i < m; i++) {
+                row.clear();
+                for (int j = 0; j < n; j++) {
+                    result = Integer.MAX_VALUE;
+                    while (!row.isEmpty() && j > row.peek()[1]) {
+                        row.poll();
+                    }
+                    if (!row.isEmpty()) {
+                        result = row.peek()[0] + 1;
+                    }
+                    PriorityQueue<int[]> col = cols[j];
+                    while (!col.isEmpty() && i > col.peek()[1]) {
+                        col.poll();
+                    }
+                    if (!col.isEmpty()) {
+                        result = Math.min(result, col.peek()[0] + 1);
+                    }
+                    if (i == 0 && j == 0) {
+                        result = 1;
+                    } else {
+                        result = result == Integer.MAX_VALUE ? -1 : result;
+                    }
+
+                    if (result > 0) {
+                        col.offer(new int[]{result, grid[i][j] + i});
+                        row.offer(new int[]{result, grid[i][j] + j});
+                    }
+                }
+            }
+            return result;
+        }
+
+        public int minimumVisitedCells(int[][] grid) {
+            int m = grid.length;
+            int n = grid[0].length;
+            return dsf(m - 1, n - 1, 1, grid, Integer.MAX_VALUE);
+        }
+
+        private int dsf(int m, int n, int curNodeCount, int[][] grid, int curMinCount) {
+            if (m == 0 && n == 0) {
+                return curNodeCount;
+            }
+
+            if (curNodeCount >= curMinCount) {
+                return -1;
+            }
+
+            int minCount = curMinCount;
+            for (int j = 0; j < n; j++) {
+                if (grid[m][j] + j >= n) {
+                    int dsf = dsf(m, j, curNodeCount + 1, grid, minCount);
+                    if (dsf > 0) {
+                        minCount = Math.min(dsf, minCount);
+                    }
+                }
+            }
+            for (int i = 0; i < m; i++) {
+                if (grid[i][n] + i >= m) {
+                    int dsf = dsf(i, n, curNodeCount + 1, grid, minCount);
+                    if (dsf > 0) {
+                        minCount = Math.min(dsf, minCount);
+                    }
+                }
+            }
+            return minCount == Integer.MAX_VALUE ? -1 : minCount;
+        }
     }
 
 
@@ -214,6 +303,65 @@ public class LeetCode {
                 }
             }
             return count;
+        }
+        public long countPairs_planB(int n, int[][] edges) {
+            UnionSearch unionSearch = new UnionSearch(n);
+            for (int i = 0; i < edges.length; i++) {
+                unionSearch.union(edges[i][0],edges[i][1]);
+            }
+            long result = 0;
+            for (int i = 0; i < n; i++) {
+                result += n - unionSearch.getSize(unionSearch.findRoot(i));
+            }
+            return result / 2;
+        }
+
+        // 并查集实现
+        static class UnionSearch {
+            int[] parents;
+            int[] sizes;
+
+            public UnionSearch(int n) {
+                this.parents = new int[n];
+                for (int i = 0; i < parents.length; i++) {
+                    parents[i] = i;
+                }
+                sizes = new int[n];
+                for (int i = 0; i < sizes.length; i++) {
+                    sizes[i] = 1;
+                }
+            }
+
+            public int findRoot(int x) {
+                // 自己是自己的Root直接返回
+                if (parents[x] == x) {
+                    return x;
+                }
+                // 对parent结构压缩
+                else {
+                    parents[x] = findRoot(parents[x]);
+                    return parents[x];
+                }
+            }
+
+            public void union(int x, int y) {
+                int rx = findRoot(x);
+                int ry = findRoot(y);
+                if (rx != ry) {
+                    // 少的,往多的合并
+                    if (sizes[ry] < sizes[rx]) {
+                        parents[ry] = rx;
+                        sizes[rx] += sizes[ry];
+                    } else {
+                        parents[rx] = ry;
+                        sizes[ry] += sizes[rx];
+                    }
+                }
+            }
+
+            public int getSize(int x) {
+                return sizes[x];
+            }
         }
     }
 
