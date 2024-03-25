@@ -38,11 +38,44 @@ public class LeetCode {
 //        frequencyTracker.hasFrequency(2);
 //        frequencyTracker.hasFrequency(1);
 
-        int[][] grid = new int[][]{{3, 4, 2, 1}, {4, 2, 3, 1}, {2, 1, 0, 0}, {2, 4, 0, 0}};
-        int i = new Solution_2617().minimumVisitedCells_planB(grid);
-        System.out.println(i);
+//        int[][] grid = new int[][]{{3, 4, 2, 1}, {4, 2, 3, 1}, {2, 1, 0, 0}, {2, 4, 0, 0}};
+//        int i = new Solution_2617().minimumVisitedCells_planB(grid);
+//        System.out.println(i);
+
+        int amount_518 = 5;
+        int[] coins_518 = new int[]{1, 2, 5};
+        int change = new Solution_518().change(amount_518, coins_518);
+        System.out.println(change);
     }
 
+    /**
+     * 518. 零钱兑换 II
+     */
+    static class Solution_518 {
+        public int change(int amount, int[] coins) {
+            int length = coins.length;
+            int[][] dp = new int[length][amount + 1];
+            for (int i = 0; i < dp.length; i++) {
+                for (int j = 0; j < dp[i].length; j++) {
+                    dp[i][j] = -1;
+                }
+            }
+            return dfs(length - 1, amount, coins, dp);
+        }
+
+        private int dfs(int i, int amount, int[] coins, int[][] dp) {
+            if (i < 0) {
+                return amount == 0 ? 1 : 0;
+            }
+            if (dp[i][amount] != -1) {
+                return dp[i][amount];
+            }
+            if (amount < coins[i]) {
+                return dp[i][amount] = dfs(i - 1, amount, coins, dp);
+            }
+            return dp[i][amount] = dfs(i - 1, amount, coins, dp) + dfs(i, amount - coins[i], coins, dp);
+        }
+    }
 
 
     static class Solution_2617 {
@@ -304,10 +337,11 @@ public class LeetCode {
             }
             return count;
         }
+
         public long countPairs_planB(int n, int[][] edges) {
             UnionSearch unionSearch = new UnionSearch(n);
             for (int i = 0; i < edges.length; i++) {
-                unionSearch.union(edges[i][0],edges[i][1]);
+                unionSearch.union(edges[i][0], edges[i][1]);
             }
             long result = 0;
             for (int i = 0; i < n; i++) {
