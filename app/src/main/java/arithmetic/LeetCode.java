@@ -42,11 +42,150 @@ public class LeetCode {
 //        int i = new Solution_2617().minimumVisitedCells_planB(grid);
 //        System.out.println(i);
 
-        int amount_518 = 5;
-        int[] coins_518 = new int[]{1, 2, 5};
-        int change = new Solution_518().change(amount_518, coins_518);
-        System.out.println(change);
+//        int amount_518 = 5;
+//        int[] coins_518 = new int[]{1, 2, 5};
+//        int change = new Solution_518().change(amount_518, coins_518);
+//        System.out.println(change);
+
+//        Graph graph = new Graph(4, new int[][]{{0, 2, 5}, {0, 1, 2}, {1, 2, 1}, {3, 0, 3}});
+//        System.out.println(graph.shortestPath(3, 2));
+//        System.out.println(graph.shortestPath(0, 3));
+//        graph.addEdge(new int[]{1, 3, 4});
+//        System.out.println(graph.shortestPath(0, 3));
+
+        int i = new Solution_2580().countWays(new int[][]{{57, 92}, {139, 210}, {306, 345}, {411, 442}, {533, 589}, {672, 676}, {801, 831}, {937, 940}, {996, 1052}, {1113, 1156}, {1214, 1258}, {1440, 1441}, {1507, 1529}, {1613, 1659}, {1773, 1814}, {1826, 1859}, {2002, 2019}, {2117, 2173}, {2223, 2296}, {2335, 2348}, {2429, 2532}, {2640, 2644}, {2669, 2676}, {2786, 2885}, {2923, 2942}, {3035, 3102}, {3177, 3249}, {3310, 3339}, {3450, 3454}, {3587, 3620}, {3725, 3744}, {3847, 3858}, {3901, 3993}, {4100, 4112}, {4206, 4217}, {4250, 4289}, {4374, 4446}, {4510, 4591}, {4675, 4706}, {4732, 4768}, {4905, 4906}, {5005, 5073}, {5133, 5142}, {5245, 5309}, {5352, 5377}, {5460, 5517}, {5569, 5602}, {5740, 5791}, {5823, 5888}, {6036, 6042}, {6096, 6114}, {6217, 6262}, {6374, 6394}, {6420, 6511}, {6564, 6587}, {6742, 6743}, {6797, 6877}, {6909, 6985}, {7042, 7117}, {7141, 7144}, {7276, 7323}, {7400, 7456}, {7505, 7557}, {7690, 7720}, {7787, 7800}, {7870, 7880}, {8013, 8031}, {8114, 8224}, {8272, 8328}, {8418, 8435}, {8493, 8537}, {8600, 8704}, {8766, 8812}, {8839, 8853}, {9032, 9036}, {9108, 9189}, {9222, 9291}, {9344, 9361}, {9448, 9502}, {9615, 9673}, {9690, 9800}, {9837, 9868}, {85, 96}, {145, 202}, {254, 304}, {372, 411}, {534, 551}, {629, 692}, {727, 787}, {861, 944}, {1041, 1084}, {1133, 1174}, {1260, 1307}, {1339, 1358}, {1478, 1548}, {1580, 1618}, {1694, 1814}, {1848, 1891}, {1936, 1990}, {2058, 2130}});
+        System.out.println(i);
     }
+
+    /**
+     * 1997. 访问完所有房间的第一天
+     */
+    static class Solution_1997 {
+        public int firstDayBeenInAllRooms(int[] nextVisit) {
+            int mod = 1_0000_0000_7;
+            int n = nextVisit.length;
+            long[] s = new long[n];
+            for (int i = 1; i < n; i++) {
+                int j = nextVisit[i - 1];
+                s[i] = (s[i - 1] + s[i - 1] - s[j] + 2 + mod) % mod;
+            }
+            return (int) s[n - 1];
+        }
+    }
+
+    /**
+     * 2580. 统计将重叠区间合并成组的方案数
+     */
+    static class Solution_2580 {
+        public int countWays(int[][] ranges) {
+            int mod = 1_0000_0000_7;
+            // 对左边界冒泡排序
+            for (int i = ranges.length - 1; i > 0; i--) {
+                boolean hasSwap = false;
+                for (int j = 0; j < i; j++) {
+                    if (ranges[j][0] > ranges[j + 1][0]) {
+                        int[] temp = ranges[j];
+                        ranges[j] = ranges[j + 1];
+                        ranges[j + 1] = temp;
+                        hasSwap = true;
+                    }
+                }
+                if (!hasSwap) {
+                    break;
+                }
+            }
+            int result = 1;
+            int curRight = -1;
+            for (int i = 0; i < ranges.length; i++) {
+                if (ranges[i][0] > curRight) {
+                    result = (result * 2) % mod;
+                }
+                curRight = Math.max(curRight, ranges[i][1]);
+            }
+            return result;
+        }
+
+        public int fastPow(int i, int x, int mod) {
+            long result = 1;
+            while (x > 0) {
+                if ((x & 1) == 1) {
+                    result = result * i % mod;
+                }
+                i *= i;
+                x >>= 1;
+            }
+            return (int) result;
+        }
+    }
+
+    /**
+     * 2642. 设计可以求最短路径的图类
+     */
+    static class Graph {
+
+
+        int[][] map;
+        private int n;
+        private final int MAX = Integer.MAX_VALUE / 2;
+
+        public Graph(int n, int[][] edges) {
+            this.n = n;
+            map = new int[n][n];
+            for (int i = 0; i < map.length; i++) {
+                for (int j = 0; j < map[i].length; j++) {
+                    map[i][j] = i == j ? 0 : MAX;
+                }
+            }
+            for (int[] edge : edges) {
+                addEdge(edge);
+            }
+        }
+
+        public void addEdge(int[] edge) {
+            map[edge[0]][edge[1]] = edge[2];
+        }
+
+        public int shortestPath(int node1, int node2) {
+            int[] dis = new int[n];
+            for (int i = 0; i < dis.length; i++) {
+                if (i == node1) {
+                    dis[i] = 0;
+                    continue;
+                }
+
+                dis[i] = MAX;
+            }
+
+            boolean[] hasSearched = new boolean[n];
+            for (int i = 0; i < hasSearched.length; i++) {
+                hasSearched[i] = false;
+            }
+
+            int x;
+            while (true) {
+                x = -1;
+                for (int i = 0; i < n; i++) {
+                    if (!hasSearched[i] && (x < 0 || dis[i] < dis[x])) {
+                        x = i;
+                    }
+                }
+
+                if (x < 0 || dis[x] == MAX) {
+                    return -1;
+                }
+
+                if (x == node2) {
+                    return dis[node2];
+                }
+
+                hasSearched[x] = true;
+                for (int i = 0; i < n; i++) {
+                    dis[i] = Math.min(dis[i], dis[x] + map[x][i]);
+                }
+            }
+        }
+    }
+
 
     /**
      * 518. 零钱兑换 II
