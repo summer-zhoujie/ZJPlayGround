@@ -58,6 +58,32 @@ public class LeetCode {
     }
 
     /**
+     * 2908. 元素和最小的山形三元组 I
+     */
+    static class Solution_2908 {
+        public int minimumSum(int[] nums) {
+            int n = nums.length;
+            int[] leftMin = new int[n];
+            leftMin[0] = Integer.MAX_VALUE;
+            int[] rightMin = new int[n];
+            rightMin[n - 1] = Integer.MAX_VALUE;
+            for (int i = 1; i < n; i++) {
+                leftMin[i] = Math.min(nums[i - 1], leftMin[i - 1]);
+            }
+            for (int i = n - 2; i >= 0; i--) {
+                rightMin[i] = Math.min(rightMin[i + 1], nums[i + 1]);
+            }
+            int result = Integer.MAX_VALUE;
+            for (int i = 0; i < n; i++) {
+                if (leftMin[i] < nums[i] && rightMin[i] < nums[i]) {
+                    result = Math.min(result, leftMin[i] + nums[i] + rightMin[i]);
+                }
+            }
+            return result == Integer.MAX_VALUE ? -1 : result;
+        }
+    }
+
+    /**
      * 1997. 访问完所有房间的第一天
      */
     static class Solution_1997 {
