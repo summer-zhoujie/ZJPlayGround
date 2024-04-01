@@ -58,6 +58,39 @@ public class LeetCode {
     }
 
     /**
+     * 2810. 故障键盘
+     */
+    static class Solution_2810 {
+        public String finalString(String s) {
+            ArrayList<Character> result = new ArrayList<>();
+            boolean insert2Last = true;
+            for (int i = 0; i < s.length(); i++) {
+                char c = s.charAt(i);
+                if (c == 'i') {
+                    insert2Last = !insert2Last;
+                    continue;
+                }
+                if (insert2Last) {
+                    result.add(c);
+                } else {
+                    result.add(0, c);
+                }
+            }
+            StringBuilder sb = new StringBuilder();
+            if (insert2Last) {
+                for (int i = 0; i < result.size(); i++) {
+                    sb.append(result.get(i));
+                }
+            } else {
+                for (int i = result.size() - 1; i >= 0; i--) {
+                    sb.append(result.get(i));
+                }
+            }
+            return sb.toString();
+        }
+    }
+
+    /**
      * 2908. 元素和最小的山形三元组 I
      */
     static class Solution_2908 {
