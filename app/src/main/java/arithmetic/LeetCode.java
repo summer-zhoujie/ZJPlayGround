@@ -58,6 +58,89 @@ public class LeetCode {
     }
 
     /**
+     * 1379. 找出克隆二叉树中的相同节点
+     */
+    static class Solution_1379 {
+        public class TreeNode {
+            int val;
+            TreeNode left;
+            TreeNode right;
+
+            TreeNode(int x) {
+                val = x;
+            }
+        }
+
+        public final TreeNode getTargetCopy(final TreeNode original, final TreeNode cloned, final TreeNode target) {
+            ArrayList<TreeNode> arrayList = new ArrayList<>();
+            arrayList.add(cloned);
+            while (!arrayList.isEmpty()) {
+                TreeNode remove = arrayList.remove(0);
+                if (remove.val == target.val) {
+                    return remove;
+                }
+                if (remove.right != null) {
+                    arrayList.add(remove.right);
+                }
+                if (remove.left != null) {
+                    arrayList.add(remove.left);
+                }
+            }
+            return null;
+        }
+    }
+
+    /**
+     * 107. 二叉树的层序遍历 II
+     */
+    static class Solution_107 {
+        //Definition for a binary tree node.
+        public class TreeNode {
+            int val;
+            TreeNode left;
+            TreeNode right;
+
+            TreeNode() {
+            }
+
+            TreeNode(int val) {
+                this.val = val;
+            }
+
+            TreeNode(int val, TreeNode left, TreeNode right) {
+                this.val = val;
+                this.left = left;
+                this.right = right;
+            }
+        }
+
+        public List<List<Integer>> levelOrderBottom(TreeNode root) {
+            List<List<Integer>> result = new ArrayList<>();
+            if (root == null) {
+                return result;
+            }
+            List<TreeNode> nodes = new ArrayList<>();
+            nodes.add(root);
+            while (!nodes.isEmpty()) {
+                int size = nodes.size();
+                ArrayList<Integer> ints = new ArrayList<>(size);
+                for (int i = 0; i < size; i++) {
+                    TreeNode remove = nodes.remove(0);
+                    ints.add(remove.val);
+                    if (remove.left != null) {
+                        nodes.add(remove.left);
+                    }
+                    if (remove.right != null) {
+                        nodes.add(remove.right);
+                    }
+                }
+                result.add(0,ints);
+            }
+            return result;
+        }
+    }
+
+    /**
      * 894. 所有可能的真二叉树
      */
     static class Solution_894 {
@@ -67,8 +150,14 @@ public class LeetCode {
             int val;
             TreeNode left;
             TreeNode right;
-            TreeNode() {}
-            TreeNode(int val) { this.val = val; }
+
+            TreeNode() {
+            }
+
+            TreeNode(int val) {
+                this.val = val;
+            }
+
             TreeNode(int val, TreeNode left, TreeNode right) {
                 this.val = val;
                 this.left = left;
@@ -78,7 +167,26 @@ public class LeetCode {
 
 
         public List<TreeNode> allPossibleFBT(int n) {
-            return null;
+            ArrayList<TreeNode> treeNodes = new ArrayList<>();
+            if (n % 2 == 0) {
+                return treeNodes;
+            }
+            if (n == 1) {
+                treeNodes.add(new TreeNode(0));
+                return treeNodes;
+            }
+            for (int i = 1; i <= n - 2; i += 2) {
+                TreeNode node = null;
+                List<TreeNode> treeNodesLeft = allPossibleFBT(i);
+                List<TreeNode> treeNodesRight = allPossibleFBT(n - i - 1);
+                for (TreeNode leftNode : treeNodesLeft) {
+                    for (TreeNode rightNode : treeNodesRight) {
+                        node = new TreeNode(0, leftNode, rightNode);
+                        treeNodes.add(node);
+                    }
+                }
+            }
+            return treeNodes;
         }
     }
 
