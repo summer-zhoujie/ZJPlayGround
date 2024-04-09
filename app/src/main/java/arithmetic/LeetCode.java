@@ -1,7 +1,9 @@
 package arithmetic;
 
 import android.os.Build;
+import android.text.TextUtils;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
@@ -53,8 +55,169 @@ public class LeetCode {
 //        graph.addEdge(new int[]{1, 3, 4});
 //        System.out.println(graph.shortestPath(0, 3));
 
-        int i = new Solution_2580().countWays(new int[][]{{57, 92}, {139, 210}, {306, 345}, {411, 442}, {533, 589}, {672, 676}, {801, 831}, {937, 940}, {996, 1052}, {1113, 1156}, {1214, 1258}, {1440, 1441}, {1507, 1529}, {1613, 1659}, {1773, 1814}, {1826, 1859}, {2002, 2019}, {2117, 2173}, {2223, 2296}, {2335, 2348}, {2429, 2532}, {2640, 2644}, {2669, 2676}, {2786, 2885}, {2923, 2942}, {3035, 3102}, {3177, 3249}, {3310, 3339}, {3450, 3454}, {3587, 3620}, {3725, 3744}, {3847, 3858}, {3901, 3993}, {4100, 4112}, {4206, 4217}, {4250, 4289}, {4374, 4446}, {4510, 4591}, {4675, 4706}, {4732, 4768}, {4905, 4906}, {5005, 5073}, {5133, 5142}, {5245, 5309}, {5352, 5377}, {5460, 5517}, {5569, 5602}, {5740, 5791}, {5823, 5888}, {6036, 6042}, {6096, 6114}, {6217, 6262}, {6374, 6394}, {6420, 6511}, {6564, 6587}, {6742, 6743}, {6797, 6877}, {6909, 6985}, {7042, 7117}, {7141, 7144}, {7276, 7323}, {7400, 7456}, {7505, 7557}, {7690, 7720}, {7787, 7800}, {7870, 7880}, {8013, 8031}, {8114, 8224}, {8272, 8328}, {8418, 8435}, {8493, 8537}, {8600, 8704}, {8766, 8812}, {8839, 8853}, {9032, 9036}, {9108, 9189}, {9222, 9291}, {9344, 9361}, {9448, 9502}, {9615, 9673}, {9690, 9800}, {9837, 9868}, {85, 96}, {145, 202}, {254, 304}, {372, 411}, {534, 551}, {629, 692}, {727, 787}, {861, 944}, {1041, 1084}, {1133, 1174}, {1260, 1307}, {1339, 1358}, {1478, 1548}, {1580, 1618}, {1694, 1814}, {1848, 1891}, {1936, 1990}, {2058, 2130}});
-        System.out.println(i);
+//        int i = new Solution_2580().countWays(new int[][]{{57, 92}, {139, 210}, {306, 345}, {411, 442}, {533, 589}, {672, 676}, {801, 831}, {937, 940}, {996, 1052}, {1113, 1156}, {1214, 1258}, {1440, 1441}, {1507, 1529}, {1613, 1659}, {1773, 1814}, {1826, 1859}, {2002, 2019}, {2117, 2173}, {2223, 2296}, {2335, 2348}, {2429, 2532}, {2640, 2644}, {2669, 2676}, {2786, 2885}, {2923, 2942}, {3035, 3102}, {3177, 3249}, {3310, 3339}, {3450, 3454}, {3587, 3620}, {3725, 3744}, {3847, 3858}, {3901, 3993}, {4100, 4112}, {4206, 4217}, {4250, 4289}, {4374, 4446}, {4510, 4591}, {4675, 4706}, {4732, 4768}, {4905, 4906}, {5005, 5073}, {5133, 5142}, {5245, 5309}, {5352, 5377}, {5460, 5517}, {5569, 5602}, {5740, 5791}, {5823, 5888}, {6036, 6042}, {6096, 6114}, {6217, 6262}, {6374, 6394}, {6420, 6511}, {6564, 6587}, {6742, 6743}, {6797, 6877}, {6909, 6985}, {7042, 7117}, {7141, 7144}, {7276, 7323}, {7400, 7456}, {7505, 7557}, {7690, 7720}, {7787, 7800}, {7870, 7880}, {8013, 8031}, {8114, 8224}, {8272, 8328}, {8418, 8435}, {8493, 8537}, {8600, 8704}, {8766, 8812}, {8839, 8853}, {9032, 9036}, {9108, 9189}, {9222, 9291}, {9344, 9361}, {9448, 9502}, {9615, 9673}, {9690, 9800}, {9837, 9868}, {85, 96}, {145, 202}, {254, 304}, {372, 411}, {534, 551}, {629, 692}, {727, 787}, {861, 944}, {1041, 1084}, {1133, 1174}, {1260, 1307}, {1339, 1358}, {1478, 1548}, {1580, 1618}, {1694, 1814}, {1848, 1891}, {1936, 1990}, {2058, 2130}});
+//        System.out.println(i);
+
+//        int i = new Solution_2009().minOperations(new int[]{4, 2, 5, 5,3,3});
+//        System.out.println(i);
+
+//        // 新建了一个银行,里面记录了每个用户的存款
+//        HashMap<User, Integer> bank = new HashMap<>();
+//        // jack在银行存了10元
+//        User jack = new User("jack", 15);
+//        print("jack = " + jack.hashCode());
+//        bank.put(jack, 10);
+//        // jack来取钱, 结果发现银行显示余额0元
+//        User jack1 = new User("jack", 15);
+//        print("jack1 = " + jack1.hashCode());
+//        Integer balance = bank.get(jack1);
+//        System.out.println(balance);
+
+
+    }
+
+    /**
+     * 2529. 正整数和负整数的最大计数
+     */
+    static class Solution_2529 {
+        public int maximumCount(int[] nums) {
+            //二分找到第一个大于等于0的数组坐标
+            int neg = binarySearch(nums, 0);
+            int pos = nums.length - binarySearch(nums, 1);
+            return Math.max(neg, pos);
+        }
+
+        private int binarySearch(int[] nums, int target) {
+            int left = 0;
+            int right = nums.length - 1;
+            while (left <= right) {
+                int mid = left + (right - left) / 2;
+                if (nums[mid] < target) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+            return left;
+        }
+    }
+
+    public static void print(Object object) {
+        System.out.println(object);
+    }
+
+    public static class User {
+        private String name;
+        private Integer age;
+
+        User(String name, Integer age) {
+            this.name = name;
+            this.age = age;
+        }
+
+        @Override
+        public int hashCode() {
+            int hashCode = name.hashCode();
+            hashCode = hashCode * 31 + age.hashCode();
+            return hashCode;
+        }
+
+        @Override
+        public boolean equals(@Nullable Object obj) {
+            if (obj instanceof User) {
+                if (obj == this) {
+                    return true;
+                }
+
+                return ((User) obj).name.equals(this.name)
+                        && ((User) obj).age == this.age;
+            }
+            return false;
+        }
+    }
+
+
+    /**
+     * 2009. 使数组连续的最少操作数
+     */
+    static class Solution_2009 {
+        public int minOperations(int[] nums) {
+            Arrays.sort(nums);
+
+            int n = nums.length;
+            int m = 1;
+            for (int i = 1; i < n; i++) {
+                if (nums[i] != nums[i - 1]) {
+                    nums[m++] = nums[i]; // 原地去重
+                }
+            }
+
+            int result = 0;
+            int left = 0;
+            for (int i = 0; i < m; i++) {
+                // nums[i], [num[i]-(n-1),nums[i]]
+                while (nums[left] < nums[i] - n + 1) {
+                    left++;
+                }
+                result = Math.max(result, i - left + 1);
+            }
+            return n - result;
+        }
+    }
+
+    /**
+     * 1600. 王位继承顺序
+     */
+    class ThroneInheritance_1600 {
+        class Person {
+            public Person(String name) {
+                this.name = name;
+            }
+
+            String name;
+            boolean isDead = false;
+            List<Person> childs = null;
+        }
+
+        private Person king = null;
+        private HashMap<String, Person> mapPerson = new HashMap<>();
+
+        public ThroneInheritance_1600(String kingName) {
+            king = new Person(kingName);
+            mapPerson.put(kingName, king);
+        }
+
+        public void birth(String parentName, String childName) {
+            Person person = mapPerson.get(parentName);
+            if (person.childs == null) {
+                person.childs = new ArrayList<>();
+            }
+            Person newChild = new Person(childName);
+            person.childs.add(newChild);
+            mapPerson.put(childName, newChild);
+        }
+
+        public void death(String name) {
+            Person person = mapPerson.get(name);
+            person.isDead = true;
+        }
+
+        public List<String> getInheritanceOrder() {
+            List<String> result = new ArrayList<>();
+            display(result, king);
+            return result;
+        }
+
+        private void display(List<String> result, Person person) {
+            if (!person.isDead) {
+                result.add(person.name);
+            }
+            if (person.childs != null) {
+                for (Person child : person.childs) {
+                    display(result, child);
+                }
+            }
+        }
     }
 
     /**
@@ -134,7 +297,7 @@ public class LeetCode {
                         nodes.add(remove.right);
                     }
                 }
-                result.add(0,ints);
+                result.add(0, ints);
             }
             return result;
         }
