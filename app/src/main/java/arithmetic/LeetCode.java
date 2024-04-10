@@ -77,6 +77,31 @@ public class LeetCode {
     }
 
     /**
+     * 1702. 修改后的最大二进制字符串
+     */
+    static class Solution_1702 {
+        public String maximumBinaryString(String binary) {
+            int zeroIndex = -1;
+            for (int i = 0; i < binary.length(); i++) {
+                if (binary.charAt(i) == '0') {
+                    if (zeroIndex == -1) {
+                        zeroIndex = i;
+                    } else {
+                        zeroIndex++;
+                    }
+                }
+            }
+
+            if (zeroIndex == -1) {
+                return binary;
+            }
+
+            String replace = binary.replace("0", "1");
+            return replace.substring(0, zeroIndex) + "0" + replace.substring(zeroIndex + 1);
+        }
+    }
+
+    /**
      * 2529. 正整数和负整数的最大计数
      */
     static class Solution_2529 {
