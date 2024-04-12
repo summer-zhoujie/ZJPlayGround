@@ -1,7 +1,6 @@
 package arithmetic;
 
 import android.os.Build;
-import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -73,7 +72,102 @@ public class LeetCode {
 //        Integer balance = bank.get(jack1);
 //        System.out.println(balance);
 
+//        int[] failed = {-1, 11, 1, 8, 3, 9, 5, 4, 7, 14, 1, 10, 10, 3, 3, 7, 11, 0, 6, 7, 11, 10, 11, 6, 7, 6, 8, 9, 6, 6, 1, 9, 10, 12, 8, 5, 1, 11, 7, 9, 5, 1, 6, 7, 13, 1, 3};
+//        int[] success = {-1, 21, 17, 43, 10, 42, 7, 13, 29, 44, 17, 31, 39, 10, 10, 29, 32, 0, 40, 23, 12, 39, 12, 40, 25, 35, 15, 38, 40, 40, 17, 24, 5, 1, 19, 14, 17, 21, 25, 24, 14, 17, 40, 25, 37, 17, 10};
+//        print(failed[17]);
+//        print(success[17]);
+        Solution_1766 solution1766 = new Solution_1766();
+        int[] coprimes = solution1766.getCoprimes(new int[]{9,16,30,23,33,35,9,47,39,46,16,38,5,49,21,44,17,1,6,37,49,15,23,46,38,9,27,3,24,1,14,17,12,23,43,38,12,4,8,17,11,18,26,22,49,14,9}, new int[][]{{17,0},{30,17},{41,30},{10,30},{13,10},{7,13},{6,7},{45,10},{2,10},{14,2},{40,14},{28,40},{29,40},{8,29},{15,29},{26,15},{23,40},{19,23},{34,19},{18,23},{42,18},{5,42},{32,5},{16,32},{35,14},{25,35},{43,25},{3,43},{36,25},{38,36},{27,38},{24,36},{31,24},{11,31},{39,24},{12,39},{20,12},{22,12},{21,39},{1,21},{33,1},{37,1},{44,37},{9,44},{46,2},{4,46}});
+        print(Arrays.toString(coprimes));
+    }
 
+    /**
+     *
+     */
+    static class Solution_2923 {
+        public int findChampion(int[][] grid) {
+            int n = grid.length;
+            int max = 0;
+            for (int i = 1; i < n; i++) {
+                max = grid[i][max] == 1 ? i : max;
+            }
+            return max;
+        }
+    }
+
+    /**
+     * 1766. 互质树
+     */
+    static class Solution_1766 {
+        public int[] getCoprimes(int[] nums, int[][] edges) {
+            List<Integer>[] gcds = new List[51];
+            for (int i = 0; i < gcds.length; i++) {
+                gcds[i] = new ArrayList<>();
+            }
+            for (int i = 1; i < gcds.length; i++) {
+                for (int j = 1; j < gcds.length; j++) {
+                    if (gcd(i, j) == 1) {
+                        gcds[i].add(j);
+                    }
+                }
+            }
+            int n = nums.length;
+            List<Integer>[] g = new List[n];
+            for (int i = 0; i < g.length; i++) {
+                g[i] = new ArrayList<>();
+            }
+            for (int[] edge : edges) {
+                g[edge[0]].add(edge[1]);
+                g[edge[1]].add(edge[0]);
+            }
+            int[] result = new int[n];
+            for (int i = 0; i < result.length; i++) {
+                result[i] = -1;
+            }
+            dsf(result, 0, 0, 1, new HashMap<Integer, int[]>(), g, nums, gcds);
+            return result;
+        }
+
+        private void dsf(int[] result, int i, int exclude, int deep, HashMap<Integer, int[]> path, List<Integer>[] g, int[] nums, List<Integer>[] gcds) {
+            // 求最大公约数==1的
+            int maxDep = 0;
+            int targetIndex = -1;
+            for (Integer integer : gcds[nums[i]]) {
+                int[] ints = path.get(integer);
+                if (ints == null) {
+                    continue;
+                }
+                int curDeep = ints[0];
+                int index = ints[1];
+                if (curDeep > maxDep) {
+                    maxDep = curDeep;
+                    targetIndex = index;
+                }
+            }
+            result[i] = targetIndex;
+
+            int[] oldValue = path.get(nums[i]);
+            path.put(nums[i], new int[]{deep, i});
+
+            for (Integer k : g[i]) {
+                if (k != exclude) {
+                    dsf(result, k, i, deep + 1, path, g, nums, gcds);
+                }
+            }
+            path.put(nums[i], oldValue);
+        }
+
+        private int gcd(int a, int b) {
+            if (a < 0 || b < 0) {
+                return -1;
+            }
+            while (b > 0) {
+                int t = b;
+                b = a % b;
+                a = t;
+            }
+            return a;
+        }
     }
 
     /**
