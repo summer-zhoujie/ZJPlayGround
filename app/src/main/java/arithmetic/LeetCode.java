@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Stack;
 
@@ -76,9 +77,264 @@ public class LeetCode {
 //        int[] success = {-1, 21, 17, 43, 10, 42, 7, 13, 29, 44, 17, 31, 39, 10, 10, 29, 32, 0, 40, 23, 12, 39, 12, 40, 25, 35, 15, 38, 40, 40, 17, 24, 5, 1, 19, 14, 17, 21, 25, 24, 14, 17, 40, 25, 37, 17, 10};
 //        print(failed[17]);
 //        print(success[17]);
-        Solution_1766 solution1766 = new Solution_1766();
-        int[] coprimes = solution1766.getCoprimes(new int[]{9,16,30,23,33,35,9,47,39,46,16,38,5,49,21,44,17,1,6,37,49,15,23,46,38,9,27,3,24,1,14,17,12,23,43,38,12,4,8,17,11,18,26,22,49,14,9}, new int[][]{{17,0},{30,17},{41,30},{10,30},{13,10},{7,13},{6,7},{45,10},{2,10},{14,2},{40,14},{28,40},{29,40},{8,29},{15,29},{26,15},{23,40},{19,23},{34,19},{18,23},{42,18},{5,42},{32,5},{16,32},{35,14},{25,35},{43,25},{3,43},{36,25},{38,36},{27,38},{24,36},{31,24},{11,31},{39,24},{12,39},{20,12},{22,12},{21,39},{1,21},{33,1},{37,1},{44,37},{9,44},{46,2},{4,46}});
-        print(Arrays.toString(coprimes));
+//        Solution_1766 solution1766 = new Solution_1766();
+//        int[] coprimes = solution1766.getCoprimes(new int[]{9,16,30,23,33,35,9,47,39,46,16,38,5,49,21,44,17,1,6,37,49,15,23,46,38,9,27,3,24,1,14,17,12,23,43,38,12,4,8,17,11,18,26,22,49,14,9}, new int[][]{{17,0},{30,17},{41,30},{10,30},{13,10},{7,13},{6,7},{45,10},{2,10},{14,2},{40,14},{28,40},{29,40},{8,29},{15,29},{26,15},{23,40},{19,23},{34,19},{18,23},{42,18},{5,42},{32,5},{16,32},{35,14},{25,35},{43,25},{3,43},{36,25},{38,36},{27,38},{24,36},{31,24},{11,31},{39,24},{12,39},{20,12},{22,12},{21,39},{1,21},{33,1},{37,1},{44,37},{9,44},{46,2},{4,46}});
+//        print(Arrays.toString(coprimes));
+
+//        MyHashMap myHashMap = new MyHashMap();
+//        myHashMap.put(1, 1);
+//        myHashMap.put(2, 2);
+
+        Solution_924 solution924 = new Solution_924();
+//        int i = solution924.minMalwareSpread(new int[][]{{1, 0, 0, 0, 1, 0, 0, 0, 0, 0}, {0, 1, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 1, 1, 0, 0, 1, 0, 0, 0, 0}, {0, 0, 0, 1, 0, 0, 0, 0, 0, 0}, {1, 0, 0, 0, 1, 0, 0, 0, 0, 0}, {0, 0, 1, 0, 0, 1, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 1, 0, 0, 1}, {0, 0, 0, 0, 0, 0, 0, 1, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 1, 0}, {0, 0, 0, 0, 0, 0, 1, 0, 0, 1}}, new int[]{1, 3, 0});
+        int i = solution924.minMalwareSpread(new int[][]{{1, 0, 1, 0}, {0, 1, 0, 1}, {1, 0, 1, 0}, {0, 1, 0, 1}}, new int[]{2, 1});
+        print(i);
+    }
+
+    /**
+     * 924. 尽量减少恶意软件的传播
+     */
+    static class Solution_924 {
+        public int minMalwareSpread(int[][] graph, int[] initial) {
+            UnionSearch unionSearch = new UnionSearch(301);
+            for (int i = 0; i < graph.length; i++) {
+                for (int j = i + 1; j < graph[i].length; j++) {
+                    if (graph[i][j] == 1) {
+                        unionSearch.put(i, j);
+                    }
+                }
+            }
+            HashMap<Integer, int[]> result = new HashMap<>();
+            for (int i = 0; i < initial.length; i++) {
+                int root = unionSearch.getRoot(initial[i]);
+                int[] ints = result.get(root);
+                if (ints == null) {
+                    result.put(root, new int[]{initial[i], 1, unionSearch.getSize(root)});
+                } else {
+                    ints[0] = Math.min(initial[i], ints[0]);
+                    ints[1] += 1;
+                }
+            }
+
+            int[] res = null;
+            for (int[] value : result.values()) {
+                if (res == null) {
+                    res = value;
+                } else {
+                    if (res[1] == 1 && value[1] == 1) {
+                        if (value[2] == res[2]) {
+                            res = value[0] < res[0] ? value : res;
+                        } else {
+                            res = value[2] > res[2] ? value : res;
+                        }
+                    } else if (res[1] == 1 && value[1] != 1) {
+                        //do nothing
+                    } else if (res[1] != 1 && value[1] == 1) {
+                        res = value;
+                    } else if (res[1] != 1 && value[1] != 1) {
+                        res = value[0] < res[0] ? value : res;
+                    }
+                }
+            }
+            return res[0];
+        }
+
+        static class UnionSearch {
+            int[] parent = null;
+            int[] size = null;
+
+            UnionSearch(int n) {
+                parent = new int[n];
+                for (int i = 0; i < parent.length; i++) {
+                    parent[i] = i;
+                }
+                size = new int[n];
+                for (int i = 0; i < size.length; i++) {
+                    size[i] = 1;
+                }
+            }
+
+            public void put(int i, int j) {
+                int rootI = getRoot(i);
+                int rootJ = getRoot(j);
+                if (rootI != rootJ) {
+                    if (size[rootJ] > size[rootI]) {
+                        parent[rootI] = rootJ;
+                        size[rootJ] += size[rootI];
+                    } else {
+                        parent[rootJ] = rootI;
+                        size[rootI] += size[rootJ];
+                    }
+                }
+
+            }
+
+            public int getRoot(int i) {
+                if (parent[i] == i) {
+                    return parent[i];
+                }
+
+                parent[i] = getRoot(parent[i]);
+                return parent[i];
+            }
+
+            public int getSize(int i) {
+                return size[i];
+            }
+        }
+    }
+
+    /**
+     * 706. 设计哈希映射
+     */
+    static class MyHashMap {
+
+        private static final int MAX_TABLE_LENGTH = 1 << 30;
+        private static final int INIT_TABLE_SIZE = 16;
+        private static final float DEFAULT_LOAD_FACTOR = 0.75f;
+
+        class Node {
+            int value;
+            int key;
+            Node next;
+
+            public Node(int key, int value) {
+                this.value = value;
+                this.key = key;
+            }
+        }
+
+        private float loadFactor = DEFAULT_LOAD_FACTOR;
+        private Node[] table = null;
+        private int threshold = 0;
+
+        private int size = 0;
+
+        private int hash(int key) {
+            int hasCode = Objects.hash(key);
+            return (hasCode << 16) ^ hasCode;
+        }
+
+        public MyHashMap() {
+
+        }
+
+        public void put(int key, int value) {
+            Node nodeNew = new Node(key, value);
+            if (table == null) {
+                resize();
+            }
+
+            int index = (table.length - 1) & hash(key);
+            Node oldNode = table[index];
+
+            if (oldNode == null) {
+                table[index] = nodeNew;
+            } else {
+                while (true) {
+                    if (oldNode.key == key) {
+                        oldNode.value = value;
+                        break;
+                    }
+                    if (oldNode.next == null) {
+                        oldNode.next = nodeNew;
+                        break;
+                    }
+                    oldNode = oldNode.next;
+                }
+            }
+            if (++size > threshold) {
+                resize();
+            }
+        }
+
+        private void resize() {
+            if (table == null) {
+                table = new Node[INIT_TABLE_SIZE];
+                threshold = (int) (INIT_TABLE_SIZE * loadFactor);
+            } else {
+                if (table.length >= MAX_TABLE_LENGTH) {
+                    threshold = Integer.MAX_VALUE;
+                } else {
+                    int newCap = table.length << 1;
+                    Node[] newTable = new Node[newCap];
+                    for (Node node : table) {
+                        if (node == null) {
+                            continue;
+                        }
+                        int newIndex = (newCap - 1) & hash(node.key);
+                        if (node.next == null) {
+                            newTable[newIndex] = node;
+                        } else {
+                            while (node != null) {
+                                Node next = node.next;
+                                node.next = null;
+                                newIndex = (newCap - 1) & hash(node.key);
+                                Node oldNode = newTable[newIndex];
+
+                                if (oldNode == null) {
+                                    newTable[newIndex] = node;
+                                } else {
+                                    while (true) {
+                                        if (oldNode.key == node.key) {
+                                            oldNode.value = node.value;
+                                            break;
+                                        }
+                                        if (oldNode.next == null) {
+                                            oldNode.next = node;
+                                            break;
+                                        }
+                                        oldNode = oldNode.next;
+                                    }
+                                }
+                                node = next;
+                            }
+                        }
+                    }
+                    table = newTable;
+                    threshold = threshold << 1;
+                }
+            }
+        }
+
+        public int get(int key) {
+            if (table == null) {
+                return -1;
+            }
+            int hash = hash(key);
+            int index = (table.length - 1) & hash;
+            Node node = table[index];
+            while (node != null) {
+                if (node.key == key) {
+                    return node.value;
+                }
+                node = node.next;
+            }
+            return -1;
+        }
+
+        public void remove(int key) {
+            if (table == null) {
+                return;
+            }
+            int hash = hash(key);
+            int index = (table.length - 1) & hash;
+            Node node = table[index];
+            Node preNode = node;
+            while (node != null) {
+                if (node.key == key) {
+                    if (preNode == node) {
+                        table[index] = node.next;
+                    } else {
+                        preNode.next = node.next;
+                    }
+                    size--;
+                    break;
+                }
+                preNode = node;
+                node = node.next;
+            }
+        }
     }
 
     /**

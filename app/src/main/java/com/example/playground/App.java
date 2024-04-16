@@ -27,4 +27,19 @@ public class App extends Application {
         MultiDex.install(this);
         AESTest.mainMy();
     }
+
+    class InitConfig {
+        private HardwareSource hardwareSource = null;
+
+        public void setHardwareSource(HardwareSource hardwareSource) {
+            this.hardwareSource = hardwareSource;
+        }
+    }
+
+    interface HardwareSource{
+        Object getparams1();
+        Object getparams2();
+        Object getparams3();
+        Object getparams4();
+    }
 }
