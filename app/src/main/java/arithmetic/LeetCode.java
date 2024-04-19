@@ -100,6 +100,15 @@ public class LeetCode {
     }
 
     /**
+     * 1883. 准时抵达会议现场的最小跳过休息次数
+     */
+    static class Solution_1883 {
+        public int minSkips(int[] dist, int speed, int hoursBefore) {
+
+        }
+    }
+
+    /**
      * 2007. 从双倍数组中还原原数组
      */
     static class Solution_2007 {
