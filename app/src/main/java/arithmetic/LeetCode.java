@@ -17,7 +17,6 @@ import java.util.Stack;
 
 public class LeetCode {
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public static void main(String[] args) {
 //        long l = new Solution_1969().minNonZeroProduct(3);
 //        System.out.println("count: " + l);
@@ -98,9 +97,32 @@ public class LeetCode {
 //        int[] originalArray = new Solution_2007().findOriginalArray(new int[]{1, 3, 4, 2, 6, 8});
 //        print(Arrays.toString(originalArray));
 
-        Solution_377 solution377 = new Solution_377();
-        int i = solution377.combinationSum4(new int[]{1, 2, 3}, 4);
+//        Solution_377 solution377 = new Solution_377();
+//        int i = solution377.combinationSum4(new int[]{1, 2, 3}, 4);
+//        print(i);
+
+        int i = new Solution_1052().maxSatisfied(new int[]{1, 0, 1, 2, 1, 1, 7, 5}, new int[]{0, 1, 0, 1, 0, 1, 0, 1}, 3);
         print(i);
+    }
+
+    /**
+     * 1052. 爱生气的书店老板
+     */
+    static class Solution_1052 {
+        public int maxSatisfied(int[] customers, int[] grumpy, int minutes) {
+            //滑动窗口
+            int[] s = new int[2];
+            int sMax = 0;
+            for (int i = 0; i < customers.length; i++) {
+                s[grumpy[i]] += customers[i];
+                if (i < minutes - 1) {
+                    continue;
+                }
+                sMax = Math.max(sMax, s[1]);
+                s[1] -= grumpy[i - minutes + 1] == 1 ? customers[i - minutes + 1] : 0;
+            }
+            return s[0] + sMax;
+        }
     }
 
     /**
@@ -113,9 +135,9 @@ public class LeetCode {
         public int combinationSum4(int[] nums, int target) {
             int[] f = new int[target + 1];
             f[0] = 1;
-            for (int i = 1; i < target+1; i++) {
+            for (int i = 1; i < target + 1; i++) {
                 for (int j = 0; j < nums.length; j++) {
-                    if (nums[j]<=i) {
+                    if (nums[j] <= i) {
                         f[i] += f[i - nums[j]];
                     }
                 }
