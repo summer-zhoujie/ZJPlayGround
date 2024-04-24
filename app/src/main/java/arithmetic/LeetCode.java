@@ -106,6 +106,126 @@ public class LeetCode {
     }
 
     /**
+     * 2385. 感染二叉树需要的总时间
+     */
+    static class Solution_2385 {
+        public class TreeNode {
+            int val;
+            TreeNode left;
+            TreeNode right;
+
+            TreeNode() {
+            }
+
+            TreeNode(int val) {
+                this.val = val;
+            }
+
+            TreeNode(int val, TreeNode left, TreeNode right) {
+                this.val = val;
+                this.left = left;
+                this.right = right;
+            }
+        }
+
+        int maxDeep = 0;
+
+        public int amountOfTime(TreeNode root, int start) {
+            List<Integer>[] g = new List[1_00000 + 1];
+            dsf(root, g, null);
+            maxDeep = 0;
+            findMaxDeep(start, start, g, 0);
+            return maxDeep;
+        }
+
+        private void findMaxDeep(int start, int exclude, List<Integer>[] g, int deep) {
+            if (g[start] != null) {
+                boolean isLeafNode = true;
+                for (Integer next : g[start]) {
+                    if (next != exclude) {
+                        isLeafNode = false;
+                        findMaxDeep(next, start, g, deep + 1);
+                    }
+                }
+
+                if (isLeafNode) {
+                    maxDeep = Math.max(maxDeep, deep);
+                }
+            }
+        }
+
+        private void dsf(TreeNode root, List<Integer>[] g, TreeNode parent) {
+            if (root == null) {
+                return;
+            }
+
+            if (parent != null) {
+                if (g[root.val] == null) {
+                    g[root.val] = new ArrayList<>();
+                }
+                g[root.val].add(parent.val);
+                if (g[parent.val] == null) {
+                    g[parent.val] = new ArrayList<>();
+                }
+                g[parent.val].add(root.val);
+            }
+            dsf(root.left, g, root);
+            dsf(root.right, g, root);
+        }
+    }
+
+    static class Solution_2385_planB {
+        public class TreeNode {
+            int val;
+            TreeNode left;
+            TreeNode right;
+
+            TreeNode() {
+            }
+
+            TreeNode(int val) {
+                this.val = val;
+            }
+
+            TreeNode(int val, TreeNode left, TreeNode right) {
+                this.val = val;
+                this.left = left;
+                this.right = right;
+            }
+        }
+
+        int result = -1;
+
+        public int amountOfTime(TreeNode root, int start) {
+            dfs(root, start);
+            return result;
+        }
+
+        private int[] dfs(TreeNode root, int start) {
+            if (root == null) {
+                return new int[]{0, 0};
+            }
+            int[] leftSearch = dfs(root.left, start);
+            int[] rightSearch = dfs(root.right, start);
+            int leftL = leftSearch[0];
+            int leftFound = leftSearch[1];
+            int rightL = rightSearch[0];
+            int rightFound = rightSearch[1];
+            if (root.val == start) {
+                result = Math.max(leftL, rightL);
+                return new int[]{1, 1};
+            } else if (leftFound == 1 || rightFound == 1) {
+                result = Math.max(result, leftL + rightL);
+                return new int[]{(leftFound == 1 ? leftL : rightL)+1, 1};
+            } else {
+                return new int[]{Math.max(leftL, rightL) + 1, 0};
+            }
+        }
+
+
+    }
+
+    /**
      * 1052. 爱生气的书店老板
      */
     static class Solution_1052 {
