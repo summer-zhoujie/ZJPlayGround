@@ -106,6 +106,30 @@ public class LeetCode {
     }
 
     /**
+     * 2739. 总行驶距离
+     */
+    static class Solution_2739 {
+        public int distanceTraveled(int mainTank, int additionalTank) {
+            int sumTank = mainTank;
+
+            for (int i = mainTank; i >= 5; ) {
+                int add = i / 5;
+                if (additionalTank <= 0) {
+                    break;
+                }
+                if (additionalTank-add < 0) {
+                    add = additionalTank;
+                }
+                additionalTank -= add;
+                int nextI = add + sumTank % 5;
+                sumTank = sumTank + add;
+                i = nextI;
+            }
+            return sumTank * 10;
+        }
+    }
+
+    /**
      * 2385. 感染二叉树需要的总时间
      */
     static class Solution_2385 {
@@ -216,7 +240,7 @@ public class LeetCode {
                 return new int[]{1, 1};
             } else if (leftFound == 1 || rightFound == 1) {
                 result = Math.max(result, leftL + rightL);
-                return new int[]{(leftFound == 1 ? leftL : rightL)+1, 1};
+                return new int[]{(leftFound == 1 ? leftL : rightL) + 1, 1};
             } else {
                 return new int[]{Math.max(leftL, rightL) + 1, 0};
             }
