@@ -7,9 +7,11 @@ import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.PriorityQueue;
@@ -101,8 +103,141 @@ public class LeetCode {
 //        int i = solution377.combinationSum4(new int[]{1, 2, 3}, 4);
 //        print(i);
 
-        int i = new Solution_1052().maxSatisfied(new int[]{1, 0, 1, 2, 1, 1, 7, 5}, new int[]{0, 1, 0, 1, 0, 1, 0, 1}, 3);
-        print(i);
+//        int i = new Solution_1052().maxSatisfied(new int[]{1, 0, 1, 2, 1, 1, 7, 5}, new int[]{0, 1, 0, 1, 0, 1, 0, 1}, 3);
+//        print(i);
+
+//        SnapshotArray snapshotArray = new SnapshotArray(1);
+//        snapshotArray.set(0, 4);
+//        snapshotArray.set(0, 16);
+//        snapshotArray.set(0, 13);
+//        snapshotArray.snap();
+//        snapshotArray.get(0, 0);
+        String s = new Solution_1017().baseNeg2(2);
+        print(s);
+    }
+
+    /**
+     * 1329. 将矩阵按对角线排序
+     */
+    static class Solution {
+        public int[][] diagonalSort(int[][] mat) {
+            int m = mat.length;
+            int n = mat[0].length;
+            for (int startM = 0; startM < m - 1; startM++) {
+                int startN = 0;
+                // 插入排序
+                int i = startM + 1;
+                int j = startN + 1;
+                while (i < m && j < n) {
+                    int cur = mat[i][j];
+                    int l = i - 1;
+                    int k = j - 1;
+                    while (l >= startM && k >= startN && cur < mat[l][k]) {
+                        mat[l + 1][k + 1] = mat[l][k];
+                        l--;
+                        k--;
+                    }
+                    mat[l + 1][k + 1] = cur;
+                    i++;
+                    j++;
+                }
+            }
+            for (int startN = 1; startN < n - 1; startN++) {
+                int startM = 0;
+                // 插入排序
+                int i = startM + 1;
+                int j = startN + 1;
+                while (i < m && j < n) {
+                    int cur = mat[i][j];
+                    int l = i - 1;
+                    int k = j - 1;
+                    while (l >= startM && k >= startN && cur < mat[l][k]) {
+                        mat[l + 1][k + 1] = mat[l][k];
+                        l--;
+                        k--;
+                    }
+                    mat[l + 1][k + 1] = cur;
+                    i++;
+                    j++;
+                }
+            }
+            return mat;
+        }
+    }
+
+    /**
+     * 1017. 负二进制转换
+     */
+    static class Solution_1017 {
+        public String baseNeg2(int n) {
+            StringBuilder result = new StringBuilder();
+            while (n != 0) {
+                if (n % -2 == 0) {
+                    result.insert(0, "0");
+                } else {
+                    n = n - 1;
+                    result.insert(0, "1");
+                }
+                n /= -2;
+            }
+            return result.toString();
+        }
+    }
+
+    /**
+     * 1146. 快照数组
+     */
+    static class SnapshotArray {
+        HashMap<Integer, List<int[]>> history = new HashMap<>();
+        int snap = 0;
+
+        public SnapshotArray(int length) {
+
+        }
+
+        public void set(int index, int val) {
+            List<int[]> ints = history.get(index);
+            if (ints == null) {
+                ints = new ArrayList<>();
+                history.put(index, ints);
+            }
+            if (ints.size() != 0 && ints.get(ints.size() - 1)[0] == snap) {
+                ints.get(ints.size() - 1)[1] = val;
+            } else {
+                ints.add(new int[]{snap, val});
+            }
+        }
+
+        public int snap() {
+            return snap++;
+        }
+
+        public int get(int index, int snap_id) {
+            List<int[]> ints = history.get(index);
+            if (ints == null || ints.size() == 0) {
+                return 0;
+            }
+            int searchResult = binarySearch(ints, snap_id);
+            if (searchResult < 0) {
+                return 0;
+            }
+            return ints.get(searchResult)[1];
+        }
+
+        private int binarySearch(List<int[]> ints, int target) {
+            int left = -1;
+            int right = ints.size() - 1;
+            while (left < right) {
+                int mid = left + 1 + (right - left - 1) / 2;
+                if (ints.get(mid)[0] <= target) {
+                    left = mid;
+                } else {
+                    right = mid - 1;
+                }
+            }
+
+            return left;
+        }
     }
 
     /**
@@ -117,7 +252,7 @@ public class LeetCode {
                 if (additionalTank <= 0) {
                     break;
                 }
-                if (additionalTank-add < 0) {
+                if (additionalTank - add < 0) {
                     add = additionalTank;
                 }
                 additionalTank -= add;
