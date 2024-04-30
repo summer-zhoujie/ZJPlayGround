@@ -117,6 +117,19 @@ public class LeetCode {
     }
 
     /**
+     * 2798. 满足目标工作时长的员工数目
+     */
+    class Solution_2798 {
+        public int numberOfEmployeesWhoMetTarget(int[] hours, int target) {
+            int res = 0;
+            for (int hour : hours) {
+                if(hour>=target) res++;
+            }
+            return res;
+        }
+    }
+
+    /**
      * 1329. 将矩阵按对角线排序
      */
     static class Solution {
