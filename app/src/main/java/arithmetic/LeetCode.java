@@ -112,8 +112,118 @@ public class LeetCode {
 //        snapshotArray.set(0, 13);
 //        snapshotArray.snap();
 //        snapshotArray.get(0, 0);
-        String s = new Solution_1017().baseNeg2(2);
-        print(s);
+//        String s = new Solution_1017().baseNeg2(2);
+//        print(s);
+
+        int i = new Solution_1463().cherryPickup(new int[][]{{3, 1, 1}, {2, 5, 1}, {1, 5, 5}, {2, 1, 1}});
+        print(i);
+    }
+
+    /**
+     * 2079. 给植物浇水
+     */
+    static class Solution_2079 {
+        public int wateringPlants(int[] plants, int capacity) {
+            int curLeft = capacity;
+            int res = 0;
+            for (int i = 0; i < plants.length; i++) {
+                if (curLeft < plants[i]) {
+                    res += i * 2;
+                    curLeft = capacity;
+                }
+
+                res++;
+                curLeft -= plants[i];
+            }
+            return res;
+        }
+    }
+
+    /**
+     * 1463. 摘樱桃 II
+     */
+    static class Solution_1463 {
+        /**
+         * f(t,i1,j1,i2,j2), 其中i1==i2==t
+         * f(t,j1,j2), 其中i1==i2==t
+         * 左边机器人上一步可能的点位(t-1,j1-1)  (t-1,j1)  (t-1,j1+1)
+         * 右边机器人上一步可能的点位(t-1,j2-1)  (t-1,j2)  (t-1,j2+1)
+         * f(t,j1,j2) =
+         * Max{
+         * f(t-1,j1-1,j2-1), f(t-1,j1-1,j2), f(t-1,j1-1,j2+1),
+         * f(t-1,j1,j2-1), f(t-1,j1,j2), f(t-1,j1,j2+1),
+         * f(t-1,j1+1,j2-1), f(t-1,j1+1,j2), f(t-1,j1+1,j2+1)
+         * } +
+         * // 当前这一步获取的樱桃值
+         * {
+         * if(j1==j2) return grid[t,j1];
+         * else return grid[t,j1]+grid[t,j2];
+         * }
+         * <p>
+         * 初始化临界状态(假设grid的size是m*n且m,n>=2)
+         * f(0,0,n-1) = grid[0,0]+grid[0,n-1]
+         *
+         * @param grid
+         * @return
+         */
+        public int cherryPickup(int[][] grid) {
+            int max = 0;
+            int m = grid.length;
+            int n = grid[0].length;
+            // 初始化临界状态
+            HashMap<String, Integer> hashMap = new HashMap<>();
+            hashMap.put(generateKey(0, 0, n - 1), grid[0][0] + grid[0][n - 1]);
+            // 开始dp
+            for (int t = 1; t < m; t++) {
+                for (int j1 = 0; j1 <= t; j1++) {
+                    for (int j2 = Math.max(j1, n - 1 - t); j2 < n; j2++) {
+                        int curMax = 0;
+
+                        int lastJ1Start = 0;
+                        int lastJ1End = t - 1;
+                        int lastJ2Start = n - 1 - (t - 1);
+                        int lastJ2End = n - 1;
+
+                        curMax = Math.max(curMax, culItemValue(t - 1, j1 - 1, j2 - 1, lastJ1Start, lastJ1End, lastJ2Start, lastJ2End, hashMap));
+                        curMax = Math.max(curMax, culItemValue(t - 1, j1 - 1, j2, lastJ1Start, lastJ1End, lastJ2Start, lastJ2End, hashMap));
+                        curMax = Math.max(curMax, culItemValue(t - 1, j1 - 1, j2 + 1, lastJ1Start, lastJ1End, lastJ2Start, lastJ2End, hashMap));
+
+                        curMax = Math.max(curMax, culItemValue(t - 1, j1, j2 - 1, lastJ1Start, lastJ1End, lastJ2Start, lastJ2End, hashMap));
+                        curMax = Math.max(curMax, culItemValue(t - 1, j1, j2, lastJ1Start, lastJ1End, lastJ2Start, lastJ2End, hashMap));
+                        curMax = Math.max(curMax, culItemValue(t - 1, j1, j2 + 1, lastJ1Start, lastJ1End, lastJ2Start, lastJ2End, hashMap));
+
+                        curMax = Math.max(curMax, culItemValue(t - 1, j1 + 1, j2 - 1, lastJ1Start, lastJ1End, lastJ2Start, lastJ2End, hashMap));
+                        curMax = Math.max(curMax, culItemValue(t - 1, j1 + 1, j2, lastJ1Start, lastJ1End, lastJ2Start, lastJ2End, hashMap));
+                        curMax = Math.max(curMax, culItemValue(t - 1, j1 + 1, j2 + 1, lastJ1Start, lastJ1End, lastJ2Start, lastJ2End, hashMap));
+
+                        curMax += grid[t][j1] + (j1 == j2 ? 0 : grid[t][j2]);
+                        hashMap.put(generateKey(t, j1, j2), curMax);
+
+                        if (t == m - 1) {
+                            max = Math.max(curMax, max);
+                        }
+                    }
+                }
+            }
+
+            return max;
+        }
+
+        private int culItemValue(int t, int j1, int j2, int lastJ1Start, int lastJ1End, int lastJ2Start, int lastJ2End, HashMap<String, Integer> hashMap) {
+            boolean isValid_j1 = j1 >= lastJ1Start && j1 <= lastJ1End;
+            boolean isValid_j2 = j2 >= lastJ2Start && j2 <= lastJ2End;
+            if (isValid_j1 && isValid_j2) {
+                Integer integer = hashMap.get(generateKey(t, j1, j2));
+                if (integer != null) {
+                    return integer;
+                }
+            }
+            return -1;
+        }
+
+        private String generateKey(int t, int j1, int j2) {
+            return t + "," + j1 + "," + j2;
+        }
     }
 
     /**
@@ -123,7 +233,7 @@ public class LeetCode {
         public int numberOfEmployeesWhoMetTarget(int[] hours, int target) {
             int res = 0;
             for (int hour : hours) {
-                if(hour>=target) res++;
+                if (hour >= target) res++;
             }
             return res;
         }
