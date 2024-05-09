@@ -120,6 +120,54 @@ public class LeetCode {
     }
 
     /**
+     * 2105. 给植物浇水
+     */
+    class Solution {
+        public int minimumRefill(int[] plants, int capacityA, int capacityB) {
+            int aLeft = capacityA;
+            int bLeft = capacityB;
+            int res = 0;
+            int l = 0;
+            int r = plants.length - 1;
+            while (l <= r) {
+                if (l == r) {
+                    if (aLeft >= bLeft) {
+                        if (aLeft >= plants[l]) {
+                            aLeft -= plants[l];
+                        } else {
+                            res++;
+                            aLeft = capacityA - plants[l];
+                        }
+                    } else {
+                        if (bLeft >= plants[r]) {
+                            bLeft -= plants[r];
+                        } else {
+                            res++;
+                            bLeft = capacityB - plants[r];
+                        }
+                    }
+                }else {
+                    if (aLeft >= plants[l]) {
+                        aLeft -= plants[l];
+                    } else {
+                        res++;
+                        aLeft = capacityA - plants[l];
+                    }
+                    if (bLeft >= plants[r]) {
+                        bLeft -= plants[r];
+                    } else {
+                        res++;
+                        bLeft = capacityB - plants[r];
+                    }
+                }
+                l++;
+                r--;
+            }
+            return res;
+        }
+    }
+
+    /**
      * 2079. 给植物浇水
      */
     static class Solution_2079 {
