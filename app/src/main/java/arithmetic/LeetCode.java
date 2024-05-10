@@ -120,6 +120,24 @@ public class LeetCode {
     }
 
     /**
+     * 2960. 统计已测试设备
+     */
+    class Solution_2960 {
+        public int countTestedDevices(int[] batteryPercentages) {
+            int res = 0;
+            int cut = 0;
+            for (int batteryPercentage : batteryPercentages) {
+                int realPercent = Math.max(0, batteryPercentage - cut);
+                if (realPercent > 0) {
+                    cut++;
+                    res++;
+                }
+            }
+            return res;
+        }
+    }
+
+    /**
      * 2105. 给植物浇水
      */
     class Solution {
