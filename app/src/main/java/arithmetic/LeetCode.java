@@ -120,6 +120,39 @@ public class LeetCode {
     }
 
     /**
+     * 2391. 收集垃圾的最少总时间
+     */
+    class Solution_2391 {
+        public int garbageCollection(String[] garbage, int[] travel) {
+            int res = 0;
+            int[] carMaxDistances = new int[3];
+            int curTravelTime = 0;
+            for (int i = 0; i < garbage.length; i++) {
+                if (i == 0) {
+                    res += garbage[i].length();
+                } else {
+                    curTravelTime += travel[i - 1];
+                    res += garbage[i].length();
+                    for (int j = 0; j < garbage[i].length(); j++) {
+                        char c = garbage[i].charAt(j);
+                        if (c == 'M') {
+                            carMaxDistances[0] = curTravelTime;
+                        } else if (c == 'P') {
+                            carMaxDistances[1] = curTravelTime;
+                        } else if (c == 'G') {
+                            carMaxDistances[2] = curTravelTime;
+                        }
+                    }
+                }
+            }
+            for (int carMaxInstance : carMaxDistances) {
+                res += carMaxInstance;
+            }
+            return res;
+        }
+    }
+
+    /**
      * 2960. 统计已测试设备
      */
     class Solution_2960 {
