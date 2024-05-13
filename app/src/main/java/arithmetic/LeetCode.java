@@ -120,6 +120,70 @@ public class LeetCode {
     }
 
     /**
+     * 994. 腐烂的橘子
+     */
+    class Solution_994 {
+        public int orangesRotting(int[][] grid) {
+            List<int[]> list = new ArrayList<>();
+            int m = grid.length;
+            int n = grid[0].length;
+            int goodCount = 0;
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (grid[i][j] == 1) {
+                        goodCount++;
+                    } else if (grid[i][j] == 2) {
+                        list.add(new int[]{i, j});
+                    }
+                }
+            }
+            if (goodCount == 0) {
+                return 0;
+            }
+            if (list.isEmpty()) {
+                return -1;
+            }
+            int res = 0;
+            while (goodCount > 0 && !list.isEmpty()) {
+                List<int[]> newList = new ArrayList<>();
+                for (int[] pos : list) {
+                    int i = pos[0];
+                    int j = pos[1];
+                    if (badOk(i - 1, j, m, n, grid)) {
+                        newList.add(new int[]{i - 1, j});
+                        goodCount--;
+                    }
+                    if (badOk(i + 1, j, m, n, grid)) {
+                        newList.add(new int[]{i + 1, j});
+                        goodCount--;
+                    }
+                    if (badOk(i, j - 1, m, n, grid)) {
+                        newList.add(new int[]{i, j - 1});
+                        goodCount--;
+                    }
+                    if (badOk(i, j + 1, m, n, grid)) {
+                        newList.add(new int[]{i, j + 1});
+                        goodCount--;
+                    }
+                }
+                list = newList;
+                res++;
+            }
+            return goodCount == 0 ? res : -1;
+        }
+
+        private boolean badOk(int i, int j, int m, int n, int[][] grid) {
+            if (i >= 0 && i < m && j >= 0 && j < n) {
+                if (grid[i][j] == 1) {
+                    grid[i][j] = 2;
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    /**
      * 2391. 收集垃圾的最少总时间
      */
     class Solution_2391 {
@@ -197,7 +261,7 @@ public class LeetCode {
                             bLeft = capacityB - plants[r];
                         }
                     }
-                }else {
+                } else {
                     if (aLeft >= plants[l]) {
                         aLeft -= plants[l];
                     } else {
