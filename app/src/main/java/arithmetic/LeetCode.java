@@ -120,6 +120,32 @@ public class LeetCode {
     }
 
     /**
+     * 2244. 完成所有任务需要的最少轮数
+     */
+    class Solution_2244 {
+        public int minimumRounds(int[] tasks) {
+            HashMap<Integer, Integer> hashMapCount = new HashMap<>();
+            for (int task : tasks) {
+                Integer oldValue = hashMapCount.get(task);
+                int newCount = (oldValue == null ? 0 : oldValue) + 1;
+                hashMapCount.put(task, newCount);
+            }
+            int result = 0;
+            for (Integer key : hashMapCount.keySet()) {
+                Integer value = hashMapCount.get(key);
+                if (value == null) {
+                    continue;
+                }
+                if (value == 1) {
+                    return -1;
+                }
+                result = result + value / 3 + (value % 3 != 0 ? 1 : 0);
+            }
+            return result;
+        }
+    }
+
+    /**
      * 994. 腐烂的橘子
      */
     class Solution_994 {
