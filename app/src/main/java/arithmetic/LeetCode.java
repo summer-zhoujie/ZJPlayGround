@@ -1,5 +1,6 @@
 package arithmetic;
 
+import android.content.Context;
 import android.os.Build;
 
 import androidx.annotation.Nullable;
@@ -115,8 +116,80 @@ public class LeetCode {
 //        String s = new Solution_1017().baseNeg2(2);
 //        print(s);
 
-        int i = new Solution_1463().cherryPickup(new int[][]{{3, 1, 1}, {2, 5, 1}, {1, 5, 5}, {2, 1, 1}});
-        print(i);
+//        int i = new Solution_1463().cherryPickup(new int[][]{{3, 1, 1}, {2, 5, 1}, {1, 5, 5}, {2, 1, 1}});
+//        print(i);
+
+//        int minimumTime = new Solution_2589().findMinimumTime(new int[][]{{2, 3, 1}, {4, 5, 1}, {1, 5, 2}});
+//        print(minimumTime);
+
+    }
+
+    /**
+     * 2589. 完成所有任务的最少时间
+     */
+    static class Solution_2589 {
+        public int findMinimumTime(int[][] tasks) {
+            // 按照end的大小进行排序
+            sort(0, tasks.length - 1, tasks);
+            boolean[] records = new boolean[2001];
+            int res = 0;
+            // 按顺序遍历,并记录CPU累计运行的时间点
+            for (int[] task : tasks) {
+                int leftCount = task[2];
+                for (int i = task[0]; i <= task[1]; i++) {
+                    if (records[i]) {
+                        leftCount--;
+                    }
+                }
+                if (leftCount > 0) {
+                    for (int i = task[1]; i >= task[0]; i--) {
+                        if (!records[i]) {
+                            leftCount--;
+                            records[i] = true;
+                            res++;
+                        }
+                        if (leftCount <= 0) {
+                            break;
+                        }
+                    }
+                }
+
+            }
+            return res;
+        }
+
+        private void sort(int start, int end, int[][] arr) {
+            if (start >= end) {
+                return;
+            }
+            int pivotIndex = start;
+            int[] pivot = arr[pivotIndex];
+            int left = start;
+            int right = end;
+            while (left < right) {
+                while (pivotIndex == left && left < right) {
+                    if (arr[right][1] < pivot[1]) {
+                        arr[pivotIndex] = arr[right];
+                        pivotIndex = right;
+                        break;
+                    } else {
+                        right--;
+                    }
+                }
+                while (pivotIndex == right && left < right) {
+                    if (arr[left][1] > pivot[1]) {
+                        arr[pivotIndex] = arr[left];
+                        pivotIndex = left;
+                        break;
+                    } else {
+                        left++;
+                    }
+                }
+            }
+            arr[left] = pivot;
+            sort(start, left, arr);
+            sort(left + 1, end, arr);
+        }
     }
 
     /**
@@ -431,7 +504,7 @@ public class LeetCode {
     /**
      * 1329. 将矩阵按对角线排序
      */
-    static class Solution {
+    static class Solution_1329 {
         public int[][] diagonalSort(int[][] mat) {
             int m = mat.length;
             int n = mat[0].length;
