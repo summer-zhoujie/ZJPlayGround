@@ -122,6 +122,69 @@ public class LeetCode {
 //        int minimumTime = new Solution_2589().findMinimumTime(new int[][]{{2, 3, 1}, {4, 5, 1}, {1, 5, 2}});
 //        print(minimumTime);
 
+        int i = new Solution_826().maxProfitAssignment(new int[]{13, 37, 58}, new int[]{4, 90, 96}, new int[]{34, 73, 45});
+        print(i);
+    }
+
+    /**
+     * 826. 安排工作以达到最大收益
+     */
+    static class Solution_826 {
+        public int maxProfitAssignment(int[] difficulty, int[] profit, int[] worker) {
+            sort(0, difficulty.length - 1, difficulty, profit);
+            Arrays.sort(worker);
+            int j = 0;
+            int curMaxProfit = 0;
+            int res = 0;
+            for (int i = 0; i < difficulty.length && j < worker.length; i++) {
+                while (j < worker.length && difficulty[i] > worker[j]) {
+                    res += curMaxProfit;
+                    j++;
+                }
+                curMaxProfit = Math.max(curMaxProfit, profit[i]);
+            }
+
+            for (int i = j; i < worker.length; i++) {
+                res += curMaxProfit;
+            }
+            return res;
+        }
+
+        private void sort(int start, int end, int[] difficulty, int[] profit) {
+            if (start >= end) {
+                return;
+            }
+            int pivotIndex = start;
+            int pivot = difficulty[pivotIndex];
+            int pivot_profit = profit[pivotIndex];
+            int left = start;
+            int right = end;
+            while (left < right) {
+                while (left == pivotIndex && left < right) {
+                    if (difficulty[right] < pivot) {
+                        difficulty[pivotIndex] = difficulty[right];
+                        profit[pivotIndex] = profit[right];
+                        pivotIndex = right;
+                        break;
+                    }
+                    right--;
+                }
+                while (right == pivotIndex && left < right) {
+                    if (difficulty[left] > pivot) {
+                        difficulty[pivotIndex] = difficulty[left];
+                        profit[pivotIndex] = profit[left];
+                        pivotIndex = left;
+                        break;
+                    }
+                    left++;
+                }
+            }
+            difficulty[left] = pivot;
+            profit[left] = pivot_profit;
+
+            sort(start, left, difficulty, profit);
+            sort(left + 1, end, difficulty, profit);
+        }
     }
 
     /**
