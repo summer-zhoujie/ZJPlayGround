@@ -6,6 +6,8 @@ import android.os.Build;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import com.example.playground.kttest.Test;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -122,8 +124,39 @@ public class LeetCode {
 //        int minimumTime = new Solution_2589().findMinimumTime(new int[][]{{2, 3, 1}, {4, 5, 1}, {1, 5, 2}});
 //        print(minimumTime);
 
-        int i = new Solution_826().maxProfitAssignment(new int[]{13, 37, 58}, new int[]{4, 90, 96}, new int[]{34, 73, 45});
+//        int i = new Solution_826().maxProfitAssignment(new int[]{13, 37, 58}, new int[]{4, 90, 96}, new int[]{34, 73, 45});
+//        print(i);
+
+        int i = new Solution_1542().longestAwesome("3242415");
         print(i);
+    }
+
+    /**
+     * 1542. 找出最长的超赞子字符串
+     */
+    static class Solution_1542 {
+        public int longestAwesome(String s) {
+
+            int m = s.length();
+            int[] pos = new int[1 << 10];
+            Arrays.fill(pos, m);
+            pos[0] = -1;
+            int countInfo = 0;
+            int res = 1;
+            for (int i = 0; i < m; i++) {
+                countInfo ^= 1 << (s.charAt(i) - '0');
+                //奇数
+                for (int j = 0; j < 10; j++) {
+                    res = Math.max(res, i - pos[countInfo ^ (1 << j)]);
+                }
+                //偶数
+                res = Math.max(res, i - pos[countInfo]);
+                if (pos[countInfo] == m) {
+                    pos[countInfo] = i;
+                }
+            }
+            return res;
+        }
     }
 
     /**
