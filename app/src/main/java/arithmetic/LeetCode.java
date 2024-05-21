@@ -130,6 +130,14 @@ public class LeetCode {
         int i = new Solution_1542().longestAwesome("3242415");
         print(i);
     }
+    /**
+     * 2769. 找出最大的可达成数字
+     */
+    class Solution_2769 {
+        public int theMaximumAchievableX(int num, int t) {
+            return num + 2 * t;
+        }
+    }
 
     /**
      * 1542. 找出最长的超赞子字符串
