@@ -15,6 +15,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.PriorityQueue;
@@ -130,6 +131,29 @@ public class LeetCode {
         int i = new Solution_1542().longestAwesome("3242415");
         print(i);
     }
+
+    /**
+     * 1673. 找出最具竞争力的子序列
+     */
+    class Solution_1673 {
+        public int[] mostCompetitive(int[] nums, int k) {
+            int n = nums.length;
+            int[] result = new int[k];
+            int stackLength = 0;
+            for (int i = 0; i < n; i++) {
+                int x = nums[i];
+                while (stackLength > 0 && x < result[stackLength - 1] && (n - i + stackLength) > k) {
+                    stackLength--;
+                }
+                if (stackLength < k) {
+                    result[stackLength] = x;
+                    stackLength++;
+                }
+            }
+            return result;
+        }
+    }
+
     /**
      * 2769. 找出最大的可达成数字
      */
