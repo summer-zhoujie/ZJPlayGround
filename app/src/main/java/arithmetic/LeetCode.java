@@ -133,6 +133,39 @@ public class LeetCode {
     }
 
     /**
+     * 2028. 找出缺失的观测数据
+     */
+    class Solution_2028 {
+        public int[] missingRolls(int[] rolls, int mean, int n) {
+            int m = rolls.length;
+            int sumM = 0;
+            for (int roll : rolls) {
+                sumM += roll;
+            }
+            int sumN = (m + n) * mean - sumM;
+            int sumNMin = n;
+            int sumNMax = 6 * n;
+            if (sumN >= sumNMin && sumN <= sumNMax) {
+                int[] result = new int[n];
+                sumN -= n;
+                for (int i = 0; i < result.length; i++) {
+                    if (sumN >= 5) {
+                        result[i] = 6;
+                        sumN -= 5;
+                    } else if (sumN > 0) {
+                        result[i] = sumN + 1;
+                        sumN -= sumN;
+                    } else {
+                        result[i] = 1;
+                    }
+                }
+                return result;
+            }
+            return new int[0];
+        }
+    }
+
+    /**
      * 1673. 找出最具竞争力的子序列
      */
     class Solution_1673 {
