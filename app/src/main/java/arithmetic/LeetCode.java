@@ -133,6 +133,31 @@ public class LeetCode {
     }
 
     /**
+     * 2965. 找出缺失和重复的数字
+     */
+    class Solution_2965 {
+        public int[] findMissingAndRepeatedValues(int[][] grid) {
+            int n = grid.length;
+            int max = n * n;
+            int normalSum = (1 + max) * max / 2;
+            int curSum = 0;
+            int[] countArray = new int[max + 1];
+            int[] resultArray = new int[2];
+            for (int[] ints : grid) {
+                for (int anInt : ints) {
+                    countArray[anInt] += 1;
+                    if (countArray[anInt] == 2) {
+                        resultArray[0] = anInt;
+                    }
+                    curSum += anInt;
+                }
+            }
+            resultArray[1] = (normalSum - curSum) + resultArray[0];
+            return resultArray;
+        }
+    }
+
+    /**
      * 2951. 找出峰值
      */
     class Solution_2951 {
