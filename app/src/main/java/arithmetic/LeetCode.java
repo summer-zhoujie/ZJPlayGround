@@ -133,6 +133,27 @@ public class LeetCode {
     }
 
     /**
+     * 1103. 分糖果 II
+     */
+    class Solution_1103 {
+        public int[] distributeCandies(int candies, int num_people) {
+            int cur = 1;
+            int[] result = new int[num_people];
+            while (candies > 0) {
+                for (int i = 0; i < num_people && candies > 0; i++) {
+                    if (candies < cur) {
+                        cur = candies;
+                    }
+                    result[i] += cur;
+                    candies -= cur;
+                    cur++;
+                }
+            }
+            return result;
+        }
+    }
+
+    /**
      * 2965. 找出缺失和重复的数字
      */
     class Solution_2965 {
@@ -163,7 +184,7 @@ public class LeetCode {
     class Solution_2951 {
         public List<Integer> findPeaks(int[] mountain) {
             List<Integer> res = new ArrayList<>();
-            for (int i = 1; i < mountain.length-1; i++) {
+            for (int i = 1; i < mountain.length - 1; i++) {
                 if (mountain[i] > mountain[i - 1] && mountain[i] > mountain[i + 1]) {
                     res.add(i);
                 }
