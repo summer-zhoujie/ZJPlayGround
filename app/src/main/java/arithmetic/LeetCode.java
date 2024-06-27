@@ -1,21 +1,15 @@
 package arithmetic;
 
-import android.content.Context;
 import android.os.Build;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
-import com.example.playground.kttest.Test;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.PriorityQueue;
@@ -128,8 +122,83 @@ public class LeetCode {
 //        int i = new Solution_826().maxProfitAssignment(new int[]{13, 37, 58}, new int[]{4, 90, 96}, new int[]{34, 73, 45});
 //        print(i);
 
-        int i = new Solution_1542().longestAwesome("3242415");
+//        int i = new Solution_1542().longestAwesome("3242415");
+//        print(i);
+
+        int i = new Solution_2741().specialPerm(new int[]{2, 3, 6});
         print(i);
+    }
+
+    /**
+     * 2734. 执行子串操作后的字典序最小字符串
+     */
+    static class Solution_2734 {
+        public String smallestString(String s) {
+            StringBuilder sb = new StringBuilder();
+            int start = -1;
+            int doCount = 0;
+            for (int i = 0; i < s.length(); i++) {
+                char c = s.charAt(i);
+                if (c == 'a') {
+                    if (i == s.length() - 1 && doCount < 1) {
+                        sb.append('z');
+                        continue;
+                    } else if (doCount < 1) {
+                        sb.append(c);
+                        continue;
+                    } else {
+                        start = i;
+                        break;
+                    }
+                }
+                char newC = (char) (c - 1);
+                sb.append(newC);
+                doCount++;
+            }
+            if (start != -1) {
+                sb.append(s.substring(start));
+            }
+            return sb.toString();
+        }
+    }
+
+    /**
+     * 2741. 特别的排列
+     */
+    static class Solution_2741 {
+
+        public int specialPerm(int[] nums) {
+            long result = 0;
+            int posInfo = 0;
+            long memo[][] = new long[(1 << nums.length) - 1][nums.length];
+            for (long[] row : memo) {
+                Arrays.fill(row, -1); // -1 表示没有计算过
+            }
+            for (int i = 0; i < nums.length; i++) {
+                result += specialPermInner((1 << i) | posInfo, i, nums, memo);
+            }
+            return (int) (result % 1000000007);
+        }
+
+        private long specialPermInner(int posInfo, int pre, int[] nums, long[][] memo) {
+            if (posInfo == (1 << nums.length) - 1) {
+                return 1;
+            }
+            if (memo[posInfo][pre] != -1) {
+                return memo[posInfo][pre];
+            }
+            long curResult = 0;
+            for (int i = 0; i < nums.length; i++) {
+                if (((1 << i) & posInfo) != 0) {
+                    continue;
+                }
+                if (nums[pre] % nums[i] == 0 || nums[i] % nums[pre] == 0) {
+                    curResult += specialPermInner((1 << i) | posInfo, i, nums, memo);
+                }
+            }
+            memo[posInfo][pre] = curResult;
+            return curResult;
+        }
     }
 
     /**
