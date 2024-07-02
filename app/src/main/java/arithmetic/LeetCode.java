@@ -125,8 +125,45 @@ public class LeetCode {
 //        int i = new Solution_1542().longestAwesome("3242415");
 //        print(i);
 
-        int i = new Solution_2741().specialPerm(new int[]{2, 3, 6});
+//        int i = new Solution_2741().specialPerm(new int[]{2, 3, 6});
+//        print(i);
+
+        int i = Solution_3115.maximumPrimeDifference(new int[]{1, 7});
         print(i);
+    }
+
+    /**
+     * 3115. 质数的最大距离
+     */
+    static class Solution_3115 {
+        public static int maximumPrimeDifference(int[] nums) {
+
+            int n = 100;
+            int[] tableIsPrime = new int[n + 1];
+            Arrays.fill(tableIsPrime, 1);
+            tableIsPrime[0] = 0;
+            tableIsPrime[1] = 0;
+            // 埃式筛
+            for (int i = 2; i <= n; i++) {
+                if (tableIsPrime[i] == 1) {
+                    for (int j = i * i; j <= n; j += i) {
+                        tableIsPrime[j] = 0;
+                    }
+                }
+            }
+            int start = -1;
+            int end = -1;
+            for (int i = 0; i < nums.length; i++) {
+                if (tableIsPrime[nums[i]] == 1) {
+                    if (start < 0) {
+                        start = end = i;
+                    } else {
+                        end = i;
+                    }
+                }
+            }
+            return end - start;
+        }
     }
 
     /**
