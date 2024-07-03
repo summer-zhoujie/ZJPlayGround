@@ -133,6 +133,21 @@ public class LeetCode {
     }
 
     /**
+     * 3099. 哈沙德数
+     */
+    class Solution_3099 {
+        public int sumOfTheDigitsOfHarshadNumber(int x) {
+            int sum = 0;
+            int temp = x;
+            while (temp > 0) {
+                sum += temp % 10;
+                temp = temp / 10;
+            }
+            return x % sum == 0 ? sum : -1;
+        }
+    }
+
+    /**
      * 3115. 质数的最大距离
      */
     static class Solution_3115 {
