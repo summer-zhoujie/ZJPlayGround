@@ -133,6 +133,27 @@ public class LeetCode {
     }
 
     /**
+     * 1512. 好数对的数目
+     */
+    class Solution_1512 {
+        public int numIdenticalPairs(int[] nums) {
+             int[] countNums = new int[101];
+             Arrays.fill(countNums,0);
+            for (int num : nums) {
+                countNums[num]+=1;
+            }
+            int result = 0;
+            for (int i = 1; i < countNums.length; i++) {
+                int n = countNums[i] - 1;
+                if (n>=1) {
+                    result += (n+1)*n/2;
+                }
+            }
+            return result;
+        }
+    }
+
+    /**
      * 3099. 哈沙德数
      */
     class Solution_3099 {
