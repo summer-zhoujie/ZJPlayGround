@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.PriorityQueue;
+import java.util.Random;
 import java.util.Stack;
 
 public class LeetCode {
@@ -128,8 +129,377 @@ public class LeetCode {
 //        int i = new Solution_2741().specialPerm(new int[]{2, 3, 6});
 //        print(i);
 
-        int i = Solution_3115.maximumPrimeDifference(new int[]{1, 7});
-        print(i);
+//        int i = Solution_3115.maximumPrimeDifference(new int[]{1, 7});
+//        print(i);
+//        int[] nums = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+//        for (int j = 0; j < 10; j++) {
+//            shuffle(nums);
+//            print("pre===" + getPrint(nums));
+//            滑动窗口.Solution_1984.binarySort(nums, 0, nums.length-1);
+//            print("after===" + getPrint(nums));
+//        }
+
+//        print(new 滑动窗口.Solution_643().findMaxAverage(new int[]{1, 12, -5, -6, 50, 3}, 4));
+        print(new 滑动窗口.Solution_2090().getAverages(new int[]{7, 4, 3, 9, 1, 8, 5, 2, 6}, 3));
+    }
+
+    private static String getPrint(int[] arr) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("[");
+        for (int i = 0; i < arr.length; i++) {
+            stringBuilder.append(arr[i] + ",");
+        }
+        stringBuilder.append("]");
+        return stringBuilder.toString();
+    }
+
+    /**
+     * 洗牌算法
+     */
+    public static final <T> void shuffle(int[] arr) {
+        Random random = new Random();
+        for (int i = arr.length - 1; i > 0; i--) {
+            int t = arr[i];
+            int target = random.nextInt(i);
+            arr[i] = arr[target];
+            arr[target] = t;
+        }
+    }
+
+    public static class 滑动窗口 {
+
+        static class Solution_2090 {
+            public int[] getAverages(int[] nums, int k) {
+                int[] avgs = new int[nums.length];
+                Arrays.fill(avgs, -1);
+                int subLength = 2 * k + 1;
+                if (subLength > nums.length) {
+                    return avgs;
+                }
+                long curSum = 0;
+                for (int i = 0; i < nums.length; i++) {
+                    if (i < subLength-1) {
+                        curSum += nums[i];
+                        continue;
+                    }
+
+                    if (i > subLength-1) {
+                        curSum -= nums[i - subLength];
+                    }
+                    curSum += nums[i];
+                    avgs[i-k] = (int) (curSum / subLength);
+                }
+                return avgs;
+            }
+        }
+
+        class Solution_1343 {
+            public int numOfSubarrays(int[] arr, int k, int threshold) {
+                int ans = 0;
+                int cur = 0;
+                threshold = threshold * k;
+                for (int i = 0; i < arr.length; i++) {
+                    cur += arr[i];
+                    if (i >= k) {
+                        cur -= arr[i - k];
+                    }
+                    if (i >= k - 1) {
+                        if (cur >= threshold) {
+                            ans++;
+                        }
+                    }
+                }
+                return ans;
+            }
+        }
+
+        static class Solution_643 {
+            public double findMaxAverage(int[] nums, int k) {
+                int ans = Integer.MIN_VALUE;
+                int cur = 0;
+                for (int i = 0; i < nums.length; i++) {
+                    cur += nums[i];
+                    if (i >= k) {
+                        cur -= nums[i - k];
+                    }
+                    if (i >= k - 1) {
+                        ans = Math.max(ans, cur);
+                    }
+                }
+                return ans * 1.0 / k;
+            }
+        }
+
+        static class Solution_1984 {
+            public int minimumDifference(int[] nums, int k) {
+                binarySort(nums, 0, nums.length - 1);
+                int ans = Integer.MAX_VALUE;
+                for (int i = k - 1; i < nums.length; i++) {
+                    ans = Math.min(ans, nums[i] - nums[i - k + 1]);
+                }
+                return ans;
+            }
+
+            public static void binarySort(int[] nums, int start, int end) {
+                if (start >= end) {
+                    return;
+                }
+                int pivotIndex = start;
+                int pivot = nums[pivotIndex];
+                int l = start;
+                int r = end;
+                while (l < r) {
+                    while (pivotIndex == l && l < r) {
+                        if (nums[r] > pivot) {
+                            r--;
+                        } else {
+                            pivotIndex = r;
+                            int temp = nums[r];
+                            nums[r] = pivot;
+                            pivot = temp;
+                            break;
+                        }
+                    }
+                    while (pivotIndex == r && l < r) {
+                        if (nums[l] < pivot) {
+                            l++;
+                        } else {
+                            pivotIndex = l;
+                            int temp = nums[l];
+                            nums[l] = pivot;
+                            pivot = temp;
+                            break;
+                        }
+                    }
+                }
+                binarySort(nums, start, pivotIndex - 1);
+                binarySort(nums, pivotIndex + 1, end);
+            }
+        }
+
+        class Solution_2269 {
+            public int divisorSubstrings(int num, int k) {
+                String numString = num + "";
+                int result = 0;
+                int curNum = 0;
+                for (int i = k; i <= numString.length(); i++) {
+                    curNum = Integer.parseInt(numString.substring(i - k, i));
+                    if (curNum != 0 && num % curNum == 0) {
+                        result++;
+                    }
+                }
+                return result;
+            }
+        }
+
+        class Solution_1456 {
+            public int maxVowels(String s, int k) {
+                HashSet<Character> sets = new HashSet<>();
+                sets.add('a');
+                sets.add('e');
+                sets.add('i');
+                sets.add('o');
+                sets.add('u');
+                int curCount = 0;
+                int result = curCount;
+                for (int i = 0; i < s.length(); i++) {
+                    int add = 0;
+                    if (i - k >= 0 && sets.contains(s.charAt(i - k))) {
+                        add--;
+                    }
+                    if (sets.contains(s.charAt(i))) {
+                        add++;
+                    }
+                    curCount += add;
+                    result = Math.max(result, curCount);
+                }
+                return result;
+            }
+        }
+
+    }
+
+
+    class Solution {
+        public String mergeAlternately(String word1, String word2) {
+            StringBuilder sb = new StringBuilder();
+            int n = Math.max(word1.length(), word2.length());
+            for (int i = 0; i < n; i++) {
+                if (i < word1.length()) {
+                    sb.append(word1.charAt(i));
+                }
+                if (i < word2.length()) {
+                    sb.append(word2.charAt(i));
+                }
+            }
+            return sb.toString();
+        }
+    }
+
+    class Solution_852 {
+        public int peakIndexInMountainArray(int[] arr) {
+            return binaryS(0, arr.length, arr);
+        }
+
+        private int binaryS(int start, int end, int[] arr) {
+            if (start == end) {
+                return start;
+            }
+            int mid = (start + end) / 2;
+            int left = arr[mid - 1];
+            if (arr[mid] >= arr[mid - 1] && arr[mid] >= arr[mid + 1]) {
+                return mid;
+            }
+            if (arr[mid] >= left) {
+                return binaryS(mid, end, arr);
+            } else {
+                return binaryS(start, mid, arr);
+            }
+        }
+    }
+
+    class Solution_2586 {
+        public int vowelStrings(String[] words, int left, int right) {
+            HashSet<Character> set = new HashSet<>();
+            set.add('a');
+            set.add('e');
+            set.add('i');
+            set.add('o');
+            set.add('u');
+            int r = 0;
+            for (int i = left; i <= right; i++) {
+                String word = words[i];
+                if (set.contains(word.charAt(0)) && set.contains(word.charAt(word.length() - 1))) {
+                    r++;
+                }
+            }
+            return r;
+        }
+    }
+
+    class Solution_1422 {
+        public int maxScore(String s) {
+            int zeroCount = 0;
+            int oneCount = 0;
+            for (int i = 0; i < s.length(); i++) {
+                if (s.charAt(i) == '0') {
+                    zeroCount++;
+                } else {
+                    oneCount++;
+                }
+            }
+            int result = -1;
+            int leftCount = 0;
+            int rightCount = oneCount;
+            for (int i = 0; i < s.length() - 1; i++) {
+                boolean isZero = s.charAt(i) == '0';
+                if (isZero) {
+                    leftCount++;
+                } else {
+                    rightCount--;
+                }
+                result = Math.max(leftCount + rightCount, result);
+            }
+            return result;
+        }
+    }
+
+    class Solution_867 {
+        public int[][] transpose(int[][] matrix) {
+            int r = matrix.length;
+            int c = matrix[0].length;
+            int[][] result = new int[c][r];
+            for (int i = 0; i < r; i++) {
+                for (int j = 0; j < c; j++) {
+                    result[j][i] = matrix[i][j];
+                }
+            }
+            return result;
+        }
+    }
+
+    class Solution_263 {
+        public boolean isUgly(int n) {
+            if (n <= 0) {
+                return false;
+            }
+            if (n == 1) {
+                return true;
+            }
+            int divider = 2;
+            while (n > 1) {
+                if (divider > 5) {
+                    return false;
+                }
+                while (n % divider == 0) {
+                    n = n / divider;
+                }
+                divider += 1;
+            }
+            return true;
+        }
+    }
+
+    class Solution_1281 {
+        public int subtractProductAndSum(int n) {
+            int targetA = 1;
+            int targetB = 0;
+            while (n > 0) {
+                int bit = n % 10;
+                targetB += bit;
+                targetA *= bit;
+                n = n / 10;
+            }
+            return targetA - targetB;
+        }
+    }
+
+    class Solution_258 {
+        public int addDigits(int num) {
+            while (num > 9) {
+                int result = 0;
+                while (num > 0) {
+                    result += num % 10;
+                    num = num / 10;
+                }
+                num = result;
+            }
+            return num;
+        }
+    }
+
+    class Solution_709 {
+        public String toLowerCase(String s) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 0; i < s.length(); i++) {
+                char c = s.charAt(i);
+                if (c >= 'A' && c <= 'Z') {
+                    c = (char) (c + 0x20);
+                }
+                stringBuilder.append(c);
+            }
+            return stringBuilder.toString();
+        }
+    }
+
+    class Solution_1534 {
+        public int countGoodTriplets(int[] arr, int a, int b, int c) {
+            int n = arr.length;
+            int[][] his = new int[n][n];
+            int result = 0;
+            for (int i = 0; i < arr.length; i++) {
+                for (int j = i + 1; j < arr.length; j++) {
+                    for (int k = j + 1; k < arr.length; k++) {
+                        if (Math.abs(arr[i] - arr[j]) <= a
+                                && Math.abs(arr[j] - arr[k]) <= b
+                                && Math.abs(arr[i] - arr[k]) <= c) {
+                            result++;
+                        }
+                    }
+                }
+            }
+            return result;
+        }
     }
 
     /**
@@ -137,16 +507,16 @@ public class LeetCode {
      */
     class Solution_1512 {
         public int numIdenticalPairs(int[] nums) {
-             int[] countNums = new int[101];
-             Arrays.fill(countNums,0);
+            int[] countNums = new int[101];
+            Arrays.fill(countNums, 0);
             for (int num : nums) {
-                countNums[num]+=1;
+                countNums[num] += 1;
             }
             int result = 0;
             for (int i = 1; i < countNums.length; i++) {
                 int n = countNums[i] - 1;
-                if (n>=1) {
-                    result += (n+1)*n/2;
+                if (n >= 1) {
+                    result += (n + 1) * n / 2;
                 }
             }
             return result;
@@ -700,7 +1070,7 @@ public class LeetCode {
     /**
      * 2105. 给植物浇水
      */
-    class Solution {
+    class Solution_2105 {
         public int minimumRefill(int[] plants, int capacityA, int capacityB) {
             int aLeft = capacityA;
             int bLeft = capacityB;
