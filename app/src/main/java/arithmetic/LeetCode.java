@@ -140,7 +140,52 @@ public class LeetCode {
 //        }
 
 //        print(new 滑动窗口.Solution_643().findMaxAverage(new int[]{1, 12, -5, -6, 50, 3}, 4));
-        print(new 滑动窗口.Solution_2090().getAverages(new int[]{7, 4, 3, 9, 1, 8, 5, 2, 6}, 3));
+//        print(new 滑动窗口.Solution_2090().getAverages(new int[]{7, 4, 3, 9, 1, 8, 5, 2, 6}, 3));
+
+        int[] a = new int[]{6,7,8,4,5};
+        int left = 0;
+        int right = a.length - 1;
+
+        /*
+         * Skip the longest ascending sequence.
+         */
+        do {
+            if (left >= right) {
+                return;
+            }
+        } while (a[++left] >= a[left - 1]);
+
+        /*
+         * Every element from adjoining part plays the role
+         * of sentinel, therefore this allows us to avoid the
+         * left range check on each iteration. Moreover, we use
+         * the more optimized algorithm, so called pair insertion
+         * sort, which is faster (in the context of Quicksort)
+         * than traditional implementation of insertion sort.
+         */
+        for (int k = left; ++left <= right; k = ++left) {
+            int a1 = a[k], a2 = a[left];
+
+            if (a1 < a2) {
+                a2 = a1; a1 = a[left];
+            }
+            while (a1 < a[--k]) {
+                a[k + 2] = a[k];
+            }
+            a[++k + 1] = a1;
+
+            while (a2 < a[--k]) {
+                a[k + 1] = a[k];
+            }
+            a[k + 1] = a2;
+        }
+        int last = a[right];
+
+        while (last < a[--right]) {
+            a[right + 1] = a[right];
+        }
+        a[right + 1] = last;
+        print(getPrint(a));
     }
 
     private static String getPrint(int[] arr) {
